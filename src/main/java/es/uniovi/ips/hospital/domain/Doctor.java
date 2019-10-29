@@ -41,6 +41,11 @@ public class Doctor {
     private String addressStreet;
 
     @NotNull
+    @Column(name = "dni")
+    @Length(min = 9, max = 9, message = "Your DNI is not a valid one")
+    private String dni;
+
+    @NotNull
     @Column(name = "address_city", nullable = false)
     private String addressCity;
 
@@ -144,6 +149,14 @@ public class Doctor {
 
     public void setAppointments(Set<Appointment> appointments) {
         this.appointments = appointments;
+    }
+
+    public String getDni() {
+        return dni;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
     }
 
     public Set<Schedule> getSchedules() {

@@ -68,6 +68,7 @@ public class HospitalApplication implements CommandLineRunner {
                     faker.address().streetAddress(),
                     faker.address().city(),
                     faker.address().zipCode());
+            doctor.setDni(faker.number().digits(9));
             doctorService.createDoctor(doctor);
         }
     }
