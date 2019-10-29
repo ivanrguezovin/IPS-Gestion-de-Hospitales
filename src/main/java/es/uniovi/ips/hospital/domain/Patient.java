@@ -16,6 +16,11 @@ public class Patient {
     @SequenceGenerator(name = "sequenceGenerator")
     @Column(name = "id")
     private Long id;
+    
+    @NotNull
+    @Column(name = "dni")
+    @Length(message = "Your DNI is not a valid one")
+    private String dni;
 
     @NotEmpty(message = "Please, provide the name")
     @Column(name = "name", nullable = false)
@@ -50,17 +55,17 @@ public class Patient {
     @OneToMany(mappedBy = "patient")
     private Set<MedicalRecord> medicalRecords;
 
-    public Patient() {
+    public Patient() { }
 
-    }
-
-    public Patient(@NotEmpty(message = "Please, provide the name") String name,
-                   @NotEmpty(message = "Please, provide the surname") String surname,
-                   @Email(message = "Please, provide a valid email") @NotEmpty(message = "Please, provide the email") String email,
-                   @NotEmpty(message = "Please, provide a password") @Length(min = 5, message = "Your password must have at least 5 characters") String password,
-                   @NotNull String addressStreet,
-                   @NotNull String addressCity,
-                   @NotNull String addressZIPCode) {
+    public Patient(@NotEmpty(message = "Please, provide the dni or equivalent") String dni,
+					@NotEmpty(message = "Please, provide the name") String name,
+					@NotEmpty(message = "Please, provide the surname") String surname,
+					@Email(message = "Please, provide a valid email") @NotEmpty(message = "Please, provide the email") String email,
+					@NotEmpty(message = "Please, provide a password") @Length(min = 5, message = "Your password must have at least 5 characters") String password,
+					@NotNull String addressStreet,
+					@NotNull String addressCity,
+					@NotNull String addressZIPCode) {
+    	this.dni = dni;
         this.name = name;
         this.surname = surname;
         this.email = email;
@@ -78,7 +83,15 @@ public class Patient {
         this.id = id;
     }
 
-    public String getName() {
+    public String getDni() {
+		return dni;
+	}
+
+	public void setDni(String dni) {
+		this.dni = dni;
+	}
+
+	public String getName() {
         return name;
     }
 
@@ -142,17 +155,10 @@ public class Patient {
         this.medicalRecords = medicalRecords;
     }
 
-    @Override
-    public String toString() {
-        return "Patient{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", addressStreet='" + addressStreet + '\'' +
-                ", addressCity='" + addressCity + '\'' +
-                ", addressZIPCode='" + addressZIPCode + '\'' +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "Patient [id=" + id + ", dni=" + dni + ", name=" + name + ", surname=" + surname + ", email=" + email
+				+ ", password=" + password + ", addressStreet=" + addressStreet + ", addressCity=" + addressCity
+				+ ", addressZIPCode=" + addressZIPCode + ", medicalRecords=" + medicalRecords + "]";
+	}
 }

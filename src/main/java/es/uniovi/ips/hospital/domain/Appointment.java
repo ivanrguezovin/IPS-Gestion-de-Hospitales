@@ -21,6 +21,10 @@ public class Appointment {
     @NotNull
     @Column(name = "endTime", nullable = false)
     private LocalDateTime endTime;
+    
+    @NotNull
+    @Column(name = "urgent", nullable = false)
+    private boolean urgent;
 
     @ManyToMany
     private Set<Doctor> doctors;
@@ -40,10 +44,21 @@ public class Appointment {
                        Room room) {
         this.startTime = startTime;
         this.endTime = endTime;
+        this.urgent = false;
         this.doctors = doctors;
         this.patient = patient;
         this.room = room;
     }
+    
+    public Appointment(@NotNull LocalDateTime startTime,
+			            @NotNull LocalDateTime endTime,
+			            boolean urgent,
+			            Set<Doctor> doctors,
+			            Patient patient,
+			            Room room) {
+    	this(startTime, endTime, doctors, patient, room);
+    	this.urgent = urgent;
+	}
 
     public Long getId() {
         return id;
@@ -69,7 +84,15 @@ public class Appointment {
         this.endTime = endTime;
     }
 
-    public Set<Doctor> getDoctors() {
+    public boolean isUrgent() {
+		return urgent;
+	}
+
+	public void setUrgent(boolean urgent) {
+		this.urgent = urgent;
+	}
+
+	public Set<Doctor> getDoctors() {
         return doctors;
     }
 
@@ -93,15 +116,11 @@ public class Appointment {
         this.room = room;
     }
 
-    @Override
-    public String toString() {
-        return "Appointment{" +
-                "id=" + id +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", doctors=" + doctors +
-                ", patient=" + patient +
-                ", room=" + room +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "Appointment [id=" + id + ", startTime=" + startTime + ", endTime=" + endTime + ", urgent=" + urgent
+				+ ", doctors=" + doctors + ", patient=" + patient + ", room=" + room + "]";
+	}
+
+    
 }

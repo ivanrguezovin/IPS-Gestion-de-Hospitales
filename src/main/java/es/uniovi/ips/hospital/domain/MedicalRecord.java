@@ -9,6 +9,9 @@ public class MedicalRecord {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
+    
+    @Column(name = "description")
+    private String description;
 
     @ManyToOne
     private Patient patient;
@@ -27,7 +30,15 @@ public class MedicalRecord {
         this.id = id;
     }
 
-    public Patient getPatient() {
+    public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Patient getPatient() {
         return patient;
     }
 
@@ -35,11 +46,10 @@ public class MedicalRecord {
         this.patient = patient;
     }
 
-    @Override
-    public String toString() {
-        return "MedicalRecord{" +
-                "id=" + id +
-                ", patient=" + patient +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "MedicalRecord [id=" + id + ", description=" + description + ", patient=" + patient + "]";
+	}
+    
+    
 }

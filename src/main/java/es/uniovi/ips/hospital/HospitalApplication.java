@@ -93,6 +93,7 @@ public class HospitalApplication implements CommandLineRunner {
     private void generateFakePatients(int n) {
         for (int i = 0; i < n; i++) {
             Patient patient = new Patient(
+            		faker.numerify("########") + faker.letterify("#"),
                     faker.name().firstName(),
                     faker.name().lastName(),
                     faker.internet().safeEmailAddress(),
