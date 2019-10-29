@@ -12,6 +12,8 @@ public class MedicalRecord {
 
     @ManyToOne
     private Patient patient;
+    
+    public MedicalRecord() {}
 
     public MedicalRecord(Patient patient) {
         this.patient = patient;

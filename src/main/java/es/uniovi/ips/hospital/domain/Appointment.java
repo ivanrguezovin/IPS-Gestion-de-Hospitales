@@ -30,6 +30,8 @@ public class Appointment {
 
     @ManyToOne
     private Room room;
+    
+    public Appointment() {}
 
     public Appointment(@NotNull LocalDateTime startTime,
                        @NotNull LocalDateTime endTime,

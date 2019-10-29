@@ -22,12 +22,14 @@ public class Schedule implements Serializable {
     private LocalDateTime endTime;
 
     @ManyToOne
-    private Doctor doctor;
+    private Staff employee;
+    
+    public Schedule() {}
 
-    public Schedule(@NotNull LocalDateTime startTime, @NotNull LocalDateTime endTime, Doctor doctor) {
+    public Schedule(@NotNull LocalDateTime startTime, @NotNull LocalDateTime endTime, Staff employee) {
         this.startTime = startTime;
         this.endTime = endTime;
-        this.doctor = doctor;
+        this.employee = employee;
     }
 
     public Long getId() {
@@ -54,21 +56,19 @@ public class Schedule implements Serializable {
         this.endTime = endTime;
     }
 
-    public Doctor getDoctor() {
-        return doctor;
+    public Staff getEmployee() {
+        return employee;
     }
 
-    public void setDoctor(Doctor doctor) {
-        this.doctor = doctor;
+    public void setEmployee(Staff employee) {
+        this.employee = employee;
     }
 
-    @Override
-    public String toString() {
-        return "Schedule{" +
-                "id=" + id +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", doctor=" + doctor +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "Schedule [id=" + id + ", startTime=" + startTime + ", endTime=" + endTime + ", employee=" + employee
+				+ "]";
+	}
+    
+    
 }

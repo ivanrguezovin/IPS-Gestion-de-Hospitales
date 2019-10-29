@@ -47,6 +47,7 @@ public class HospitalApplication implements CommandLineRunner {
     private void generateFakeAdminAssistants(int n) {
         for (int i = 0; i < n; i++) {
             AdminAssistant adminAssistant = new AdminAssistant(
+            		faker.numerify("########") + faker.letterify("#"),
                     faker.name().firstName(),
                     faker.name().lastName(),
                     faker.internet().safeEmailAddress(),
@@ -61,6 +62,7 @@ public class HospitalApplication implements CommandLineRunner {
     private void generateFakeDoctors(int n) {
         for (int i = 0; i < n; i++) {
             Doctor doctor = new Doctor(
+            		faker.numerify("########") + faker.letterify("#"),
                     faker.name().firstName(),
                     faker.name().lastName(),
                     faker.internet().safeEmailAddress(),
@@ -76,6 +78,7 @@ public class HospitalApplication implements CommandLineRunner {
     private void generateFakeNurses(int n) {
         for (int i = 0; i < n; i++) {
             Nurse nurse = new Nurse(
+            		faker.numerify("########") + faker.letterify("#"),
                     faker.name().firstName(),
                     faker.name().lastName(),
                     faker.internet().safeEmailAddress(),
