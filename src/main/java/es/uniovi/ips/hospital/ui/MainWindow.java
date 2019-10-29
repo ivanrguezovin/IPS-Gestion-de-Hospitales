@@ -3,11 +3,15 @@ package es.uniovi.ips.hospital.ui;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.service.PatientService;
+import es.uniovi.ips.hospital.ui.admin.AdminDialog;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 @Component
 public class MainWindow {
@@ -51,6 +55,10 @@ public class MainWindow {
         scrollPane.setViewportView(listWorkers);
 
         frame.getContentPane().add(BorderLayout.SOUTH, panel);
+        
+        JButton btnAdmin = new JButton("Admin");
+        btnAdmin.addActionListener(actionEvent -> new AdminDialog().setVisible(true));
+        panel.add(btnAdmin);
         frame.getContentPane().add(BorderLayout.NORTH, menuBar);
         frame.getContentPane().add(BorderLayout.CENTER, scrollPane);
 

@@ -1,6 +1,9 @@
 package es.uniovi.ips.hospital.domain;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "medicalRecords")
@@ -12,6 +15,10 @@ public class MedicalRecord {
     
     @Column(name = "description")
     private String description;
+    
+    @NotNull
+    @Column(name = "date")
+    private LocalDateTime date;
 
     @ManyToOne
     private Patient patient;
@@ -38,6 +45,14 @@ public class MedicalRecord {
 		this.description = description;
 	}
 
+	public LocalDateTime getDate() {
+		return date;
+	}
+
+	public void setDate(LocalDateTime date) {
+		this.date = date;
+	}
+
 	public Patient getPatient() {
         return patient;
     }
@@ -48,7 +63,8 @@ public class MedicalRecord {
 
 	@Override
 	public String toString() {
-		return "MedicalRecord [id=" + id + ", description=" + description + ", patient=" + patient + "]";
+		return "MedicalRecord [id=" + id + ", description=" + description + ", date=" + date + ", patient=" + patient
+				+ "]";
 	}
     
     
