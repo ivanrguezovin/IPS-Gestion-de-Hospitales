@@ -25,11 +25,4 @@ public class Doctor extends Staff {
     public void setAppointments(Set<Appointment> appointments) {
         this.appointments = appointments;
     }
-
-	@Override
-	public String toString() {
-		return "Doctor [id=" + getId() + ", dni=" + getDni() + ", name=" + getName() + ", surname=" + getSurname() + ", email=" + getEmail()
-				+ ", password=" + getPassword() + ", addressStreet=" + getAddressStreet() + ", addressCity=" + getAddressCity()
-				+ ", addressZIPCode=" + getAddressZIPCode() + ", schedules=" + getSchedules() + "]";
-	}
 }

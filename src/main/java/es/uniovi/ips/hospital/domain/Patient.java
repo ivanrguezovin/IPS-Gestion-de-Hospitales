@@ -41,16 +41,9 @@ public class Patient {
     private String password;
 
     @NotNull
-    @Column(name = "address_street", nullable = false)
-    private String addressStreet;
-
-    @NotNull
-    @Column(name = "address_city", nullable = false)
-    private String addressCity;
-
-    @NotNull
-    @Column(name = "address_zip_code", nullable = false)
-    private String addressZIPCode;
+    @Embedded
+    @Column(name = "address", nullable = false)
+    private Address address;
 
     @OneToMany(mappedBy = "patient")
     private Set<MedicalRecord> medicalRecords;
@@ -70,9 +63,7 @@ public class Patient {
         this.surname = surname;
         this.email = email;
         this.password = password;
-        this.addressStreet = addressStreet;
-        this.addressCity = addressCity;
-        this.addressZIPCode = addressZIPCode;
+        this.address = new Address(addressStreet,addressCity,addressZIPCode);
     }
 
     public Long getId() {
@@ -123,29 +114,13 @@ public class Patient {
         this.password = password;
     }
 
-    public String getAddressStreet() {
-        return addressStreet;
-    }
+    public Address getAddress() {
+		return address;
+	}
 
-    public void setAddressStreet(String addressStreet) {
-        this.addressStreet = addressStreet;
-    }
-
-    public String getAddressCity() {
-        return addressCity;
-    }
-
-    public void setAddressCity(String addressCity) {
-        this.addressCity = addressCity;
-    }
-
-    public String getAddressZIPCode() {
-        return addressZIPCode;
-    }
-
-    public void setAddressZIPCode(String addressZIPCode) {
-        this.addressZIPCode = addressZIPCode;
-    }
+	public void setAddress(Address address) {
+		this.address = address;
+	}
 
     public Set<MedicalRecord> getMedicalRecords() {
         return medicalRecords;
@@ -158,7 +133,6 @@ public class Patient {
 	@Override
 	public String toString() {
 		return "Patient [id=" + id + ", dni=" + dni + ", name=" + name + ", surname=" + surname + ", email=" + email
-				+ ", password=" + password + ", addressStreet=" + addressStreet + ", addressCity=" + addressCity
-				+ ", addressZIPCode=" + addressZIPCode + ", medicalRecords=" + medicalRecords + "]";
+				+ ", password=" + password + ", address=" + address + ", medicalRecords=" + medicalRecords + "]";
 	}
 }

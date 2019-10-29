@@ -12,11 +12,4 @@ public class AdminAssistant extends Staff {
     						String addressCity, String addressZIPCode) {
         super(dni, name, surname, email, password, addressStreet, addressCity, addressZIPCode);
     }
-
-	@Override
-	public String toString() {
-		return "AdminAssistant[id=" + getId() + ", dni=" + getDni() + ", name=" + getName() + ", surname=" + getSurname() + ", email=" + getEmail()
-				+ ", password=" + getPassword() + ", addressStreet=" + getAddressStreet() + ", addressCity=" + getAddressCity()
-				+ ", addressZIPCode=" + getAddressZIPCode() + ", schedules=" + getSchedules() + "]";
-	}
 }

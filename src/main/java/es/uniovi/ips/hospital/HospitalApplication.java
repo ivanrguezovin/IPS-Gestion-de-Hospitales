@@ -47,7 +47,7 @@ public class HospitalApplication implements CommandLineRunner {
     private void generateFakeAdminAssistants(int n) {
         for (int i = 0; i < n; i++) {
             AdminAssistant adminAssistant = new AdminAssistant(
-            		faker.numerify("########") + faker.letterify("#"),
+            		faker.bothify("########?"),
                     faker.name().firstName(),
                     faker.name().lastName(),
                     faker.internet().safeEmailAddress(),
@@ -62,7 +62,7 @@ public class HospitalApplication implements CommandLineRunner {
     private void generateFakeDoctors(int n) {
         for (int i = 0; i < n; i++) {
             Doctor doctor = new Doctor(
-            		faker.numerify("########") + faker.letterify("#"),
+            		faker.bothify("########?"),
                     faker.name().firstName(),
                     faker.name().lastName(),
                     faker.internet().safeEmailAddress(),
@@ -70,7 +70,6 @@ public class HospitalApplication implements CommandLineRunner {
                     faker.address().streetAddress(),
                     faker.address().city(),
                     faker.address().zipCode());
-            doctor.setDni(faker.number().digits(9));
             doctorService.createDoctor(doctor);
         }
     }
@@ -78,7 +77,7 @@ public class HospitalApplication implements CommandLineRunner {
     private void generateFakeNurses(int n) {
         for (int i = 0; i < n; i++) {
             Nurse nurse = new Nurse(
-            		faker.numerify("########") + faker.letterify("#"),
+            		faker.bothify("########?"),
                     faker.name().firstName(),
                     faker.name().lastName(),
                     faker.internet().safeEmailAddress(),
@@ -93,7 +92,7 @@ public class HospitalApplication implements CommandLineRunner {
     private void generateFakePatients(int n) {
         for (int i = 0; i < n; i++) {
             Patient patient = new Patient(
-            		faker.numerify("########") + faker.letterify("#"),
+            		faker.bothify("########?"),
                     faker.name().firstName(),
                     faker.name().lastName(),
                     faker.internet().safeEmailAddress(),

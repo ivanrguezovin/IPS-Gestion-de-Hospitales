@@ -43,16 +43,9 @@ public class Staff {
     private String password;
 
     @NotNull
-    @Column(name = "address_street", nullable = false)
-    private String addressStreet;
-
-    @NotNull
-    @Column(name = "address_city", nullable = false)
-    private String addressCity;
-
-    @NotNull
-    @Column(name = "address_zip_code", nullable = false)
-    private String addressZIPCode;
+    @Embedded
+    @Column(name = "address", nullable = false)
+    private Address address;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     private Set<Schedule> schedules = new HashSet<>();
@@ -72,9 +65,7 @@ public class Staff {
         this.surname = surname;
         this.email = email;
         this.password = password;
-        this.addressStreet = addressStreet;
-        this.addressCity = addressCity;
-        this.addressZIPCode = addressZIPCode;
+        this.address = new Address(addressStreet,addressCity,addressZIPCode);
     }
 
     public Long getId() {
@@ -125,31 +116,15 @@ public class Staff {
         this.password = password;
     }
 
-    public String getAddressStreet() {
-        return addressStreet;
-    }
+    public Address getAddress() {
+		return address;
+	}
 
-    public void setAddressStreet(String addressStreet) {
-        this.addressStreet = addressStreet;
-    }
+	public void setAddress(Address address) {
+		this.address = address;
+	}
 
-    public String getAddressCity() {
-        return addressCity;
-    }
-
-    public void setAddressCity(String addressCity) {
-        this.addressCity = addressCity;
-    }
-
-    public String getAddressZIPCode() {
-        return addressZIPCode;
-    }
-
-    public void setAddressZIPCode(String addressZIPCode) {
-        this.addressZIPCode = addressZIPCode;
-    }
-
-    public Set<Schedule> getSchedules() {
+	public Set<Schedule> getSchedules() {
         return schedules;
     }
 
@@ -160,8 +135,7 @@ public class Staff {
 	@Override
 	public String toString() {
 		return "Staff [id=" + id + ", dni=" + dni + ", name=" + name + ", surname=" + surname + ", email=" + email
-				+ ", password=" + password + ", addressStreet=" + addressStreet + ", addressCity=" + addressCity
-				+ ", addressZIPCode=" + addressZIPCode + ", schedules=" + schedules + "]";
+				+ ", password=" + password + ", address=" + address + ", schedules=" + schedules + "]";
 	}
 
 }
