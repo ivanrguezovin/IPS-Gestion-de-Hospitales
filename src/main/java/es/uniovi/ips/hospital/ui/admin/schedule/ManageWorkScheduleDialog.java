@@ -58,6 +58,7 @@ import javax.swing.JScrollPane;
 import javax.swing.event.ChangeListener;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.JTextField;
@@ -68,6 +69,7 @@ import java.awt.Dimension;
  * @author Ricardo Soto (uo265710)
  *
  */
+@Component
 public class ManageWorkScheduleDialog extends JDialog {
 	
 	private static final long serialVersionUID = 1490803176753932725L;
@@ -123,19 +125,6 @@ public class ManageWorkScheduleDialog extends JDialog {
 	private JCheckBox checkBoxAll;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			ManageWorkScheduleDialog dialog = new ManageWorkScheduleDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	 * Create the dialog.
 	 */
 	public ManageWorkScheduleDialog() {
@@ -149,7 +138,7 @@ public class ManageWorkScheduleDialog extends JDialog {
 		contentPanel.add(getPnWest(), BorderLayout.WEST);
 	}
 	
-	// M�TODOS DE CREACI�N DE LA INTERFAZ ------------------------------------------------------------
+	// METODOS DE CREACION DE LA INTERFAZ ------------------------------------------------------------
 	
 	private JPanel getPnCenter() {
 		if (pnCenter == null) {
@@ -378,11 +367,6 @@ public class ManageWorkScheduleDialog extends JDialog {
 		if (lstDoctor == null) {
 			lstDoctor = new JList<Doctor>();
 			lstDoctor.addMouseListener(new DoubleClickSelector());
-			EventList<Doctor> list = new BasicEventList<Doctor>();
-			list.addAll(doctorService.findAllDoctors());
-			SortedList<Doctor> doctorSortedList = new SortedList<Doctor>(list, new StaffComparator());
-			doctorList = new FilterList<Doctor>(doctorSortedList, textMatcherEditor);
-			lstDoctor.setModel(GlazedListsSwing.eventListModelWithThreadProxyList(doctorList));
 			lstDoctor.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		}
 		return lstDoctor;
@@ -398,11 +382,6 @@ public class ManageWorkScheduleDialog extends JDialog {
 		if (lstNurse == null) {
 			lstNurse = new JList<Nurse>();
 			lstNurse.addMouseListener(new DoubleClickSelector());
-			EventList<Nurse> list = new BasicEventList<Nurse>();
-			list.addAll(nurseService.findAllNurses());
-			SortedList<Nurse> nurseSortedList = new SortedList<Nurse>(list, new StaffComparator());
-			nurseList = new FilterList<Nurse>(nurseSortedList, textMatcherEditor);
-			lstNurse.setModel(GlazedListsSwing.eventListModelWithThreadProxyList(nurseList));
 			lstNurse.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		}
 		return lstNurse;
@@ -448,8 +427,22 @@ public class ManageWorkScheduleDialog extends JDialog {
 		return btnSelect;
 	}
 	
-	// M�TODOS DE COMPROBACI�N Y EJECUCI�N ------------------------------------------------------------
+	// METODOS DE COMPROBACION Y EJECUCION ------------------------------------------------------------
 	
+	public void fillLists() {
+		// Doctor List
+		EventList<Doctor> doctorlist = new BasicEventList<Doctor>();
+		doctorlist.addAll(doctorService.findAllDoctors());
+		SortedList<Doctor> doctorSortedList = new SortedList<Doctor>(doctorlist, new StaffComparator());
+		doctorList = new FilterList<Doctor>(doctorSortedList, textMatcherEditor);
+		lstDoctor.setModel(GlazedListsSwing.eventListModelWithThreadProxyList(doctorList));
+		// Nurse list
+		EventList<Nurse> nurselist = new BasicEventList<Nurse>();
+		nurselist.addAll(nurseService.findAllNurses());
+		SortedList<Nurse> nurseSortedList = new SortedList<Nurse>(nurselist, new StaffComparator());
+		nurseList = new FilterList<Nurse>(nurseSortedList, textMatcherEditor);
+		lstNurse.setModel(GlazedListsSwing.eventListModelWithThreadProxyList(nurseList));
+	}
 	
 	/**
 	 * Almacena la informaci�n introducida en un grupo de dto para su introducci�n en la base de datos

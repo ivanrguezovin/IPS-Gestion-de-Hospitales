@@ -9,6 +9,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.GridLayout;
 import javax.swing.border.TitledBorder;
 
+import org.springframework.stereotype.Component;
+
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageWorkScheduleDialog;
 
 public class AdminDialog extends JDialog {
@@ -76,8 +78,16 @@ public class AdminDialog extends JDialog {
 	private JButton getBtnManageSchedules() {
 		if (btnManageSchedules == null) {
 			btnManageSchedules = new JButton("Manage schedules");
-			btnManageSchedules.addActionListener(actionEvent -> new ManageWorkScheduleDialog().setVisible(true));
+			btnManageSchedules.addActionListener(actionEvent -> launchScheduleDialog() );
 		}
 		return btnManageSchedules;
+	}
+	
+	// METODOS DE LANZAMIENTO DE VENTANAS
+
+	private void launchScheduleDialog() {
+		ManageWorkScheduleDialog mwsd = new ManageWorkScheduleDialog();
+		mwsd.fillLists();
+		mwsd.setVisible(true);
 	}
 }

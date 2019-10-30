@@ -10,8 +10,6 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 @Component
 public class MainWindow {
