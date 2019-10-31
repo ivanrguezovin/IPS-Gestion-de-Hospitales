@@ -2,6 +2,7 @@ package es.uniovi.ips.hospital.service;
 
 import es.uniovi.ips.hospital.domain.AdminAssistant;
 import es.uniovi.ips.hospital.repository.AdminAssitantRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

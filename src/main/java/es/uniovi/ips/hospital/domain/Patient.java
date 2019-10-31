@@ -135,4 +135,8 @@ public class Patient {
 		return "Patient [id=" + id + ", dni=" + dni + ", name=" + name + ", surname=" + surname + ", email=" + email
 				+ ", password=" + password + ", address=" + address + ", medicalRecords=" + medicalRecords + "]";
 	}
+
+	public String guiToString() {
+		return name + " " + surname;
+	}
 }

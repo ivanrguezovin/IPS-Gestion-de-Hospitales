@@ -1,7 +1,12 @@
 package es.uniovi.ips.hospital.domain;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
+import es.uniovi.ips.hospital.util.comunication.SendEmail;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -121,6 +126,20 @@ public class Appointment {
 		return "Appointment [id=" + id + ", startTime=" + startTime + ", endTime=" + endTime + ", urgent=" + urgent
 				+ ", doctors=" + doctors + ", patient=" + patient + ", room=" + room + "]";
 	}
+
+	public String guiToString() {
+		return patient.guiToString() + " - " + startTime + " - " + room + " " + urgentString();
+	}
+
+	private String urgentString() {
+		return (urgent) ? "(URGENT)" : "";
+	}
+	
+	// BUSINESS METHODS
+
+    public void sendEmail() throws AddressException, MessagingException {
+    	new SendEmail(this).execute();
+    }
 
     
 }
