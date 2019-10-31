@@ -18,10 +18,10 @@ import es.uniovi.ips.hospital.exception.InputException;
 import es.uniovi.ips.hospital.service.DoctorService;
 import es.uniovi.ips.hospital.service.NurseService;
 import es.uniovi.ips.hospital.service.ScheduleService;
+import es.uniovi.ips.hospital.ui.util.StaffCellRenderer;
 import es.uniovi.ips.hospital.ui.util.StaffTextFilterator;
 import es.uniovi.ips.hospital.util.comparator.StaffComparator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -373,6 +373,7 @@ public class ManageWorkScheduleDialog extends JDialog {
             lstDoctor = new JList<Doctor>();
             lstDoctor.addMouseListener(new DoubleClickSelector());
             lstDoctor.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+            lstDoctor.setCellRenderer(new StaffCellRenderer());
         }
         return lstDoctor;
     }
@@ -390,6 +391,7 @@ public class ManageWorkScheduleDialog extends JDialog {
             lstNurse = new JList<Nurse>();
             lstNurse.addMouseListener(new DoubleClickSelector());
             lstNurse.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+            lstNurse.setCellRenderer(new StaffCellRenderer());
         }
         return lstNurse;
     }
@@ -410,6 +412,7 @@ public class ManageWorkScheduleDialog extends JDialog {
             selectedList = new FilterList<Staff>(staffSortedList, textMatcherEditor);
             lstSelected.setModel(GlazedListsSwing.eventListModelWithThreadProxyList(selectedList));
             lstSelected.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+            lstSelected.setCellRenderer(new StaffCellRenderer());
         }
         return lstSelected;
     }
@@ -472,8 +475,8 @@ public class ManageWorkScheduleDialog extends JDialog {
             for (LocalDateTime startTime : daySchedules.keySet())
                 selectedStaff.forEach(x -> schedules.add(new Schedule(startTime, daySchedules.get(startTime), x)));
             // Guarda los horarios
-            scheduleService.createSchedules(schedules);
-            JOptionPane.showMessageDialog(this, "All the schedules were added successfully");
+            scheduleService.updateSchedules(schedules);
+            JOptionPane.showMessageDialog(this, "All the schedules were updated successfully");
         } catch (InputException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }
@@ -513,7 +516,7 @@ public class ManageWorkScheduleDialog extends JDialog {
      * @throws BusinessException en caso de no seleccionar ninguno
      */
     private void checkDays() throws InputException {
-        for (int i = 0; i < pnDays.getComponentCount(); i++)
+        for (int i = 0; i < 7; i++)
             if (((JCheckBox) pnDays.getComponent(i)).isSelected())
                 return;
         throw new InputException("You must select at least one working week day");

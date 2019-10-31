@@ -25,4 +25,9 @@ public class Doctor extends Staff {
     public void setAppointments(Set<Appointment> appointments) {
         this.appointments = appointments;
     }
+    
+    @Override
+    public String guiToString() {
+    	return "Dr. " + super.guiToString();
+    }
 }

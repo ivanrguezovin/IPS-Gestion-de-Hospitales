@@ -30,9 +30,6 @@ public class HospitalApplication implements CommandLineRunner {
 
     @Autowired
     private PatientService patientService;
-    
-    @Autowired
-    private ScheduleService scheduleService;
 
     private Faker faker;
 

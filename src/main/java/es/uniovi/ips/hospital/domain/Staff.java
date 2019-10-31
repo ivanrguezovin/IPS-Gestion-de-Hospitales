@@ -147,4 +147,8 @@ public class Staff {
                 ", schedules=" + schedules +
                 '}';
     }
+
+	public String guiToString() {
+		return name + " " + surname;
+	}
 }
