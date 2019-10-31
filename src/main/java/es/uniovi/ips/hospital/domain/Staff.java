@@ -47,7 +47,9 @@ public class Staff {
     @Column(name = "address", nullable = false)
     private Address address;
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "employee",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER)
     private Set<Schedule> schedules = new HashSet<>();
 
     public Staff() {}
@@ -132,10 +134,17 @@ public class Staff {
         this.schedules = schedules;
     }
 
-	@Override
-	public String toString() {
-		return "Staff [id=" + id + ", dni=" + dni + ", name=" + name + ", surname=" + surname + ", email=" + email
-				+ ", password=" + password + ", address=" + address + ", schedules=" + schedules + "]";
-	}
-
+    @Override
+    public String toString() {
+        return "Staff{" +
+                "id=" + id +
+                ", dni='" + dni + '\'' +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", address=" + address +
+                ", schedules=" + schedules +
+                '}';
+    }
 }

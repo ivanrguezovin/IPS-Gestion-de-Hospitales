@@ -9,10 +9,12 @@ import javax.swing.border.EmptyBorder;
 import java.awt.GridLayout;
 import javax.swing.border.TitledBorder;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageWorkScheduleDialog;
 
+@Component
 public class AdminDialog extends JDialog {
 
 	private static final long serialVersionUID = -1238718624919092329L;
@@ -24,6 +26,9 @@ public class AdminDialog extends JDialog {
 	private JPanel pnSchedules;
 	private JButton btnCreateAppointment;
 	private JButton btnManageSchedules;
+
+	@Autowired
+	private ManageWorkScheduleDialog manageWorkScheduleDialog;
 
 	/**
 	 * Create the dialog.
@@ -86,8 +91,7 @@ public class AdminDialog extends JDialog {
 	// METODOS DE LANZAMIENTO DE VENTANAS
 
 	private void launchScheduleDialog() {
-		ManageWorkScheduleDialog mwsd = new ManageWorkScheduleDialog();
-		mwsd.fillLists();
-		mwsd.setVisible(true);
+		manageWorkScheduleDialog.fillLists();
+		manageWorkScheduleDialog.setVisible(true);
 	}
 }

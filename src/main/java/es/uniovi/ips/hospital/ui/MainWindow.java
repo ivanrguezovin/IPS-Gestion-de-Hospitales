@@ -19,6 +19,9 @@ public class MainWindow {
     @Autowired
     private PatientService patientService;
 
+    @Autowired
+    private AdminDialog adminDialog;
+
     public MainWindow() {
         JFrame frame = new JFrame("List of patients");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -55,7 +58,7 @@ public class MainWindow {
         frame.getContentPane().add(BorderLayout.SOUTH, panel);
         
         JButton btnAdmin = new JButton("Admin");
-        btnAdmin.addActionListener(actionEvent -> new AdminDialog().setVisible(true));
+        btnAdmin.addActionListener(actionEvent -> adminDialog.setVisible(true));
         panel.add(btnAdmin);
         frame.getContentPane().add(BorderLayout.NORTH, menuBar);
         frame.getContentPane().add(BorderLayout.CENTER, scrollPane);

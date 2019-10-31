@@ -8,7 +8,7 @@ import java.util.Set;
 @Table(name = "doctors")
 public class Doctor extends Staff {
 
-    @ManyToMany(mappedBy = "doctors")
+    @ManyToMany(mappedBy = "doctors", fetch = FetchType.EAGER)
     private Set<Appointment> appointments = new HashSet<>();
 
     public Doctor() { super(); }
