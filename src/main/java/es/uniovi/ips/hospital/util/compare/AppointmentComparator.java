@@ -1,4 +1,4 @@
-package es.uniovi.ips.hospital.util.comparator;
+package es.uniovi.ips.hospital.util.compare;
 
 import java.util.Comparator;
 

@@ -18,9 +18,10 @@ import es.uniovi.ips.hospital.exception.InputException;
 import es.uniovi.ips.hospital.service.DoctorService;
 import es.uniovi.ips.hospital.service.NurseService;
 import es.uniovi.ips.hospital.service.ScheduleService;
-import es.uniovi.ips.hospital.ui.util.StaffCellRenderer;
-import es.uniovi.ips.hospital.ui.util.StaffTextFilterator;
-import es.uniovi.ips.hospital.util.comparator.StaffComparator;
+import es.uniovi.ips.hospital.ui.util.filter.StaffTextFilterator;
+import es.uniovi.ips.hospital.ui.util.render.StaffCellRenderer;
+import es.uniovi.ips.hospital.util.compare.StaffComparator;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

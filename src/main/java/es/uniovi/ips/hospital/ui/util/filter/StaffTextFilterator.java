@@ -1,4 +1,4 @@
-package es.uniovi.ips.hospital.ui.util;
+package es.uniovi.ips.hospital.ui.util.filter;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package es.uniovi.ips.hospital.ui.util;
+package es.uniovi.ips.hospital.ui.util.render;
 
 import java.awt.Component;
 

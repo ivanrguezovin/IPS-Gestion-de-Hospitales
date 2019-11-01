@@ -12,6 +12,7 @@ import javax.swing.border.TitledBorder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import es.uniovi.ips.hospital.ui.admin.appointment.CreateAppointmentDialog;
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageWorkScheduleDialog;
 
 @Component
@@ -27,6 +28,8 @@ public class AdminDialog extends JDialog {
 	private JButton btnCreateAppointment;
 	private JButton btnManageSchedules;
 
+	@Autowired
+	private CreateAppointmentDialog createAppointmentDialog;
 	@Autowired
 	private ManageWorkScheduleDialog manageWorkScheduleDialog;
 
@@ -77,6 +80,7 @@ public class AdminDialog extends JDialog {
 	private JButton getBtnCreateAppointment() {
 		if (btnCreateAppointment == null) {
 			btnCreateAppointment = new JButton("Create appointment");
+			btnCreateAppointment.addActionListener(actionEvent -> launchCreateAppointmentDialog());
 		}
 		return btnCreateAppointment;
 	}
@@ -93,5 +97,10 @@ public class AdminDialog extends JDialog {
 	private void launchScheduleDialog() {
 		manageWorkScheduleDialog.fillLists();
 		manageWorkScheduleDialog.setVisible(true);
+	}
+	
+	private void launchCreateAppointmentDialog() {
+		createAppointmentDialog.fillLists();
+		createAppointmentDialog.setVisible(true);
 	}
 }

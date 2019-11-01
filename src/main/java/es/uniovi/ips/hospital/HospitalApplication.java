@@ -9,7 +9,6 @@ import es.uniovi.ips.hospital.service.AdminAssistantService;
 import es.uniovi.ips.hospital.service.DoctorService;
 import es.uniovi.ips.hospital.service.NurseService;
 import es.uniovi.ips.hospital.service.PatientService;
-import es.uniovi.ips.hospital.service.ScheduleService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
