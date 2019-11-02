@@ -102,7 +102,7 @@ public class AdminDialog extends JDialog {
 	}
 	
 	private void launchCreateAppointmentDialog() {
-		createAppointmentDialog.fillLists();
+		createAppointmentDialog.fillComboBoxes();
 		createAppointmentDialog.setLocationRelativeTo(this);
 		createAppointmentDialog.setVisible(true);
 	}

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service("DoctorService")
 public class DoctorService {
@@ -21,4 +22,8 @@ public class DoctorService {
         doctorRepository.save(doctor);
         return doctorRepository.findByEmail(doctor.getEmail());
     }
+
+	public Optional<Doctor> findById(String string) {
+		return doctorRepository.findById(Long.parseLong(string));
+	}
 }

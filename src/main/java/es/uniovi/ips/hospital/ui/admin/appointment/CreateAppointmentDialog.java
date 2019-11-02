@@ -25,8 +25,11 @@ import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.domain.Staff;
 import es.uniovi.ips.hospital.service.DoctorService;
 import es.uniovi.ips.hospital.service.PatientService;
+import es.uniovi.ips.hospital.ui.util.filter.PatientTextFilterator;
+import es.uniovi.ips.hospital.ui.util.filter.StaffTextFilterator;
 import es.uniovi.ips.hospital.ui.util.render.PatientCellRenderer;
 import es.uniovi.ips.hospital.ui.util.render.StaffCellRenderer;
+import es.uniovi.ips.hospital.ui.util.render.StaffComboBoxEditor;
 
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -35,6 +38,9 @@ import java.awt.FlowLayout;
 import javax.swing.JLabel;
 import javax.swing.JCheckBox;
 import java.awt.Panel;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.swing.SwingConstants;
 import java.awt.Label;
 import javax.swing.JComboBox;
@@ -47,6 +53,10 @@ public class CreateAppointmentDialog extends JDialog {
 	private PatientService patientService;
 	@Autowired
 	private DoctorService doctorService;
+	@Autowired
+	private StaffComboBoxEditor staffComboBoxEditor;
+	
+	private Set<Staff> selectedDoctors;
 	
 	private final JPanel contentPanel = new JPanel();
 	private JPanel pnAppointment;
@@ -56,12 +66,14 @@ public class CreateAppointmentDialog extends JDialog {
 	private JButton btnShowMedicalRecord;
 	private JPanel pnSelectPatient;
 	private JComboBox<Patient> cbPatient;
+	private EventList<Patient> patientList;
 	private JPanel pnContactInfo;
 	private JLabel lblContactInfo;
 	private JTextField txtContactInfo;
 	private JButton btnAdd;
 	private JPanel pnSelectDoctor;
 	private JComboBox<Staff> cbDoctor;
+	private EventList<Staff> doctorList;
 	private JPanel pnShowDoctors;
 	private JLabel lblDoctors;
 	private JPanel pnSouth;
@@ -91,6 +103,7 @@ public class CreateAppointmentDialog extends JDialog {
 		contentPanel.setLayout(new BorderLayout(0, 0));
 		contentPanel.add(getPnAppointment(), BorderLayout.CENTER);
 		contentPanel.add(getPnSouth(), BorderLayout.SOUTH);
+		selectedDoctors = new HashSet<Staff>();
 	}
 
 	private JPanel getPnAppointment() {
@@ -172,7 +185,6 @@ public class CreateAppointmentDialog extends JDialog {
 	private JComboBox<Patient> getCbPatient() {
 		if (cbPatient == null) {
 			cbPatient = new JComboBox<Patient>();
-			cbPatient.setEditable(true);
 			cbPatient.setRenderer(new PatientCellRenderer());
 		}
 		return cbPatient;
@@ -204,6 +216,8 @@ public class CreateAppointmentDialog extends JDialog {
 	private JButton getBtnAdd() {
 		if (btnAdd == null) {
 			btnAdd = new JButton("Add");
+			btnAdd.setEnabled(false);
+			btnAdd.addActionListener(actionEvent -> addDoctor());
 		}
 		return btnAdd;
 	}
@@ -220,8 +234,7 @@ public class CreateAppointmentDialog extends JDialog {
 	private JComboBox<Staff> getCbDoctor() {
 		if (cbDoctor == null) {
 			cbDoctor = new JComboBox<Staff>();
-			cbDoctor.setEditable(true);
-			cbDoctor.setRenderer(new StaffCellRenderer());
+			cbDoctor.addItemListener(itemEvent -> btnAdd.setEnabled(true));
 		}
 		return cbDoctor;
 	}
@@ -330,16 +343,28 @@ public class CreateAppointmentDialog extends JDialog {
 
     // METODOS Y CLASES DE INICIALIZACION ------------------------------------------------------------
 
-    public void fillLists() {
+    public void fillComboBoxes() {
         // Doctor List
-        EventList<Staff> doctorList = new BasicEventList<Staff>();
+        doctorList = new BasicEventList<Staff>();
         doctorList.addAll(doctorService.findAllDoctors());
-        AutoCompleteSupport<Staff> autocompleteDoctor = AutoCompleteSupport.install(cbDoctor, doctorList);
+        AutoCompleteSupport<Staff> autocompleteDoctor = AutoCompleteSupport.install(getCbDoctor(), doctorList, new StaffTextFilterator());
 		autocompleteDoctor.setFilterMode(TextMatcherEditor.CONTAINS);
+		cbDoctor.setEditor(staffComboBoxEditor);
+		cbDoctor.setRenderer(new StaffCellRenderer());
         // Patient list
-        EventList<Patient> patientList = new BasicEventList<Patient>();
+        patientList = new BasicEventList<Patient>();
         patientList.addAll(patientService.findAllPatient());
-        AutoCompleteSupport<Patient> autoCompletePatient = AutoCompleteSupport.install(cbPatient, patientList);
+        AutoCompleteSupport<Patient> autoCompletePatient = AutoCompleteSupport.install(getCbPatient(), patientList, new PatientTextFilterator());
         autoCompletePatient.setFilterMode(TextMatcherEditor.CONTAINS);
+    }
+    
+    // METODOS DE EJECUCION -------------------------------------------------------------------------
+    
+    private void addDoctor() {
+    	Staff doctor = (Staff) getCbDoctor().getSelectedItem();
+    	selectedDoctors.add(doctor);
+    	doctorList.remove(doctor);
+    	cbDoctor.setSelectedItem(null);
+    	
     }
 }

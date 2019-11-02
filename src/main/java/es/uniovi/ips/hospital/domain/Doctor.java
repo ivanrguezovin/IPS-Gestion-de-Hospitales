@@ -28,6 +28,6 @@ public class Doctor extends Staff {
     
     @Override
     public String guiToString() {
-    	return "Dr. " + super.guiToString();
+    	return getId() + " - Dr. " + getName() + " " + getSurname();
     }
 }
