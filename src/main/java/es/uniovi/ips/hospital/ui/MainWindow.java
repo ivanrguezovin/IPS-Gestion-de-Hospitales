@@ -27,11 +27,11 @@ public class MainWindow {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 400);
 
-        try {
-            UIManager.setLookAndFeel(new FlatDarculaLaf());
-        } catch (Exception ex) {
-            System.err.println("Failed to initialize the look and feel");
-        }
+//        try {
+//            UIManager.setLookAndFeel(new FlatDarculaLaf());
+//        } catch (Exception ex) {
+//            System.err.println("Failed to initialize the look and feel");
+//        }
 
         JMenuBar menuBar = new JMenuBar();
         JMenu menuFile = new JMenu("File");
@@ -58,7 +58,7 @@ public class MainWindow {
         frame.getContentPane().add(BorderLayout.SOUTH, panel);
         
         JButton btnAdmin = new JButton("Admin");
-        btnAdmin.addActionListener(actionEvent -> adminDialog.setVisible(true));
+        btnAdmin.addActionListener(actionEvent -> { adminDialog.setLocationRelativeTo(frame); adminDialog.setVisible(true); });
         panel.add(btnAdmin);
         frame.getContentPane().add(BorderLayout.NORTH, menuBar);
         frame.getContentPane().add(BorderLayout.CENTER, scrollPane);

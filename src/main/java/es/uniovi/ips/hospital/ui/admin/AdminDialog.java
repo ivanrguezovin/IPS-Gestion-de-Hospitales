@@ -37,6 +37,7 @@ public class AdminDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public AdminDialog() {
+		setModal(true);
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -96,11 +97,13 @@ public class AdminDialog extends JDialog {
 
 	private void launchScheduleDialog() {
 		manageWorkScheduleDialog.fillLists();
+		manageWorkScheduleDialog.setLocationRelativeTo(this);
 		manageWorkScheduleDialog.setVisible(true);
 	}
 	
 	private void launchCreateAppointmentDialog() {
 		createAppointmentDialog.fillLists();
+		createAppointmentDialog.setLocationRelativeTo(this);
 		createAppointmentDialog.setVisible(true);
 	}
 }

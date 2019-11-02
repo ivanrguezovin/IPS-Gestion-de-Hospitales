@@ -78,22 +78,10 @@ public class CreateAppointmentDialog extends JDialog {
 	private Label lblTime;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			CreateAppointmentDialog dialog = new CreateAppointmentDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	 * Create the dialog.
 	 */
 	public CreateAppointmentDialog() {
+		setModal(true);
 		setPreferredSize(new Dimension(700, 500));
 		setMinimumSize(new Dimension(700, 500));
 		setBounds(100, 100, 700, 500);

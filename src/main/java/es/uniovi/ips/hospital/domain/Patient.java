@@ -45,7 +45,7 @@ public class Patient {
     @Column(name = "address", nullable = false)
     private Address address;
 
-    @OneToMany(mappedBy = "patient")
+    @OneToMany(mappedBy = "patient", fetch = FetchType.EAGER)
     private Set<MedicalRecord> medicalRecords;
 
     public Patient() { }
