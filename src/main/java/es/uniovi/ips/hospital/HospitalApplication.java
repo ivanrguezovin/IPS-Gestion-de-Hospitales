@@ -6,14 +6,18 @@ import es.uniovi.ips.hospital.domain.Doctor;
 import es.uniovi.ips.hospital.domain.MedicalRecord;
 import es.uniovi.ips.hospital.domain.Nurse;
 import es.uniovi.ips.hospital.domain.Patient;
+import es.uniovi.ips.hospital.domain.Room;
+import es.uniovi.ips.hospital.domain.Schedule;
+import es.uniovi.ips.hospital.domain.Staff;
 import es.uniovi.ips.hospital.service.AdminAssistantService;
 import es.uniovi.ips.hospital.service.DoctorService;
 import es.uniovi.ips.hospital.service.MedicalRecordService;
 import es.uniovi.ips.hospital.service.NurseService;
 import es.uniovi.ips.hospital.service.PatientService;
+import es.uniovi.ips.hospital.service.RoomService;
+import es.uniovi.ips.hospital.service.ScheduleService;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -24,15 +28,13 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 public class HospitalApplication implements CommandLineRunner {
 
     @Autowired	private AdminAssistantService adminAssistantService;
-
     @Autowired	private DoctorService doctorService;
-
     @Autowired	private NurseService nurseService;
-
     @Autowired	private PatientService patientService;
-    
+    @Autowired	private RoomService roomService;
     @Autowired	private MedicalRecordService medicalRecordService;
-
+    @Autowired 	private ScheduleService scheduleService;
+    
     private Faker faker;
 
     public static void main(String[] args) {
@@ -46,12 +48,13 @@ public class HospitalApplication implements CommandLineRunner {
         generateFakeDoctors(10);
         generateFakeNurses(10);
         generateFakePatients(100);
+        generateFakeRooms(10);
     }
 
     private void generateFakeAdminAssistants(int n) {
         for (int i = 0; i < n; i++) {
             AdminAssistant adminAssistant = new AdminAssistant(
-            		faker.bothify("########?"),
+            		faker.bothify("########?").toUpperCase(),
                     faker.name().firstName(),
                     faker.name().lastName(),
                     faker.internet().safeEmailAddress(),
@@ -66,7 +69,7 @@ public class HospitalApplication implements CommandLineRunner {
     private void generateFakeDoctors(int n) {
         for (int i = 0; i < n; i++) {
             Doctor doctor = new Doctor(
-            		faker.bothify("########?"),
+            		faker.bothify("########?").toUpperCase(),
                     faker.name().firstName(),
                     faker.name().lastName(),
                     faker.internet().safeEmailAddress(),
@@ -75,13 +78,14 @@ public class HospitalApplication implements CommandLineRunner {
                     faker.address().city(),
                     faker.address().zipCode());
             doctorService.createDoctor(doctor);
+            generateSchedule(doctor);
         }
     }
 
     private void generateFakeNurses(int n) {
         for (int i = 0; i < n; i++) {
             Nurse nurse = new Nurse(
-            		faker.bothify("########?"),
+            		faker.bothify("########?").toUpperCase(),
                     faker.name().firstName(),
                     faker.name().lastName(),
                     faker.internet().safeEmailAddress(),
@@ -96,7 +100,7 @@ public class HospitalApplication implements CommandLineRunner {
     private void generateFakePatients(int n) {
         for (int i = 0; i < n; i++) {
             Patient patient = new Patient(
-            		faker.bothify("########?"),
+            		faker.bothify("########?").toUpperCase(),
                     faker.name().firstName(),
                     faker.name().lastName(),
                     faker.internet().safeEmailAddress(),
@@ -109,6 +113,14 @@ public class HospitalApplication implements CommandLineRunner {
             generateMedicalRecord(patient);
         }
     }
+    
+    private void generateFakeRooms(int n) {
+        for (int i = 0; i < n; i++) {
+        	Room room = new Room();
+        		room.setLocation(faker.numerify("###"));
+        	roomService.createRoom(room);
+        }
+    }
 
 	private void generateMedicalRecord(Patient patient) {
 		for (int i = 0; i < 3; i++) {
@@ -118,6 +130,16 @@ public class HospitalApplication implements CommandLineRunner {
 					mr.setDescription(faker.medical().diseaseName());
 					mr.setPrescription(faker.medical().medicineName());
 			medicalRecordService.createMedicalRecord(mr);
+		}
+	}
+	
+	private void generateSchedule(Staff employee) {
+		for (int i = 0; i < 31; i++) {
+			Schedule schedule = new Schedule();
+			schedule.setEmployee(employee);
+					schedule.setStartTime(LocalDateTime.of(2019, 12, i+1, faker.number().numberBetween(0, 11), 0));
+					schedule.setEndTime(LocalDateTime.of(2019, 12, i+1, faker.number().numberBetween(12, 23), 0));
+			scheduleService.createSchedule(schedule);
 		}
 	}
 }

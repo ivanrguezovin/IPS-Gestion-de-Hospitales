@@ -5,6 +5,7 @@ import es.uniovi.ips.hospital.repository.DoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,5 +26,9 @@ public class DoctorService {
 
 	public Optional<Doctor> findById(String string) {
 		return doctorRepository.findById(Long.parseLong(string));
+	}
+
+	public List<Doctor> findAvailableDoctors(LocalDateTime appointmentDateTime) {
+		return doctorRepository.findAvailableDoctors(appointmentDateTime);
 	}
 }

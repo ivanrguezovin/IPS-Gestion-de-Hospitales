@@ -21,14 +21,20 @@ import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.matchers.TextMatcherEditor;
 import ca.odell.glazedlists.swing.AutoCompleteSupport;
+import es.uniovi.ips.hospital.domain.Doctor;
 import es.uniovi.ips.hospital.domain.Patient;
+import es.uniovi.ips.hospital.domain.Room;
 import es.uniovi.ips.hospital.domain.Staff;
+import es.uniovi.ips.hospital.exception.InputException;
 import es.uniovi.ips.hospital.service.DoctorService;
 import es.uniovi.ips.hospital.service.PatientService;
+import es.uniovi.ips.hospital.service.RoomService;
 import es.uniovi.ips.hospital.ui.common.MedicalRecordDialog;
 import es.uniovi.ips.hospital.ui.util.filter.PatientTextFilterator;
+import es.uniovi.ips.hospital.ui.util.filter.RoomTextFilterator;
 import es.uniovi.ips.hospital.ui.util.filter.StaffTextFilterator;
 import es.uniovi.ips.hospital.util.format.PatientFormat;
+import es.uniovi.ips.hospital.util.format.RoomFormat;
 import es.uniovi.ips.hospital.util.format.StaffFormat;
 
 import javax.swing.JTextField;
@@ -36,9 +42,17 @@ import javax.swing.JButton;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JCheckBox;
 import java.awt.Panel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,10 +68,13 @@ public class CreateAppointmentDialog extends JDialog {
 	@Autowired 	private MedicalRecordDialog medicalRecordDialog;
 	@Autowired	private PatientService patientService;
 	@Autowired	private DoctorService doctorService;
+	@Autowired	private RoomService roomService;
 	@Autowired	private PatientFormat patientFormat;
 	@Autowired	private StaffFormat staffFormat;
+	@Autowired	private RoomFormat roomFormat;
 	
 	private Set<Staff> selectedDoctors;
+	private LocalDateTime appointmentDateTime;
 	
 	private final JPanel contentPanel = new JPanel();
 	private JPanel pnAppointment;
@@ -82,13 +99,18 @@ public class CreateAppointmentDialog extends JDialog {
 	private JPanel pnDateTime;
 	private JPanel pnDetails;
 	private JCheckBox chckbxUrgent;
-	private JLabel lblRoom;
-	private JTextField txtRoom;
-    private JCalendar calendar;
-    private TimePicker timePicker;
 	private Panel pnRoom;
+	private JLabel lblRoom;
+	private JComboBox<Room> cbRoom;
+	private EventList<Room> roomList;
+	private AutoCompleteSupport<Room> autoCompleteRoom;
+    private JCalendar calendar;
 	private Panel pnTimePicker;
 	private Label lblTime;
+    private TimePicker timePicker;
+    private JButton btnSetDate;
+    private ActionListener setDateAction;
+    private ActionListener modifyDateAction;
 
 	/**
 	 * Create the dialog.
@@ -122,17 +144,17 @@ public class CreateAppointmentDialog extends JDialog {
 			gbc_pnPatient.gridx = 0;
 			gbc_pnPatient.gridy = 0;
 			pnAppointment.add(getPnPatient(), gbc_pnPatient);
+			GridBagConstraints gbc_pnInfo = new GridBagConstraints();
+			gbc_pnInfo.fill = GridBagConstraints.BOTH;
+			gbc_pnInfo.gridx = 0;
+			gbc_pnInfo.gridy = 1;
+			pnAppointment.add(getPnInfo(), gbc_pnInfo);
 			GridBagConstraints gbc_pnDoctor = new GridBagConstraints();
 			gbc_pnDoctor.insets = new Insets(0, 0, 5, 0);
 			gbc_pnDoctor.fill = GridBagConstraints.BOTH;
 			gbc_pnDoctor.gridx = 0;
-			gbc_pnDoctor.gridy = 1;
+			gbc_pnDoctor.gridy = 2;
 			pnAppointment.add(getPnDoctor(), gbc_pnDoctor);
-			GridBagConstraints gbc_pnInfo = new GridBagConstraints();
-			gbc_pnInfo.fill = GridBagConstraints.BOTH;
-			gbc_pnInfo.gridx = 0;
-			gbc_pnInfo.gridy = 2;
-			pnAppointment.add(getPnInfo(), gbc_pnInfo);
 		}
 		return pnAppointment;
 	}
@@ -198,14 +220,6 @@ public class CreateAppointmentDialog extends JDialog {
 		}
 		return txtContactInfo;
 	}
-	private JButton getBtnAdd() {
-		if (btnAdd == null) {
-			btnAdd = new JButton("Add");
-			btnAdd.setEnabled(false);
-			btnAdd.addActionListener(actionEvent -> addDoctor());
-		}
-		return btnAdd;
-	}
 	private JPanel getPnSelectDoctor() {
 		if (pnSelectDoctor == null) {
 			pnSelectDoctor = new JPanel();
@@ -221,8 +235,18 @@ public class CreateAppointmentDialog extends JDialog {
 			cbDoctor = new JComboBox<Staff>();
 			cbDoctor.addItemListener(itemEvent -> btnAdd.setEnabled(true));
 			autoCompleteDoctor = null;
+			cbDoctor.setEnabled(false);
 		}
 		return cbDoctor;
+	}
+	private JButton getBtnAdd() {
+		if (btnAdd == null) {
+			btnAdd = new JButton("Add");
+			btnAdd.setEnabled(false);
+			btnAdd.addActionListener(actionEvent -> addDoctor());
+			btnAdd.setEnabled(false);
+		}
+		return btnAdd;
 	}
 	private JPanel getPnShowDoctors() {
 		if (pnShowDoctors == null) {
@@ -265,10 +289,11 @@ public class CreateAppointmentDialog extends JDialog {
 	private JPanel getPnDetails() {
 		if (pnDetails == null) {
 			pnDetails = new JPanel();
-			pnDetails.setLayout(new GridLayout(3, 1, 0, 0));
+			pnDetails.setLayout(new GridLayout(4, 1, 0, 0));
 			pnDetails.add(getChckbxUrgent());
 			pnDetails.add(getPnRoom());
 			pnDetails.add(getPnTimePicker());
+			pnDetails.add(getBtnSetDate());
 		}
 		return pnDetails;
 	}
@@ -279,39 +304,34 @@ public class CreateAppointmentDialog extends JDialog {
 		}
 		return chckbxUrgent;
 	}
+	private Panel getPnRoom() {
+		if (pnRoom == null) {
+			pnRoom = new Panel();
+			pnRoom.add(getLblRoom());
+			pnRoom.add(getCbRoom());
+		}
+		return pnRoom;
+	}
 	private JLabel getLblRoom() {
 		if (lblRoom == null) {
 			lblRoom = new JLabel("Room:");
 		}
 		return lblRoom;
 	}
-	private JTextField getTxtRoom() {
-		if (txtRoom == null) {
-			txtRoom = new JTextField();
-			txtRoom.setColumns(10);
+	private JComboBox<Room> getCbRoom() {
+		if (cbRoom == null) {
+			cbRoom = new JComboBox<Room>();
+			autoCompleteRoom = null;
 		}
-		return txtRoom;
+		return cbRoom;
 	}
     private JCalendar getCalendar() {
         if (calendar == null) {
             calendar = new JCalendar();
+            calendar.setMinSelectableDate(new Date());
         }
         return calendar;
     }
-    private TimePicker getTimePicker() {
-        if (timePicker == null) {
-            timePicker = new TimePicker();
-        }
-        return timePicker;
-    }
-	private Panel getPnRoom() {
-		if (pnRoom == null) {
-			pnRoom = new Panel();
-			pnRoom.add(getLblRoom());
-			pnRoom.add(getTxtRoom());
-		}
-		return pnRoom;
-	}
 	private Panel getPnTimePicker() {
 		if (pnTimePicker == null) {
 			pnTimePicker = new Panel();
@@ -326,6 +346,21 @@ public class CreateAppointmentDialog extends JDialog {
 		}
 		return lblTime;
 	}
+    private TimePicker getTimePicker() {
+        if (timePicker == null) {
+            timePicker = new TimePicker();
+        }
+        return timePicker;
+    }
+	private JButton getBtnSetDate() {
+		if (btnSetDate == null) {
+			btnSetDate = new JButton("Set date");
+			setDateAction = new SetDateAction();
+			modifyDateAction = new ModifyDateAction();
+			btnSetDate.addActionListener(setDateAction);
+		}
+		return btnSetDate;
+	}
 
     // METODOS Y CLASES DE INICIALIZACION ------------------------------------------------------------
 
@@ -336,14 +371,29 @@ public class CreateAppointmentDialog extends JDialog {
         if (autoCompleteDoctor == null)
         	autoCompleteDoctor = AutoCompleteSupport.install(getCbDoctor(), doctorList, new StaffTextFilterator(), staffFormat);
 		autoCompleteDoctor.setFilterMode(TextMatcherEditor.CONTAINS);
-		//cbDoctor.setRenderer(new StaffCellRenderer());
         // Patient list
         patientList = new BasicEventList<Patient>();
         patientList.addAll(patientService.findAllPatient());
         if (autoCompletePatient == null)
         	autoCompletePatient = AutoCompleteSupport.install(getCbPatient(), patientList, new PatientTextFilterator(), patientFormat);
         autoCompletePatient.setFilterMode(TextMatcherEditor.CONTAINS);
-        //cbPatient.setRenderer(new PatientCellRenderer());
+        // Room list
+        roomList = new BasicEventList<Room>();
+        roomList.addAll(roomService.findAllRooms());
+        if (autoCompleteRoom == null)
+        	autoCompleteRoom = AutoCompleteSupport.install(getCbRoom(), roomList, new RoomTextFilterator(), roomFormat);
+    }
+    private class SetDateAction implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			setDate();
+		}  	
+    }
+    private class ModifyDateAction implements ActionListener {
+    	@Override
+		public void actionPerformed(ActionEvent e) {
+			modifyDate();
+		} 	
     }
     
     // METODOS DE EJECUCION -------------------------------------------------------------------------
@@ -355,9 +405,81 @@ public class CreateAppointmentDialog extends JDialog {
     	cbDoctor.setSelectedItem(null);
     	lblDoctors.setText("<html><p style=\"width:500px\">" + selectedDoctors.stream().map(d -> d.guiToString()).collect(Collectors.joining(", ")) + "<p></html>");
     }
+    
 	private void selectPatient() {
 		txtContactInfo.setText(((Patient) cbPatient.getSelectedItem()).getEmail());
 		txtContactInfo.setEnabled(true);
 		btnShowMedicalRecord.setEnabled(true);
 	}
+	
+	private void setDate() {
+		try { 
+			// Generamos la fecha de la cita si es posible
+			checkDate();
+			checkTime();
+			LocalDate date = calendar.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			appointmentDateTime = LocalDateTime.of(date, timePicker.getTime());
+			// Desactivamos los elementos de selección de fecha y cambiamos el botón
+			setAppointmentComponentsEnabled(false);
+			swapButton();
+			// Obtenemos la lista de doctores disponibles para esa cita y activamos su panel
+			List<Doctor> availableDoctors = doctorService.findAvailableDoctors(appointmentDateTime);
+			doctorList.clear();
+			doctorList.addAll(availableDoctors);
+			//doctorList.removeIf(doctor -> !availableDoctors.contains(doctor));
+			setDoctorComponentsEnabled(true);
+		} catch (InputException ie) {
+			JOptionPane.showMessageDialog(this, ie.getMessage());
+		}		
+	}
+
+	private void modifyDate() {
+		appointmentDateTime = null;
+		// Reiniciamos los doctores seleccionados, en otra hora pueden no trabajar
+		selectedDoctors = new HashSet<Staff>();
+		lblDoctors.setText("");
+		// Reactivamos los elementos de selección de cita y cambiamos el botón
+		setAppointmentComponentsEnabled(true);
+		swapButton();
+		// Desactivamos el panel de doctores
+		setDoctorComponentsEnabled(false);
+	} 
+	
+	private void setAppointmentComponentsEnabled(boolean b) {
+		calendar.setEnabled(b);
+		timePicker.setEnabled(b);
+		chckbxUrgent.setEnabled(b);
+		lblRoom.setEnabled(b);
+		cbRoom.setEnabled(b);
+	}
+	
+	private void setDoctorComponentsEnabled(boolean b) {
+		cbDoctor.setEnabled(b);
+		btnAdd.setEnabled(b);
+	}
+	
+	private void swapButton() {
+		if (btnSetDate.getActionListeners()[0] == setDateAction) {
+			btnSetDate.removeActionListener(setDateAction);
+			btnSetDate.addActionListener(modifyDateAction);
+			btnSetDate.setText("Modify date");
+		} else {
+			btnSetDate.removeActionListener(modifyDateAction);
+			btnSetDate.addActionListener(setDateAction);
+			btnSetDate.setText("Set date");
+		}
+	}
+	
+	// METODOS DE COMPROBACION DE LA ENTRADA DE DATOS ----------------------------------
+	
+	private void checkDate() throws InputException {
+		if (calendar.getDate() == null)
+			throw new InputException("You must select a date for the appointment");
+	}
+
+	private void checkTime() throws InputException {
+		if (timePicker.getTime() == null)
+			throw new InputException("You must select a time for the appointment");
+	}
+	
 }
