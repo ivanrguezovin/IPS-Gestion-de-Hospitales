@@ -74,8 +74,7 @@ public class MedicalRecord {
 
 	@Override
 	public String toString() {
-		return "MedicalRecord [id=" + id + ", description=" + description + ", date=" + date + ", patient=" + patient
-				+ "]";
+		return "MedicalRecord [id=" + id + ", description=" + description + ", date=" + date + "]";
 	}
     
     

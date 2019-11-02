@@ -28,10 +28,8 @@ import es.uniovi.ips.hospital.service.PatientService;
 import es.uniovi.ips.hospital.ui.common.MedicalRecordDialog;
 import es.uniovi.ips.hospital.ui.util.filter.PatientTextFilterator;
 import es.uniovi.ips.hospital.ui.util.filter.StaffTextFilterator;
-import es.uniovi.ips.hospital.ui.util.render.PatientCellRenderer;
-import es.uniovi.ips.hospital.ui.util.render.PatientComboBoxEditor;
-import es.uniovi.ips.hospital.ui.util.render.StaffCellRenderer;
-import es.uniovi.ips.hospital.ui.util.render.StaffComboBoxEditor;
+import es.uniovi.ips.hospital.util.format.PatientFormat;
+import es.uniovi.ips.hospital.util.format.StaffFormat;
 
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -42,6 +40,7 @@ import javax.swing.JCheckBox;
 import java.awt.Panel;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.swing.SwingConstants;
 import java.awt.Label;
@@ -55,8 +54,8 @@ public class CreateAppointmentDialog extends JDialog {
 	@Autowired 	private MedicalRecordDialog medicalRecordDialog;
 	@Autowired	private PatientService patientService;
 	@Autowired	private DoctorService doctorService;
-	@Autowired	private StaffComboBoxEditor staffComboBoxEditor;
-	@Autowired	private PatientComboBoxEditor patientComboBoxEditor;
+	@Autowired	private PatientFormat patientFormat;
+	@Autowired	private StaffFormat staffFormat;
 	
 	private Set<Staff> selectedDoctors;
 	
@@ -335,18 +334,16 @@ public class CreateAppointmentDialog extends JDialog {
         doctorList = new BasicEventList<Staff>();
         doctorList.addAll(doctorService.findAllDoctors());
         if (autoCompleteDoctor == null)
-        	autoCompleteDoctor = AutoCompleteSupport.install(getCbDoctor(), doctorList, new StaffTextFilterator());
+        	autoCompleteDoctor = AutoCompleteSupport.install(getCbDoctor(), doctorList, new StaffTextFilterator(), staffFormat);
 		autoCompleteDoctor.setFilterMode(TextMatcherEditor.CONTAINS);
-		cbDoctor.setEditor(staffComboBoxEditor);
-		cbDoctor.setRenderer(new StaffCellRenderer());
+		//cbDoctor.setRenderer(new StaffCellRenderer());
         // Patient list
         patientList = new BasicEventList<Patient>();
         patientList.addAll(patientService.findAllPatient());
         if (autoCompletePatient == null)
-        	autoCompletePatient = AutoCompleteSupport.install(getCbPatient(), patientList, new PatientTextFilterator());
+        	autoCompletePatient = AutoCompleteSupport.install(getCbPatient(), patientList, new PatientTextFilterator(), patientFormat);
         autoCompletePatient.setFilterMode(TextMatcherEditor.CONTAINS);
-        cbPatient.setEditor(patientComboBoxEditor);
-        cbPatient.setRenderer(new PatientCellRenderer());
+        //cbPatient.setRenderer(new PatientCellRenderer());
     }
     
     // METODOS DE EJECUCION -------------------------------------------------------------------------
@@ -356,6 +353,7 @@ public class CreateAppointmentDialog extends JDialog {
     	selectedDoctors.add(doctor);
     	doctorList.remove(doctor);
     	cbDoctor.setSelectedItem(null);
+    	lblDoctors.setText("<html><p style=\"width:500px\">" + selectedDoctors.stream().map(d -> d.guiToString()).collect(Collectors.joining(", ")) + "<p></html>");
     }
 	private void selectPatient() {
 		txtContactInfo.setText(((Patient) cbPatient.getSelectedItem()).getEmail());
