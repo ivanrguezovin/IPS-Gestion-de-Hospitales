@@ -8,7 +8,7 @@ import es.uniovi.ips.hospital.domain.MedicalRecord;
  * Comparador de historiales m�dicos en base a la fecha de cada entrada particular
  * @author Ricardo Soto, uo265710
  */
-public class MedicalHistoryComparator implements Comparator<MedicalRecord> {
+public class MedicalRecordComparator implements Comparator<MedicalRecord> {
 
 	@Override
 	public int compare(MedicalRecord arg0, MedicalRecord arg1) {

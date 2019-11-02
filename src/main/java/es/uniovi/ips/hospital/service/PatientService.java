@@ -17,12 +17,16 @@ public class PatientService {
         return patientRepository.findAll();
     }
 
+	public Patient findPatientByDni(String dni) {
+		return patientRepository.findByDni(dni);
+	}
+
     public Patient findPatientByEmail(String email) {
         return patientRepository.findByEmail(email);
     }
 
     public Patient createPatient(Patient patient) {
         patientRepository.save(patient);
-        return patientRepository.findByEmail(patient.getEmail());
+        return patientRepository.findByDni(patient.getDni());
     }
 }

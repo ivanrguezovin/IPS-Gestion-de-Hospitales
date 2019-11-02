@@ -2,6 +2,8 @@ package es.uniovi.ips.hospital.domain;
 
 import org.hibernate.validator.constraints.Length;
 
+import es.uniovi.ips.hospital.ui.util.PrintableOnGui;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,7 +14,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Staff {
+public class Staff implements PrintableOnGui {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SequenceGenerator(name = "sequenceGenerator")
@@ -172,7 +174,8 @@ public class Staff {
                 ", schedules=" + schedules +
                 '}';
     }
-
+	
+	@Override
 	public String guiToString() {
 		return id + " - " + name + " " + surname;
 	}

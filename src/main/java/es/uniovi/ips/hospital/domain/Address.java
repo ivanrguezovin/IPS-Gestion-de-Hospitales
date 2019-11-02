@@ -2,8 +2,10 @@ package es.uniovi.ips.hospital.domain;
 
 import javax.persistence.Embeddable;
 
+import es.uniovi.ips.hospital.ui.util.PrintableOnGui;
+
 @Embeddable
-public class Address {
+public class Address implements PrintableOnGui {
 
     private String street;
     private String city;
@@ -81,6 +83,11 @@ public class Address {
 	@Override
 	public String toString() {
 		return "Address [street=" + street + ", city=" + city + ", zipCode=" + zipCode + "]";
+	}
+	
+	@Override
+	public String guiToString() {
+		return street + ", " + city + " (" + zipCode + ")";
 	}
     
     

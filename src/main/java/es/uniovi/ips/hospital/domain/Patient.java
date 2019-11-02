@@ -2,6 +2,8 @@ package es.uniovi.ips.hospital.domain;
 
 import org.hibernate.validator.constraints.Length;
 
+import es.uniovi.ips.hospital.ui.util.PrintableOnGui;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -10,7 +12,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "patients")
-public class Patient {
+public class Patient implements PrintableOnGui {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SequenceGenerator(name = "sequenceGenerator")
@@ -137,6 +139,6 @@ public class Patient {
 	}
 
 	public String guiToString() {
-		return name + " " + surname;
+		return name + " " + surname + " - " + dni;
 	}
 }

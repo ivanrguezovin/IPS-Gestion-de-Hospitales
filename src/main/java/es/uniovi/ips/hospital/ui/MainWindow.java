@@ -58,7 +58,7 @@ public class MainWindow {
         frame.getContentPane().add(BorderLayout.SOUTH, panel);
         
         JButton btnAdmin = new JButton("Admin");
-        btnAdmin.addActionListener(actionEvent -> { adminDialog.setLocationRelativeTo(frame); adminDialog.setVisible(true); });
+        btnAdmin.addActionListener(actionEvent -> adminDialog.setVisible(true));
         panel.add(btnAdmin);
         frame.getContentPane().add(BorderLayout.NORTH, menuBar);
         frame.getContentPane().add(BorderLayout.CENTER, scrollPane);

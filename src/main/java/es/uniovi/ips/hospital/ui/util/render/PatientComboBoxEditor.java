@@ -6,17 +6,14 @@ import javax.swing.plaf.metal.MetalComboBoxEditor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import es.uniovi.ips.hospital.service.DoctorService;
-import es.uniovi.ips.hospital.service.NurseService;
+import es.uniovi.ips.hospital.service.PatientService;
 import es.uniovi.ips.hospital.ui.util.PrintableOnGui;
 
 @Component
-public class StaffComboBoxEditor extends MetalComboBoxEditor {
+public class PatientComboBoxEditor extends MetalComboBoxEditor {
 
 	@Autowired
-	private DoctorService doctorService;
-	@Autowired
-	private NurseService nurseService;
+	private PatientService patientService;
 	
 	@Override
 	public void setItem(Object o) {
@@ -30,8 +27,7 @@ public class StaffComboBoxEditor extends MetalComboBoxEditor {
 	
 	@Override
 	public Object getItem() {
-		String id = ((JTextField) this.getEditorComponent()).getText().split(" ")[0];
-		return (doctorService.findById(id).isPresent()) ? doctorService.findById(id).get() : nurseService.findById(id).get();	
+		String[] info = ((JTextField) this.getEditorComponent()).getText().split(" ");
+		return patientService.findPatientByDni(info[info.length-1]);	
 	}
-
 }

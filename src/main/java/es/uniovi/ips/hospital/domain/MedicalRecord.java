@@ -16,6 +16,9 @@ public class MedicalRecord {
     @Column(name = "description")
     private String description;
     
+    @Column(name = "prescription")
+    private String prescription;
+    
     @NotNull
     @Column(name = "date")
     private LocalDateTime date;
@@ -43,6 +46,14 @@ public class MedicalRecord {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getPrescription() {
+		return prescription;
+	}
+
+	public void setPrescription(String prescrition) {
+		this.prescription = prescrition;
 	}
 
 	public LocalDateTime getDate() {
