@@ -1,10 +1,8 @@
 package es.uniovi.ips.hospital.ui;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
 import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.service.PatientService;
 import es.uniovi.ips.hospital.ui.admin.AdminDialog;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,12 +24,6 @@ public class MainWindow {
         JFrame frame = new JFrame("List of patients");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 400);
-
-//        try {
-//            UIManager.setLookAndFeel(new FlatDarculaLaf());
-//        } catch (Exception ex) {
-//            System.err.println("Failed to initialize the look and feel");
-//        }
 
         JMenuBar menuBar = new JMenuBar();
         JMenu menuFile = new JMenu("File");
@@ -56,7 +48,7 @@ public class MainWindow {
         scrollPane.setViewportView(listWorkers);
 
         frame.getContentPane().add(BorderLayout.SOUTH, panel);
-        
+
         JButton btnAdmin = new JButton("Admin");
         btnAdmin.addActionListener(actionEvent -> adminDialog.setVisible(true));
         panel.add(btnAdmin);
