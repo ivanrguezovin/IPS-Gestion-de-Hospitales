@@ -20,7 +20,7 @@ public class Room implements PrintableOnGui {
     @Column(name = "location", nullable = false)
     private String location;
 
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Appointment> appointments;
 
 	public Long getId() {

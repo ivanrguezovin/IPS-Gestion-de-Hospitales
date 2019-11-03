@@ -171,7 +171,6 @@ public class Staff implements PrintableOnGui {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", address=" + address +
-                ", schedules=" + schedules +
                 '}';
     }
 	

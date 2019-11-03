@@ -24,7 +24,7 @@ public class SendEmail {
 
     public SendEmail(Appointment appointment) {
         this.appointment = appointment;
-        this.addresses = appointment.getDoctors().stream().map( n -> n.toString() ).collect( Collectors.joining( "," ) );
+        this.addresses = appointment.getDoctors().stream().map( n -> n.getEmail() ).collect( Collectors.joining( "," ) );
     }
 
     /**

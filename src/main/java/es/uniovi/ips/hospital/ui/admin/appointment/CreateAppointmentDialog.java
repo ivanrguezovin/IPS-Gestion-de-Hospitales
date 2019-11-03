@@ -21,11 +21,13 @@ import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
 import ca.odell.glazedlists.matchers.TextMatcherEditor;
 import ca.odell.glazedlists.swing.AutoCompleteSupport;
+import es.uniovi.ips.hospital.domain.Appointment;
 import es.uniovi.ips.hospital.domain.Doctor;
 import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.domain.Room;
 import es.uniovi.ips.hospital.domain.Staff;
 import es.uniovi.ips.hospital.exception.InputException;
+import es.uniovi.ips.hospital.service.AppointmentService;
 import es.uniovi.ips.hospital.service.DoctorService;
 import es.uniovi.ips.hospital.service.PatientService;
 import es.uniovi.ips.hospital.service.RoomService;
@@ -69,11 +71,12 @@ public class CreateAppointmentDialog extends JDialog {
 	@Autowired	private PatientService patientService;
 	@Autowired	private DoctorService doctorService;
 	@Autowired	private RoomService roomService;
+	@Autowired	private AppointmentService appointmentService;
 	@Autowired	private PatientFormat patientFormat;
 	@Autowired	private StaffFormat staffFormat;
 	@Autowired	private RoomFormat roomFormat;
 	
-	private Set<Staff> selectedDoctors;
+	private Set<Doctor> selectedDoctors;
 	private LocalDateTime appointmentDateTime;
 	
 	private final JPanel contentPanel = new JPanel();
@@ -126,7 +129,7 @@ public class CreateAppointmentDialog extends JDialog {
 		contentPanel.setLayout(new BorderLayout(0, 0));
 		contentPanel.add(getPnAppointment(), BorderLayout.CENTER);
 		contentPanel.add(getPnSouth(), BorderLayout.SOUTH);
-		selectedDoctors = new HashSet<Staff>();
+		selectedDoctors = new HashSet<Doctor>();
 	}
 
 	private JPanel getPnAppointment() {
@@ -275,6 +278,7 @@ public class CreateAppointmentDialog extends JDialog {
 	private JButton getBtnCreate() {
 		if (btnCreate == null) {
 			btnCreate = new JButton("Create");
+			btnCreate.addActionListener(action -> createAppointment());
 		}
 		return btnCreate;
 	}
@@ -398,9 +402,37 @@ public class CreateAppointmentDialog extends JDialog {
     
     // METODOS DE EJECUCION -------------------------------------------------------------------------
     
+    private void createAppointment() {
+    	try {
+    		// Comprobación de que tenemos todos los campos necesarios
+    		checkPatient();
+    		checkContactInfo();
+    		checkDate();
+    		checkTime();
+    		checkRoom();
+    		// Creación de la cita
+    		Appointment appointment = new Appointment();
+    		appointment.setPatient((Patient) cbPatient.getSelectedItem());
+    		appointment.setStartTime(appointmentDateTime);
+    		appointment.setUrgent(chckbxUrgent.isSelected());
+    		appointment.setRoom((Room) cbRoom.getSelectedItem());
+    		appointment.setDoctors(selectedDoctors);
+    		appointmentService.createAppointment(appointment);
+    		// Envío del email si es urgente y se ha seleccionado algún doctor
+    		if (chckbxUrgent.isSelected() && !selectedDoctors.isEmpty())
+    			appointment.sendEmail();
+    		// Notificación de creación satisfactoria y restauración de la ventana
+    		modifyDate();
+    		JOptionPane.showMessageDialog(this, "The appointment was created succesfully");
+    	} catch(Exception ie) {
+    		JOptionPane.showMessageDialog(this, ie.getMessage());
+    	}
+    }
+    
+    
     private void addDoctor() {
     	Staff doctor = (Staff) getCbDoctor().getSelectedItem();
-    	selectedDoctors.add(doctor);
+    	selectedDoctors.add((Doctor) doctor);
     	doctorList.remove(doctor);
     	cbDoctor.setSelectedItem(null);
     	lblDoctors.setText("<html><p style=\"width:500px\">" + selectedDoctors.stream().map(d -> d.guiToString()).collect(Collectors.joining(", ")) + "<p></html>");
@@ -426,7 +458,6 @@ public class CreateAppointmentDialog extends JDialog {
 			List<Doctor> availableDoctors = doctorService.findAvailableDoctors(appointmentDateTime);
 			doctorList.clear();
 			doctorList.addAll(availableDoctors);
-			//doctorList.removeIf(doctor -> !availableDoctors.contains(doctor));
 			setDoctorComponentsEnabled(true);
 		} catch (InputException ie) {
 			JOptionPane.showMessageDialog(this, ie.getMessage());
@@ -436,7 +467,7 @@ public class CreateAppointmentDialog extends JDialog {
 	private void modifyDate() {
 		appointmentDateTime = null;
 		// Reiniciamos los doctores seleccionados, en otra hora pueden no trabajar
-		selectedDoctors = new HashSet<Staff>();
+		selectedDoctors.clear();
 		lblDoctors.setText("");
 		// Reactivamos los elementos de selección de cita y cambiamos el botón
 		setAppointmentComponentsEnabled(true);
@@ -472,6 +503,16 @@ public class CreateAppointmentDialog extends JDialog {
 	
 	// METODOS DE COMPROBACION DE LA ENTRADA DE DATOS ----------------------------------
 	
+	private void checkPatient() throws InputException {
+		if (cbPatient.getSelectedItem() == null)
+			throw new InputException("You must select a patient for the appointment");
+	}
+	
+	private void checkContactInfo() throws InputException {
+		if (txtContactInfo.getText().trim().isEmpty())
+			throw new InputException("The appointment needs some contact information");
+	}
+	
 	private void checkDate() throws InputException {
 		if (calendar.getDate() == null)
 			throw new InputException("You must select a date for the appointment");
@@ -480,6 +521,12 @@ public class CreateAppointmentDialog extends JDialog {
 	private void checkTime() throws InputException {
 		if (timePicker.getTime() == null)
 			throw new InputException("You must select a time for the appointment");
+	}
+	
+	private void checkRoom() throws InputException {
+		if (cbRoom.getSelectedItem() == null) {
+			throw new InputException("You must select a room for the appointment");
+		}
 	}
 	
 }
