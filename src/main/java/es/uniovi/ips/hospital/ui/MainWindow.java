@@ -1,7 +1,9 @@
 package es.uniovi.ips.hospital.ui;
 
-import es.uniovi.ips.hospital.domain.Patient;
-import es.uniovi.ips.hospital.service.PatientService;
+import es.uniovi.ips.hospital.domain.AdminAssistant;
+import es.uniovi.ips.hospital.domain.Doctor;
+import es.uniovi.ips.hospital.domain.Staff;
+import es.uniovi.ips.hospital.service.LoginService;
 import es.uniovi.ips.hospital.ui.admin.AdminDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,58 +14,81 @@ import java.awt.*;
 @Component
 public class MainWindow {
 
-    private JList<String> listWorkers;
-
     @Autowired
-    private PatientService patientService;
+    private LoginService loginService;
+
 
     @Autowired
     private AdminDialog adminDialog;
 
     public MainWindow() {
-        JFrame frame = new JFrame("List of patients");
+
+        JFrame frame = new JFrame("Login");
+
+        JLabel emailLabel = new JLabel("Email");
+        JLabel passwordLabel = new JLabel("Password");
+
+        JTextField emailField = new JTextField(20);
+        JPasswordField passwordField = new JPasswordField(20);
+
+        JButton loginButton = new JButton("Login");
+        JButton closeButton = new JButton("Close");
+
+        loginButton.addActionListener(actionEvent -> login(emailField.getText(), passwordField.getPassword()));
+        closeButton.addActionListener(actionEvent -> {
+            frame.dispose();
+            System.exit(0);
+        });
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 400);
+        frame.setSize(400, 200);
+        frame.setLayout(new GridBagLayout());
 
-        JMenuBar menuBar = new JMenuBar();
-        JMenu menuFile = new JMenu("File");
-        JMenu menuHelp = new JMenu("Help");
-        menuBar.add(menuFile);
-        menuBar.add(menuHelp);
+        GridBagConstraints gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new Insets(8, 8, 8, 8);
+        gridBagConstraints.anchor = GridBagConstraints.EAST;
 
-        JMenuItem menuItemOpen = new JMenuItem("Open");
-        menuFile.add(menuItemOpen);
+        frame.add(emailLabel, gridBagConstraints);
+        gridBagConstraints.gridy++;
+        frame.add(passwordLabel, gridBagConstraints);
 
-        JPanel panel = new JPanel();
-        JButton buttonSearch = new JButton("List patients");
+        gridBagConstraints.anchor = GridBagConstraints.WEST;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridx++;
+        gridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
 
-        buttonSearch.addActionListener(actionEvent -> loadPatients());
+        frame.add(emailField, gridBagConstraints);
+        gridBagConstraints.gridy++;
+        frame.add(passwordField, gridBagConstraints);
 
-        panel.add(buttonSearch);
-
-        listWorkers = new JList<>();
-        listWorkers.setLayoutOrientation(JList.VERTICAL);
-
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setViewportView(listWorkers);
-
-        frame.getContentPane().add(BorderLayout.SOUTH, panel);
-
-        JButton btnAdmin = new JButton("Admin");
-        btnAdmin.addActionListener(actionEvent -> adminDialog.setVisible(true));
-        panel.add(btnAdmin);
-        frame.getContentPane().add(BorderLayout.NORTH, menuBar);
-        frame.getContentPane().add(BorderLayout.CENTER, scrollPane);
+        gridBagConstraints.gridy++;
+        gridBagConstraints.gridx++;
+        gridBagConstraints.gridwidth = 1;
+        gridBagConstraints.anchor = GridBagConstraints.EAST;
+        gridBagConstraints.weightx = 1;
+        frame.add(loginButton, gridBagConstraints);
+        gridBagConstraints.weightx = 0;
+        gridBagConstraints.gridx++;
+        frame.add(closeButton, gridBagConstraints);
 
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
-    private void loadPatients() {
-        DefaultListModel<String> model = new DefaultListModel<>();
-        for (Patient patient : patientService.findAllPatient()) {
-            model.addElement(patient.getName() + " " + patient.getSurname());
+    private void login(String email, char[] password) {
+        Staff user = loginService.login(email, password);
+
+        if (user instanceof Doctor) {
+            // TODO Run Doctor dialog
+            System.out.println("Doctor");
         }
-        listWorkers.setModel(model);
+
+        if (user instanceof AdminAssistant) {
+            System.out.println("AdminAssistant");
+            adminDialog.setVisible(true);
+        }
+
     }
 }
