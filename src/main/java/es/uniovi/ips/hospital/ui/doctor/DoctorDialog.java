@@ -7,6 +7,11 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+
+import es.uniovi.ips.hospital.domain.Doctor;
+import es.uniovi.ips.hospital.ui.doctor.vaccine.VaccineDoctorDialog;
+
 import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -16,26 +21,20 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class DoctorDialog extends JDialog {
+	
+	private static final long serialVersionUID = -1238718624919092329L;
 
 	private final JPanel contentPanel = new JPanel();
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			DoctorDialog dialog = new DoctorDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
+	
+	private Doctor doctor;
+	
+	private VaccineDoctorDialog vdd;
+	
 	/**
 	 * Create the dialog.
 	 */
-	public DoctorDialog() {
+	public DoctorDialog(Doctor doctor) {
+		this.doctor=doctor;
 		setResizable(false);
 		setTitle("Doctor Menu");
 		setBounds(100, 100, 660, 246);
@@ -107,6 +106,8 @@ public class DoctorDialog extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
+		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		setVisible(true);
 	}
 
 }

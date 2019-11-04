@@ -46,7 +46,7 @@ public class HospitalApplication implements CommandLineRunner {
         generateFakeRooms(10);
     }
 
-    private void generateFakeAdminAssistants(int n) {
+	private void generateFakeAdminAssistants(int n) {
         for (int i = 0; i < n; i++) {
             AdminAssistant adminAssistant = new AdminAssistant(
                     faker.bothify("########?").toUpperCase(),

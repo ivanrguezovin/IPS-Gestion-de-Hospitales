@@ -5,6 +5,7 @@ import es.uniovi.ips.hospital.domain.Doctor;
 import es.uniovi.ips.hospital.domain.Staff;
 import es.uniovi.ips.hospital.service.LoginService;
 import es.uniovi.ips.hospital.ui.admin.AdminDialog;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -81,7 +82,7 @@ public class MainWindow {
         Staff user = loginService.login(email, password);
 
         if (user instanceof Doctor) {
-            // TODO Run Doctor dialog
+        	//TODO 
             System.out.println("Doctor");
         }
 

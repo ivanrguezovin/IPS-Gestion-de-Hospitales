@@ -50,7 +50,7 @@ public class Patient implements PrintableOnGui {
     @OneToMany(mappedBy = "patient", fetch = FetchType.EAGER)
     private Set<MedicalRecord> medicalRecords;
     
-    @ManyToMany
+    @OneToMany(mappedBy="patient", fetch=FetchType.EAGER)
     private Set<Vaccine> vaccines;
 
     public Patient() { }
