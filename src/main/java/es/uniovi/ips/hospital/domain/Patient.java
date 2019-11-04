@@ -49,6 +49,9 @@ public class Patient implements PrintableOnGui {
 
     @OneToMany(mappedBy = "patient", fetch = FetchType.EAGER)
     private Set<MedicalRecord> medicalRecords;
+    
+    @ManyToMany
+    private Set<Vaccine> vaccines;
 
     public Patient() { }
 
@@ -68,7 +71,15 @@ public class Patient implements PrintableOnGui {
         this.address = new Address(addressStreet,addressCity,addressZIPCode);
     }
 
-    public Long getId() {
+	public Set<Vaccine> getVaccines() {
+		return vaccines;
+	}
+
+	public void setVaccines(Set<Vaccine> vaccines) {
+		this.vaccines = vaccines;
+	}
+
+	public Long getId() {
         return id;
     }
 
