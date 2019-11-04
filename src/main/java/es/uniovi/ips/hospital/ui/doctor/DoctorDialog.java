@@ -38,15 +38,11 @@ public class DoctorDialog extends JDialog {
 	public DoctorDialog() {
 		setResizable(false);
 		setTitle("Doctor Menu");
-		setBounds(100, 100, 848, 246);
+		setBounds(100, 100, 660, 246);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new GridLayout(1, 0, 0, 0));
-		{
-			JPanel panel = new JPanel();
-			contentPanel.add(panel);
-		}
 		{
 			JPanel panel = new JPanel();
 			contentPanel.add(panel);
