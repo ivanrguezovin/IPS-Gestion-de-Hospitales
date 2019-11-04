@@ -25,7 +25,3 @@ spring:
 logging:
   level:
     org: info
-
-application:
-  clientApp:
-    name: 'IPS'
