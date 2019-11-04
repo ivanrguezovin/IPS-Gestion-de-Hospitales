@@ -15,11 +15,11 @@ public class VaccineService {
 	@Autowired
 	private VaccineRepository vaccineRepository;
 	
-	public List<Vaccine> findAllPatients(){
+	public List<Vaccine> findAllVaccines(){
 		return vaccineRepository.findAll();
 	}
 	
-	public Vaccine findByPatient(Patient p) {
+	public List<Vaccine> findByPatient(Patient p) {
 		return vaccineRepository.findByPatient(p);
 	}
 	
