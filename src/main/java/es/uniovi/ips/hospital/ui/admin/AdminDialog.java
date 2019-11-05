@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import es.uniovi.ips.hospital.ui.admin.appointment.CreateAppointmentDialog;
+import es.uniovi.ips.hospital.ui.admin.schedule.ManageBreakScheduleDialog;
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageWorkScheduleDialog;
 
 @Component
@@ -27,11 +28,14 @@ public class AdminDialog extends JDialog {
 	private JPanel pnSchedules;
 	private JButton btnCreateAppointment;
 	private JButton btnManageSchedules;
+	private JButton btnManageBreaks;
 
 	@Autowired
 	private CreateAppointmentDialog createAppointmentDialog;
 	@Autowired
 	private ManageWorkScheduleDialog manageWorkScheduleDialog;
+	@Autowired
+	private ManageBreakScheduleDialog manageBreakScheduleDialog;
 
 	/**
 	 * Create the dialog.
@@ -75,6 +79,7 @@ public class AdminDialog extends JDialog {
 			pnSchedules = new JPanel();
 			pnSchedules.setBorder(new TitledBorder(null, "Schedules", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			pnSchedules.add(getBtnManageSchedules());
+			pnSchedules.add(getBtnManageBreaks());
 		}
 		return pnSchedules;
 	}
@@ -92,6 +97,13 @@ public class AdminDialog extends JDialog {
 		}
 		return btnManageSchedules;
 	}
+	private JButton getBtnManageBreaks() {
+		if (btnManageBreaks == null) {
+			btnManageBreaks = new JButton("Manage breaks");
+			btnManageBreaks.addActionListener(actionEvent -> launchBreakDialog() );
+		}
+		return btnManageBreaks;
+	}
 	
 	// METODOS DE LANZAMIENTO DE VENTANAS
 
@@ -99,6 +111,12 @@ public class AdminDialog extends JDialog {
 		manageWorkScheduleDialog.fillLists();
 		manageWorkScheduleDialog.setLocationRelativeTo(this);
 		manageWorkScheduleDialog.setVisible(true);
+	}
+	
+	private void launchBreakDialog() {
+		manageBreakScheduleDialog.fillLists();
+		manageBreakScheduleDialog.setLocationRelativeTo(this);
+		manageBreakScheduleDialog.setVisible(true);
 	}
 	
 	private void launchCreateAppointmentDialog() {
