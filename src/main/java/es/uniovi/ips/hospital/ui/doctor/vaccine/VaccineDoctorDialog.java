@@ -38,6 +38,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextArea;
+import javax.swing.JList;
+import javax.swing.AbstractListModel;
+import javax.swing.ListSelectionModel;
 
 @Component
 public class VaccineDoctorDialog extends JDialog {
@@ -69,6 +72,16 @@ public class VaccineDoctorDialog extends JDialog {
 	private JTextArea textArea;
 	@Autowired private VaccineService vs;
 	@Autowired private PatientService ps;
+	private JLabel lblListVaccines;
+	private JPanel panel_7;
+	private JPanel panel_8;
+	private JLabel label_5;
+	private JTextField textField_1;
+	private JScrollPane scrollPane_1;
+	private JList<Vaccine> list;
+	private JButton btnSearch;
+	private JPanel panel_9;
+	private JButton btnMarkAsApplied;
 	
 	/**
 	 * Create the dialog.
@@ -126,6 +139,9 @@ public class VaccineDoctorDialog extends JDialog {
 	private JPanel getPanel_3() {
 		if (panel_3 == null) {
 			panel_3 = new JPanel();
+			panel_3.setLayout(new BorderLayout(0, 0));
+			panel_3.add(getLblListVaccines(), BorderLayout.NORTH);
+			panel_3.add(getPanel_7(), BorderLayout.CENTER);
 		}
 		return panel_3;
 	}
@@ -242,7 +258,7 @@ public class VaccineDoctorDialog extends JDialog {
 	private JSpinner getSpinner() {
 		if (spinner == null) {
 			spinner = new JSpinner();
-			spinner.setModel(new SpinnerDateModel(now(), now(), null, Calendar.DAY_OF_YEAR));
+			spinner.setModel(new SpinnerDateModel(now(), now(), fromDdMmYyyy(31, 12, 2200), Calendar.DAY_OF_YEAR));
 			spinner.setEditor(new javax.swing.JSpinner.DateEditor(spinner, "dd/MM/yyyy"));
 		}
 		return spinner;
@@ -288,6 +304,9 @@ public class VaccineDoctorDialog extends JDialog {
 							Vaccine v = new Vaccine(vt,desc,ldt,false,patient);
 							vs.createVaccine(v);
 							JOptionPane.showMessageDialog(null, "Vaccine added to " + patient.getDni());
+							textArea.setText("");
+							textField.setText("");
+							spinner.setValue(now());
 						}else {
 							JOptionPane.showMessageDialog(null, "Patient does not exist");
 						}
@@ -344,6 +363,21 @@ public class VaccineDoctorDialog extends JDialog {
 		return c.getTime();
 	}
 	
+	public static Date fromDdMmYyyy(int dd, int mm, int yyyy) {
+		Calendar c = Calendar.getInstance();
+		
+		c.set(Calendar.DAY_OF_MONTH, dd);
+		c.set(Calendar.MONTH, mm - 1); // base 0
+		c.set(Calendar.YEAR, yyyy);
+		
+		c.set(Calendar.HOUR_OF_DAY, 0);
+		c.set(Calendar.MINUTE, 0);
+		c.set(Calendar.SECOND, 0);
+		c.set(Calendar.MILLISECOND, 0);
+
+		return c.getTime();
+	}
+	
 	private JTextArea getTextArea() {
 		if (textArea == null) {
 			textArea = new JTextArea();
@@ -351,5 +385,148 @@ public class VaccineDoctorDialog extends JDialog {
 			textArea.setLineWrap(true);
 		}
 		return textArea;
+	}
+	private JLabel getLblListVaccines() {
+		if (lblListVaccines == null) {
+			lblListVaccines = new JLabel("List Vaccines");
+			lblListVaccines.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		}
+		return lblListVaccines;
+	}
+	private JPanel getPanel_7() {
+		if (panel_7 == null) {
+			panel_7 = new JPanel();
+			panel_7.setLayout(new BorderLayout(0, 0));
+			panel_7.add(getPanel_8(), BorderLayout.NORTH);
+			panel_7.add(getScrollPane_1(), BorderLayout.CENTER);
+			panel_7.add(getPanel_9(), BorderLayout.SOUTH);
+		}
+		return panel_7;
+	}
+	private JPanel getPanel_8() {
+		if (panel_8 == null) {
+			panel_8 = new JPanel();
+			panel_8.add(getLabel_5());
+			panel_8.add(getTextField_1());
+			panel_8.add(getBtnSearch());
+		}
+		return panel_8;
+	}
+	private JLabel getLabel_5() {
+		if (label_5 == null) {
+			label_5 = new JLabel("Patient´s health card number");
+			label_5.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		return label_5;
+	}
+	private JTextField getTextField_1() {
+		if (textField_1 == null) {
+			textField_1 = new JTextField();
+			textField_1.setColumns(10);
+		}
+		return textField_1;
+	}
+	private JScrollPane getScrollPane_1() {
+		if (scrollPane_1 == null) {
+			scrollPane_1 = new JScrollPane();
+			scrollPane_1.setViewportView(getList());
+		}
+		return scrollPane_1;
+	}
+	private JList<Vaccine> getList() {
+		if (list == null) {
+			list = new JList<Vaccine>();
+			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		}
+		return list;
+	}
+	private JButton getBtnSearch() {
+		if (btnSearch == null) {
+			btnSearch = new JButton("Search");
+			btnSearch.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if(textField_1.getText().equals("")) {
+						JOptionPane.showMessageDialog(null, "Fill the field");
+					}
+					Patient patient = null;
+					for(Patient p: ps.findAllPatient()) {
+						if(p.getHealthCardNumber().equals(textField_1.getText())) {
+							patient=p;
+						}
+					}
+					if(patient==null) {
+						JOptionPane.showMessageDialog(null, "Patient does not exist");
+					}
+					List<Vaccine> vaccinesPatient = vs.findByPatient(patient);
+					Vaccine[] v = new Vaccine[vaccinesPatient.size()];
+					int i=0;
+					for(Vaccine c:vaccinesPatient) {
+						v[i] = c;
+						i++;
+					}
+					list.setModel(new AbstractListModel<Vaccine>() {
+						/**
+						 * 
+						 */
+						private static final long serialVersionUID = -1222956312762187769L;
+						Vaccine[] values = v;
+						public int getSize() {
+							return values.length;
+						}
+						public Vaccine getElementAt(int index) {
+							return values[index];
+						}
+					});
+				}
+			});
+		}
+		return btnSearch;
+	}
+	private JPanel getPanel_9() {
+		if (panel_9 == null) {
+			panel_9 = new JPanel();
+			FlowLayout flowLayout = (FlowLayout) panel_9.getLayout();
+			flowLayout.setAlignment(FlowLayout.RIGHT);
+			panel_9.add(getBtnMarkAsApplied());
+		}
+		return panel_9;
+	}
+	private JButton getBtnMarkAsApplied() {
+		if (btnMarkAsApplied == null) {
+			btnMarkAsApplied = new JButton("Mark as Applied");
+			btnMarkAsApplied.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if(list.getSelectedIndex() == -1) {
+						JOptionPane.showMessageDialog(null, "Select an element from the list");
+					}
+					Vaccine va = list.getSelectedValue();
+					va.setApplied(true);
+					vs.createVaccine(va);
+					Patient patient = va.getPatient();
+					List<Vaccine> vaccinesPatient = vs.findByPatient(patient);
+					Vaccine[] v = new Vaccine[vaccinesPatient.size()];
+					int i=0;
+					for(Vaccine c:vaccinesPatient) {
+						v[i] = c;
+						i++;
+					}
+					list.setModel(new AbstractListModel<Vaccine>() {
+						/**
+						 * 
+						 */
+						private static final long serialVersionUID = -1222956312762187769L;
+						Vaccine[] values = v;
+						public int getSize() {
+							return values.length;
+						}
+						public Vaccine getElementAt(int index) {
+							return values[index];
+						}
+					});
+					JOptionPane.showMessageDialog(null, "Vaccine applied to patient " + patient.getDni());
+				}
+			});
+		}
+		return btnMarkAsApplied;
 	}
 }

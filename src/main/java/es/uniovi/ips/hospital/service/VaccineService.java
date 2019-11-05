@@ -42,5 +42,4 @@ public class VaccineService {
 		vaccineRepository.save(v);
 		//return vaccineRepository.findById(v.getId());
 	}
-	
 }
