@@ -431,17 +431,27 @@ public class CreateAppointmentDialog extends JDialog {
     
     
     private void addDoctor() {
-    	Staff doctor = (Staff) getCbDoctor().getSelectedItem();
-    	selectedDoctors.add((Doctor) doctor);
-    	doctorList.remove(doctor);
-    	cbDoctor.setSelectedItem(null);
-    	lblDoctors.setText("<html><p style=\"width:500px\">" + selectedDoctors.stream().map(d -> d.guiToString()).collect(Collectors.joining(", ")) + "<p></html>");
+    	if (getCbDoctor().getSelectedItem() != null) {
+			Staff doctor = (Staff) getCbDoctor().getSelectedItem();
+			selectedDoctors.add((Doctor) doctor);
+			doctorList.remove(doctor);
+			cbDoctor.setSelectedItem(null);
+			lblDoctors.setText("<html><p style=\"width:500px\">"
+					+ selectedDoctors.stream().map(d -> d.guiToString()).collect(Collectors.joining(", "))
+					+ "<p></html>");
+		}
     }
     
 	private void selectPatient() {
-		txtContactInfo.setText(((Patient) cbPatient.getSelectedItem()).getEmail());
-		txtContactInfo.setEnabled(true);
-		btnShowMedicalRecord.setEnabled(true);
+		if (getCbPatient().getSelectedItem() != null) {
+			txtContactInfo.setText(((Patient) cbPatient.getSelectedItem()).getEmail());
+			txtContactInfo.setEnabled(true);
+			btnShowMedicalRecord.setEnabled(true);
+		} else {
+			txtContactInfo.setText("");
+			txtContactInfo.setEnabled(false);
+			btnShowMedicalRecord.setEnabled(false);
+		}
 	}
 	
 	private void setDate() {

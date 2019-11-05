@@ -32,7 +32,6 @@ public class MedicalRecordDialog extends JDialog {
 	private static final long serialVersionUID = 5633142202939076631L;
 	private final JPanel contentPanel = new JPanel();
 	private JPanel pnPatient;
-	private JPanel pnMedicalRecord;
 	private JTable tblMedicalRecord;
 	private JPanel pnPatientInfo;
 	private JPanel pnPatientAddresses;
