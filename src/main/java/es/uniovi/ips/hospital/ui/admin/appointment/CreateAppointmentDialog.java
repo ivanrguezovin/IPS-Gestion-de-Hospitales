@@ -35,6 +35,7 @@ import es.uniovi.ips.hospital.ui.common.MedicalRecordDialog;
 import es.uniovi.ips.hospital.ui.util.filter.PatientTextFilterator;
 import es.uniovi.ips.hospital.ui.util.filter.RoomTextFilterator;
 import es.uniovi.ips.hospital.ui.util.filter.StaffTextFilterator;
+import es.uniovi.ips.hospital.ui.util.render.StaffCellRenderer;
 import es.uniovi.ips.hospital.util.format.PatientFormat;
 import es.uniovi.ips.hospital.util.format.RoomFormat;
 import es.uniovi.ips.hospital.util.format.StaffFormat;
@@ -77,6 +78,7 @@ public class CreateAppointmentDialog extends JDialog {
 	@Autowired	private RoomFormat roomFormat;
 	
 	private Set<Doctor> selectedDoctors;
+	private List<Doctor> availableDoctors;
 	private LocalDateTime appointmentDateTime;
 	
 	private final JPanel contentPanel = new JPanel();
@@ -402,6 +404,7 @@ public class CreateAppointmentDialog extends JDialog {
     
     // METODOS DE EJECUCION -------------------------------------------------------------------------
     
+    // Carga todos los datos introducidos y crea la cita
     private void createAppointment() {
     	try {
     		// Comprobación de que tenemos todos los campos necesarios
@@ -410,6 +413,10 @@ public class CreateAppointmentDialog extends JDialog {
     		checkDate();
     		checkTime();
     		checkRoom();
+    		// Comprobación de que los doctores están disponibles, aviso en caso contrario
+    		if (isThereUnavailableDoctor())
+	    		if (JOptionPane.showConfirmDialog(this, "One of the selected doctors doesn't work on the specified time, are you sure?") != JOptionPane.YES_OPTION)
+	    			return;
     		// Creación de la cita
     		Appointment appointment = new Appointment();
     		appointment.setPatient((Patient) cbPatient.getSelectedItem());
@@ -428,8 +435,8 @@ public class CreateAppointmentDialog extends JDialog {
     		JOptionPane.showMessageDialog(this, ie.getMessage());
     	}
     }
-    
-    
+
+	// Añade el doctor a la lista de doctores de la cita y lo sustrae de los posibles doctores
     private void addDoctor() {
     	if (getCbDoctor().getSelectedItem() != null) {
 			Staff doctor = (Staff) getCbDoctor().getSelectedItem();
@@ -442,6 +449,7 @@ public class CreateAppointmentDialog extends JDialog {
 		}
     }
     
+    // Selecciona el paciente y carga sus datos
 	private void selectPatient() {
 		if (getCbPatient().getSelectedItem() != null) {
 			txtContactInfo.setText(((Patient) cbPatient.getSelectedItem()).getEmail());
@@ -454,6 +462,7 @@ public class CreateAppointmentDialog extends JDialog {
 		}
 	}
 	
+	// Establece el horario de la cita y carga la lista de doctores
 	private void setDate() {
 		try { 
 			// Generamos la fecha de la cita si es posible
@@ -465,9 +474,11 @@ public class CreateAppointmentDialog extends JDialog {
 			setAppointmentComponentsEnabled(false);
 			swapButton();
 			// Obtenemos la lista de doctores disponibles para esa cita y activamos su panel
-			List<Doctor> availableDoctors = doctorService.findAvailableDoctors(appointmentDateTime);
+			availableDoctors = doctorService.findAvailableDoctors(appointmentDateTime);
+			List<Doctor> allDoctors = doctorService.findAllDoctors();
 			doctorList.clear();
-			doctorList.addAll(availableDoctors);
+			doctorList.addAll(allDoctors);
+			cbDoctor.setRenderer(new StaffCellRenderer(availableDoctors));
 			setDoctorComponentsEnabled(true);
 		} catch (InputException ie) {
 			JOptionPane.showMessageDialog(this, ie.getMessage());
@@ -537,6 +548,13 @@ public class CreateAppointmentDialog extends JDialog {
 		if (cbRoom.getSelectedItem() == null) {
 			throw new InputException("You must select a room for the appointment");
 		}
+	}
+    
+    private boolean isThereUnavailableDoctor() {
+		for (Staff doc: selectedDoctors)
+			if (!availableDoctors.contains(doc))
+				return true;
+		return false;
 	}
 	
 }
