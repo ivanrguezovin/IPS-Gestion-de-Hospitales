@@ -21,7 +21,7 @@ public class Vaccine {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
-    
+
     @NotNull
     @Column(name="vaccineType")
     private VaccineType vaccineType;
@@ -105,7 +105,5 @@ public class Vaccine {
 		this.applied = applied;
 		this.patient = patient;
 	}
-
-	
 	
 }

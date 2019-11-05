@@ -37,9 +37,10 @@ public class VaccineService {
 		return vaccineRepository.findById(p);
 	}
 	
-	public Optional<Vaccine> createVaccine(Vaccine v) {
+	
+	public void createVaccine(Vaccine v) {
 		vaccineRepository.save(v);
-		return vaccineRepository.findById(v.getId());
+		//return vaccineRepository.findById(v.getId());
 	}
 	
 }

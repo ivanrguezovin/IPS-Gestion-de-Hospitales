@@ -37,8 +37,6 @@ public class DoctorDialog extends JDialog {
 		return doctor;
 	}
 
-
-
 	public void setDoctor(Doctor doctor) {
 		this.doctor = doctor;
 	}

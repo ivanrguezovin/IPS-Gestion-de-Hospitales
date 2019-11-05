@@ -47,7 +47,7 @@ public class Patient implements PrintableOnGui {
     private Address address;
     
     @NotNull
-    @Length(min=10, max=10, message = "Your DNI is not a valid one")
+    @Length(min=10, max=10, message = "Your health card number is not a valid one")
     @Column(name="healthCardNumber", unique=true)
     private String healthCardNumber;
 
