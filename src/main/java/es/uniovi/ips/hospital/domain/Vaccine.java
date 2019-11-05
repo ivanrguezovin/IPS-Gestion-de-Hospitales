@@ -96,10 +96,9 @@ public class Vaccine {
 				+ ", applied=" + applied + ", patient=" + patient + "]";
 	}
 
-	public Vaccine(Long id, @NotNull VaccineType vaccineType, @NotNull String description, LocalDateTime date,
+	public Vaccine(@NotNull VaccineType vaccineType, @NotNull String description, LocalDateTime date,
 			@NotNull boolean applied, Patient patient) {
 		super();
-		this.id = id;
 		this.vaccineType = vaccineType;
 		this.description = description;
 		this.date = date;

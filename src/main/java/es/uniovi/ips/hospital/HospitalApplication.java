@@ -126,10 +126,11 @@ public class HospitalApplication implements CommandLineRunner {
                     faker.name().firstName(),
                     faker.name().lastName(),
                     faker.internet().safeEmailAddress(),
-                    faker.internet().password(5, 10),
                     faker.address().streetAddress(),
                     faker.address().city(),
-                    faker.address().zipCode()
+                    faker.address().zipCode(),
+                    faker.bothify("##########").toUpperCase(),
+                    faker.random().nextInt(1, 999999)
             );
             patientService.createPatient(patient);
             generateMedicalRecord(patient);

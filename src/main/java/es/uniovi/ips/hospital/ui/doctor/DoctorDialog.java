@@ -8,33 +8,47 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import es.uniovi.ips.hospital.domain.Doctor;
+import es.uniovi.ips.hospital.ui.MainWindow;
 import es.uniovi.ips.hospital.ui.doctor.vaccine.VaccineDoctorDialog;
 
 import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-import java.awt.Component;
 import javax.swing.Box;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+@Component
 public class DoctorDialog extends JDialog {
 	
-	private static final long serialVersionUID = -1238718624919092329L;
 
 	private final JPanel contentPanel = new JPanel();
 	
 	private Doctor doctor;
 	
+	@Autowired
 	private VaccineDoctorDialog vdd;
 	
+	public Doctor getDoctor() {
+		return doctor;
+	}
+
+
+
+	public void setDoctor(Doctor doctor) {
+		this.doctor = doctor;
+	}
+
+
+
 	/**
 	 * Create the dialog.
 	 */
-	public DoctorDialog(Doctor doctor) {
-		this.doctor=doctor;
+	public DoctorDialog() {
 		setResizable(false);
 		setTitle("Doctor Menu");
 		setBounds(100, 100, 660, 246);
@@ -47,7 +61,7 @@ public class DoctorDialog extends JDialog {
 			contentPanel.add(panel);
 			panel.setLayout(new GridLayout(2, 3, 0, 0));
 			{
-				Component horizontalStrut = Box.createHorizontalStrut(20);
+				java.awt.Component horizontalStrut = Box.createHorizontalStrut(20);
 				panel.add(horizontalStrut);
 			}
 			{
@@ -61,11 +75,11 @@ public class DoctorDialog extends JDialog {
 				panel.add(btnSeeAppointments);
 			}
 			{
-				Component horizontalStrut = Box.createHorizontalStrut(20);
+				java.awt.Component horizontalStrut = Box.createHorizontalStrut(20);
 				panel.add(horizontalStrut);
 			}
 			{
-				Component horizontalStrut = Box.createHorizontalStrut(20);
+				java.awt.Component horizontalStrut = Box.createHorizontalStrut(20);
 				panel.add(horizontalStrut);
 			}
 			{
@@ -75,11 +89,18 @@ public class DoctorDialog extends JDialog {
 			}
 			{
 				JButton btnSeeVaccines = new JButton("Vaccines");
+				btnSeeVaccines.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						setVisible(false);
+						vdd.setVisible(true);
+						vdd.setDoctor(doctor);
+					}
+				});
 				btnSeeVaccines.setMnemonic('v');
 				panel.add(btnSeeVaccines);
 			}
 			{
-				Component horizontalStrut = Box.createHorizontalStrut(20);
+				java.awt.Component horizontalStrut = Box.createHorizontalStrut(20);
 				panel.add(horizontalStrut);
 			}
 		}
@@ -89,6 +110,11 @@ public class DoctorDialog extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton okButton = new JButton("Back");
+				okButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						dispose();
+					}
+				});
 				okButton.setMnemonic('b');
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
@@ -107,7 +133,6 @@ public class DoctorDialog extends JDialog {
 			}
 		}
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		setVisible(true);
 	}
 
 }
