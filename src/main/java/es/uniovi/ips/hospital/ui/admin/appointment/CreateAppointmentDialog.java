@@ -53,6 +53,7 @@ import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -77,7 +78,7 @@ public class CreateAppointmentDialog extends JDialog {
 	@Autowired	private StaffFormat staffFormat;
 	@Autowired	private RoomFormat roomFormat;
 	
-	private Set<Doctor> selectedDoctors;
+	private List<Doctor> selectedDoctors;
 	private List<Doctor> availableDoctors;
 	private LocalDateTime appointmentDateTime;
 	
@@ -98,6 +99,11 @@ public class CreateAppointmentDialog extends JDialog {
 	private EventList<Staff> doctorList;
 	private AutoCompleteSupport<Staff> autoCompleteDoctor;
 	private JPanel pnShowDoctors;
+    private JPanel pnRemoveDoctor;
+    private JComboBox<Doctor> cbSelectedDoctors;
+    private EventList<Doctor> selectedDoctorsList;
+    private AutoCompleteSupport<Doctor> autoCompleteSelectedDoctor;
+    private JButton btnRemove;
 	private JLabel lblDoctors;
 	private JPanel pnSouth;
 	private JButton btnCreate;
@@ -131,7 +137,7 @@ public class CreateAppointmentDialog extends JDialog {
 		contentPanel.setLayout(new BorderLayout(0, 0));
 		contentPanel.add(getPnAppointment(), BorderLayout.CENTER);
 		contentPanel.add(getPnSouth(), BorderLayout.SOUTH);
-		selectedDoctors = new HashSet<Doctor>();
+		selectedDoctors = new ArrayList<Doctor>();
 	}
 
 	private JPanel getPnAppointment() {
@@ -183,6 +189,7 @@ public class CreateAppointmentDialog extends JDialog {
 			pnDoctor.setLayout(new BorderLayout(0, 0));
 			pnDoctor.add(getPnSelectDoctor(), BorderLayout.NORTH);
 			pnDoctor.add(getPnShowDoctors());
+			pnDoctor.add(getPnRemoveDoctor(), BorderLayout.SOUTH);
 		}
 		return pnDoctor;
 	}
@@ -247,7 +254,6 @@ public class CreateAppointmentDialog extends JDialog {
 	private JButton getBtnAdd() {
 		if (btnAdd == null) {
 			btnAdd = new JButton("Add");
-			btnAdd.setEnabled(false);
 			btnAdd.addActionListener(actionEvent -> addDoctor());
 			btnAdd.setEnabled(false);
 		}
@@ -267,6 +273,33 @@ public class CreateAppointmentDialog extends JDialog {
 			lblDoctors = new JLabel("");
 		}
 		return lblDoctors;
+	}
+	private JPanel getPnRemoveDoctor() {
+		if (pnRemoveDoctor == null) {
+			pnRemoveDoctor = new JPanel();
+			FlowLayout flowLayout = (FlowLayout) pnRemoveDoctor.getLayout();
+			flowLayout.setAlignment(FlowLayout.LEFT);
+			pnRemoveDoctor.add(getCbSelectedDoctors());
+			pnRemoveDoctor.add(getBtnRemove());
+		}
+		return pnRemoveDoctor;
+	}
+	private JComboBox<Doctor> getCbSelectedDoctors() {
+		if (cbSelectedDoctors == null) {
+			cbSelectedDoctors = new JComboBox<Doctor>();
+			cbSelectedDoctors.addItemListener(itemEvent -> getBtnRemove().setEnabled(true));
+			autoCompleteSelectedDoctor = null;
+			cbSelectedDoctors.setEnabled(false);
+		}
+		return cbSelectedDoctors;
+	}
+	private JButton getBtnRemove() {
+		if (btnRemove == null) {
+			btnRemove = new JButton("Remove");
+			btnRemove.addActionListener(actionEvent -> removeDoctor());
+			btnRemove.setEnabled(false);
+		}
+		return btnRemove;
 	}
 	private JPanel getPnSouth() {
 		if (pnSouth == null) {
@@ -371,19 +404,24 @@ public class CreateAppointmentDialog extends JDialog {
     // METODOS Y CLASES DE INICIALIZACION ------------------------------------------------------------
 
     public void fillComboBoxes() {
-        // Doctor List
-        doctorList = new BasicEventList<Staff>();
-        doctorList.addAll(doctorService.findAllDoctors());
-        if (autoCompleteDoctor == null)
-        	autoCompleteDoctor = AutoCompleteSupport.install(getCbDoctor(), doctorList, new StaffTextFilterator(), staffFormat);
-		autoCompleteDoctor.setFilterMode(TextMatcherEditor.CONTAINS);
         // Patient list
         patientList = new BasicEventList<Patient>();
         patientList.addAll(patientService.findAllPatient());
         if (autoCompletePatient == null)
         	autoCompletePatient = AutoCompleteSupport.install(getCbPatient(), patientList, new PatientTextFilterator(), patientFormat);
         autoCompletePatient.setFilterMode(TextMatcherEditor.CONTAINS);
-        // Room list
+        // Doctor List
+        doctorList = new BasicEventList<Staff>();
+        doctorList.addAll(doctorService.findAllDoctors());
+        if (autoCompleteDoctor == null)
+        	autoCompleteDoctor = AutoCompleteSupport.install(getCbDoctor(), doctorList, new StaffTextFilterator(), staffFormat);
+		autoCompleteDoctor.setFilterMode(TextMatcherEditor.CONTAINS);
+		// Selected Doctors List
+		selectedDoctorsList = new BasicEventList<Doctor>();
+		if (autoCompleteSelectedDoctor == null)
+			autoCompleteSelectedDoctor = AutoCompleteSupport.install(getCbSelectedDoctors(), selectedDoctorsList, new StaffTextFilterator(), staffFormat);
+        autoCompleteSelectedDoctor.setFilterMode(TextMatcherEditor.CONTAINS);
+		// Room list
         roomList = new BasicEventList<Room>();
         roomList.addAll(roomService.findAllRooms());
         if (autoCompleteRoom == null)
@@ -418,12 +456,13 @@ public class CreateAppointmentDialog extends JDialog {
 	    		if (JOptionPane.showConfirmDialog(this, "One of the selected doctors doesn't work on the specified time, are you sure?") != JOptionPane.YES_OPTION)
 	    			return;
     		// Creación de la cita
+    		Set<Doctor> doctorsSet = new HashSet<Doctor>(selectedDoctors);
     		Appointment appointment = new Appointment();
     		appointment.setPatient((Patient) cbPatient.getSelectedItem());
     		appointment.setStartTime(appointmentDateTime);
     		appointment.setUrgent(chckbxUrgent.isSelected());
     		appointment.setRoom((Room) cbRoom.getSelectedItem());
-    		appointment.setDoctors(selectedDoctors);
+    		appointment.setDoctors(doctorsSet);
     		appointmentService.createAppointment(appointment);
     		// Envío del email si es urgente y se ha seleccionado algún doctor
     		if (chckbxUrgent.isSelected() && !selectedDoctors.isEmpty())
@@ -441,11 +480,31 @@ public class CreateAppointmentDialog extends JDialog {
     	if (getCbDoctor().getSelectedItem() != null) {
 			Staff doctor = (Staff) getCbDoctor().getSelectedItem();
 			selectedDoctors.add((Doctor) doctor);
+			selectedDoctorsList.add((Doctor) doctor);
 			doctorList.remove(doctor);
 			cbDoctor.setSelectedItem(null);
 			lblDoctors.setText("<html><p style=\"width:500px\">"
 					+ selectedDoctors.stream().map(d -> d.guiToString()).collect(Collectors.joining(", "))
 					+ "<p></html>");
+			cbSelectedDoctors.setEnabled(true);
+		}
+    }
+
+	// Elimina el doctor de la lista de doctores de la cita y lo añade a la de los posibles doctores
+    private void removeDoctor() {
+    	if (getCbSelectedDoctors().getSelectedItem() != null) {
+			Doctor doctor = (Doctor) getCbSelectedDoctors().getSelectedItem();
+			selectedDoctors.remove(doctor);
+			selectedDoctorsList.remove((Doctor) doctor);
+			doctorList.add(doctor);
+			cbSelectedDoctors.setSelectedItem(null);
+			lblDoctors.setText("<html><p style=\"width:500px\">"
+					+ selectedDoctors.stream().map(d -> d.guiToString()).collect(Collectors.joining(", "))
+					+ "<p></html>");
+			if (selectedDoctors.isEmpty()) {
+				cbSelectedDoctors.setEnabled(false);
+				btnRemove.setEnabled(false);
+			}
 		}
     }
     
@@ -556,5 +615,4 @@ public class CreateAppointmentDialog extends JDialog {
 				return true;
 		return false;
 	}
-	
 }
