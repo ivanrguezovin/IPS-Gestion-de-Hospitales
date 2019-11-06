@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import es.uniovi.ips.hospital.domain.Doctor;
-import es.uniovi.ips.hospital.ui.MainWindow;
 import es.uniovi.ips.hospital.ui.doctor.vaccine.VaccineDoctorDialog;
 
 import java.awt.GridLayout;
@@ -25,6 +24,11 @@ import java.awt.event.ActionEvent;
 @Component
 public class DoctorDialog extends JDialog {
 	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6872498763695095391L;
 
 	private final JPanel contentPanel = new JPanel();
 	
@@ -50,6 +54,7 @@ public class DoctorDialog extends JDialog {
 		setResizable(false);
 		setTitle("Doctor Menu");
 		setBounds(100, 100, 660, 246);
+		setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);

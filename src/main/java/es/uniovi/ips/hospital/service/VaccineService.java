@@ -42,4 +42,8 @@ public class VaccineService {
 		vaccineRepository.save(v);
 		//return vaccineRepository.findById(v.getId());
 	}
+	
+	public void removeVaccine(Vaccine v) {
+		vaccineRepository.delete(v);
+	}
 }

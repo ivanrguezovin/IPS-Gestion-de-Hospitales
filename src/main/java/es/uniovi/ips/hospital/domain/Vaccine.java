@@ -92,8 +92,9 @@ public class Vaccine {
 
 	@Override
 	public String toString() {
-		return "Vaccine [id=" + id + ", vaccineType=" + vaccineType + ", description=" + description + ", date=" + date
-				+ ", applied=" + applied + ", patient=" + patient + "]";
+		return "Vaccine " + getId() + " of type " + getVaccineType() + ": - Description: " + getDescription() + " - Date: " + 
+				getDate() + " - Patient: " + getPatient().getName() + " " + getPatient().getSurname() + " con dni " 
+				+ getPatient().getDni() + " - Applied: " + isApplied() + ".";
 	}
 
 	public Vaccine(@NotNull VaccineType vaccineType, @NotNull String description, LocalDateTime date,
