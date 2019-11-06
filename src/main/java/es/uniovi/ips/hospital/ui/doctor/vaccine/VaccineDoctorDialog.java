@@ -650,7 +650,8 @@ public class VaccineDoctorDialog extends JDialog {
 						}else {
 							if(va.getPatient().equals(patient.getHealthCardNumber())) {
 								va.setPatient(patient);
-								va.setDate(convertToLocalDateTimeViaInstant((Date)spinner_1.getValue()));
+								LocalDateTime d=convertToLocalDateTimeViaInstant((Date)spinner_1.getValue());
+								va.setDate(d);
 								va.setDescription(textArea_1.getText());
 								va.setVaccineType((VaccineType)comboBox_1.getSelectedItem());
 								vs.createVaccine(va);
