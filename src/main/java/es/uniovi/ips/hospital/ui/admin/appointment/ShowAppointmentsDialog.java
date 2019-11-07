@@ -20,6 +20,7 @@ import ca.odell.glazedlists.gui.TableFormat;
 import ca.odell.glazedlists.matchers.TextMatcherEditor;
 import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
+import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import es.uniovi.ips.hospital.domain.Appointment;
 import es.uniovi.ips.hospital.service.AppointmentService;
@@ -106,6 +107,7 @@ public class ShowAppointmentsDialog extends JDialog {
         FilterList<Appointment> filterList = new FilterList<Appointment>(sortedList, textMatcherEditor);
 		AdvancedTableModel<Appointment> tableModel = GlazedListsSwing.eventTableModelWithThreadProxyList(filterList, new AppointmentTableFormat());
 		tblAppointments.setModel(tableModel);
+		TableComparatorChooser.install(tblAppointments, sortedList, TableComparatorChooser.MULTIPLE_COLUMN_MOUSE);
 		this.setModal(true);
 	}
 	
