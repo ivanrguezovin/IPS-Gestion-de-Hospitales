@@ -106,6 +106,7 @@ public class ManageWorkScheduleDialog extends JDialog {
      * Create the dialog.
      */
     public ManageWorkScheduleDialog() {
+    	setTitle("Administrator: create a new schedule");
     	setModal(true);
         setBounds(100, 100, 800, 500);
         getContentPane().setLayout(new BorderLayout());

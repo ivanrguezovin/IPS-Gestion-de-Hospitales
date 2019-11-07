@@ -123,6 +123,21 @@ public class MedicalRecordDialog extends JDialog {
 		}
 		return lblAddress;
 	}
+	private JPanel getPnButton() {
+		if (pnButton == null) {
+			pnButton = new JPanel();
+			FlowLayout flowLayout = (FlowLayout) pnButton.getLayout();
+			flowLayout.setAlignment(FlowLayout.RIGHT);
+			pnButton.add(getBtnAccept());
+		}
+		return pnButton;
+	}
+	private JButton getBtnAccept() {
+		if (btnAccept == null) {
+			btnAccept = new JButton("Accept");
+		}
+		return btnAccept;
+	}
 
     // METODOS Y CLASES DE INICIALIZACION ------------------------------------------------------------
 	
@@ -158,20 +173,5 @@ public class MedicalRecordDialog extends JDialog {
 	        else if(column == 2) return record.getPrescription();
 	        throw new IllegalStateException();
 	    }
-	}
-	private JPanel getPnButton() {
-		if (pnButton == null) {
-			pnButton = new JPanel();
-			FlowLayout flowLayout = (FlowLayout) pnButton.getLayout();
-			flowLayout.setAlignment(FlowLayout.RIGHT);
-			pnButton.add(getBtnAccept());
-		}
-		return pnButton;
-	}
-	private JButton getBtnAccept() {
-		if (btnAccept == null) {
-			btnAccept = new JButton("Accept");
-		}
-		return btnAccept;
 	}
 }

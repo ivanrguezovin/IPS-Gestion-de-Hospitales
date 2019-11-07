@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import es.uniovi.ips.hospital.ui.admin.appointment.CreateAppointmentDialog;
+import es.uniovi.ips.hospital.ui.admin.appointment.ShowAppointmentsDialog;
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageBreakScheduleDialog;
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageWorkScheduleDialog;
 
@@ -27,20 +28,20 @@ public class AdminDialog extends JDialog {
 	private JPanel pnAppointments;
 	private JPanel pnSchedules;
 	private JButton btnCreateAppointment;
+	private JButton btnEditAppointment;
 	private JButton btnManageSchedules;
 	private JButton btnManageBreaks;
 
-	@Autowired
-	private CreateAppointmentDialog createAppointmentDialog;
-	@Autowired
-	private ManageWorkScheduleDialog manageWorkScheduleDialog;
-	@Autowired
-	private ManageBreakScheduleDialog manageBreakScheduleDialog;
+	@Autowired	private CreateAppointmentDialog createAppointmentDialog;
+	@Autowired	private ShowAppointmentsDialog showAppointmentsDialog;
+	@Autowired	private ManageWorkScheduleDialog manageWorkScheduleDialog;
+	@Autowired	private ManageBreakScheduleDialog manageBreakScheduleDialog;
 
 	/**
 	 * Create the dialog.
 	 */
 	public AdminDialog() {
+		setTitle("Administrator");
 		setModal(true);
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
@@ -71,6 +72,7 @@ public class AdminDialog extends JDialog {
 			pnAppointments = new JPanel();
 			pnAppointments.setBorder(new TitledBorder(null, "Appointments", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			pnAppointments.add(getBtnCreateAppointment());
+			pnAppointments.add(getBtnEditAppointment());
 		}
 		return pnAppointments;
 	}
@@ -90,6 +92,13 @@ public class AdminDialog extends JDialog {
 		}
 		return btnCreateAppointment;
 	}
+	private JButton getBtnEditAppointment() {
+		if (btnEditAppointment == null) {
+			btnEditAppointment = new JButton("Edit appointment");
+			btnEditAppointment.addActionListener(actionEvent -> launchShowAppointmentsDialog());
+		}
+		return btnEditAppointment;
+	}
 	private JButton getBtnManageSchedules() {
 		if (btnManageSchedules == null) {
 			btnManageSchedules = new JButton("Manage schedules");
@@ -107,21 +116,25 @@ public class AdminDialog extends JDialog {
 	
 	// METODOS DE LANZAMIENTO DE VENTANAS
 
+	private void launchCreateAppointmentDialog() {
+		createAppointmentDialog.fillComboBoxes();
+		createAppointmentDialog.setLocationRelativeTo(this);
+		createAppointmentDialog.setVisible(true);
+	}
+	private void launchShowAppointmentsDialog() {
+		showAppointmentsDialog.showAppointments();
+		showAppointmentsDialog.setLocationRelativeTo(this);
+		showAppointmentsDialog.setVisible(true);
+	}
 	private void launchScheduleDialog() {
 		manageWorkScheduleDialog.fillLists();
 		manageWorkScheduleDialog.setLocationRelativeTo(this);
 		manageWorkScheduleDialog.setVisible(true);
 	}
-	
 	private void launchBreakDialog() {
 		manageBreakScheduleDialog.fillLists();
 		manageBreakScheduleDialog.setLocationRelativeTo(this);
 		manageBreakScheduleDialog.setVisible(true);
 	}
 	
-	private void launchCreateAppointmentDialog() {
-		createAppointmentDialog.fillComboBoxes();
-		createAppointmentDialog.setLocationRelativeTo(this);
-		createAppointmentDialog.setVisible(true);
-	}
 }

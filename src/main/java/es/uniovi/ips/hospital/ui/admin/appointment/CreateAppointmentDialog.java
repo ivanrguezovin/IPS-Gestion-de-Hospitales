@@ -127,6 +127,7 @@ public class CreateAppointmentDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public CreateAppointmentDialog() {
+		setTitle("Administrator: Create new appointment");
 		setModal(true);
 		setPreferredSize(new Dimension(700, 500));
 		setMinimumSize(new Dimension(700, 500));

@@ -104,6 +104,7 @@ public class ManageBreakScheduleDialog extends JDialog {
      * Create the dialog.
      */
     public ManageBreakScheduleDialog() {
+    	setTitle("Administrator: create a new break");
     	setModal(true);
         setBounds(100, 100, 800, 500);
         getContentPane().setLayout(new BorderLayout());

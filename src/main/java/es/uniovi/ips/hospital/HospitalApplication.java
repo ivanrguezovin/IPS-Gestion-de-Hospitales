@@ -2,6 +2,7 @@ package es.uniovi.ips.hospital;
 
 import com.github.javafaker.Faker;
 import es.uniovi.ips.hospital.domain.*;
+import es.uniovi.ips.hospital.exception.BusinessException;
 import es.uniovi.ips.hospital.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @SpringBootApplication
 public class HospitalApplication implements CommandLineRunner {
@@ -27,6 +29,8 @@ public class HospitalApplication implements CommandLineRunner {
     private MedicalRecordService medicalRecordService;
     @Autowired
     private ScheduleService scheduleService;
+    @Autowired
+    private AppointmentService appointmentService;
 
     private Faker faker;
 
@@ -44,6 +48,7 @@ public class HospitalApplication implements CommandLineRunner {
         generateFakeNurses(10);
         generateFakePatients(100);
         generateFakeRooms(10);
+        generateAppointments();
     }
 
     private void generateFakeAdminAssistants(int n) {
@@ -163,5 +168,20 @@ public class HospitalApplication implements CommandLineRunner {
             schedule.setEndTime(LocalDateTime.of(2019, 12, i + 1, faker.number().numberBetween(12, 23), 0));
             scheduleService.createSchedule(schedule);
         }
+    }
+    
+    private void generateAppointments() {
+    	List<Patient> patients = patientService.findAllPatient();
+    	List<Room> rooms = roomService.findAllRooms();
+    	for(Patient patient: patients) {
+    		try {
+	    		Appointment appointment = new Appointment();
+	    		appointment.setPatient(patient);
+	    		appointment.setStartTime(LocalDateTime.of(2019, 12, faker.number().numberBetween(1, 31), faker.number().numberBetween(0, 11), 0));
+	    		appointment.setRoom(rooms.get(faker.number().numberBetween(0, rooms.size()-1)));
+	    		appointment.setUrgent(faker.bool().bool());
+				appointmentService.createAppointment(appointment);
+			} catch (BusinessException e) {}
+    	}
     }
 }
