@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import es.uniovi.ips.hospital.domain.AdminAssistant;
 import es.uniovi.ips.hospital.domain.Doctor;
 import es.uniovi.ips.hospital.domain.Nurse;
+import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.service.AdminAssistantService;
 import es.uniovi.ips.hospital.service.DoctorService;
 import es.uniovi.ips.hospital.service.NurseService;
@@ -26,7 +27,6 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
-import java.awt.FlowLayout;
 
 @Component
 public class CreateUsersDialog extends JDialog {
@@ -120,6 +120,30 @@ public class CreateUsersDialog extends JDialog {
 	private java.awt.Component horizontalStrut_13;
 	private java.awt.Component horizontalStrut_14;
 	private java.awt.Component horizontalStrut_15;
+	private JLabel label_18;
+	private JTextField txDni4;
+	private JLabel label_19;
+	private JTextField txName4;
+	private JLabel label_20;
+	private JTextField txSurname4;
+	private JLabel label_21;
+	private JTextField txEmail4;
+	private JLabel label_22;
+	private JTextField txPass4;
+	private JLabel label_23;
+	private JTextField txStreet4;
+	private JLabel label_24;
+	private JTextField txCity4;
+	private JLabel label_25;
+	private JTextField txZip4;
+	private JLabel lblHistorynumber;
+	private JTextField txHistory;
+	private JLabel lblHealthCard;
+	private JTextField txCard;
+	private java.awt.Component horizontalStrut_16;
+	private java.awt.Component horizontalStrut_17;
+	private java.awt.Component horizontalStrut_18;
+	private java.awt.Component horizontalStrut_19;
 
 	/**
 	 * Create the dialog.
@@ -212,6 +236,31 @@ public class CreateUsersDialog extends JDialog {
 		if (panel_3 == null) {
 			panel_3 = new JPanel();
 			panel_3.setBorder(new TitledBorder(null, "Create Patient", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			panel_3.setLayout(new GridLayout(0, 16, 0, 0));
+			panel_3.add(getLabel_18());
+			panel_3.add(getTxDni4());
+			panel_3.add(getLabel_19());
+			panel_3.add(getTxName4());
+			panel_3.add(getLabel_20());
+			panel_3.add(getTxSurname4());
+			panel_3.add(getLabel_21());
+			panel_3.add(getTxEmail4());
+			panel_3.add(getLabel_22());
+			panel_3.add(getTxPass4());
+			panel_3.add(getLabel_23());
+			panel_3.add(getTxStreet4());
+			panel_3.add(getLabel_24());
+			panel_3.add(getTxCity4());
+			panel_3.add(getLabel_25());
+			panel_3.add(getTxZip4());
+			panel_3.add(getLblHistorynumber());
+			panel_3.add(getTxHistory());
+			panel_3.add(getLblHealthCard());
+			panel_3.add(getTxCard());
+			panel_3.add(getHorizontalStrut_16());
+			panel_3.add(getHorizontalStrut_17());
+			panel_3.add(getHorizontalStrut_18());
+			panel_3.add(getHorizontalStrut_19());
 			panel_3.add(getBtnAddPatient());
 		}
 		return panel_3;
@@ -251,7 +300,7 @@ public class CreateUsersDialog extends JDialog {
 	}
 	private JButton getBtnAddNurse() {
 		if (btnAddNurse == null) {
-			btnAddNurse = new JButton("Add Nurse");
+			btnAddNurse = new JButton("Add");
 			btnAddNurse.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					List<Doctor> doctors = doctorService.findAllDoctors();
@@ -299,16 +348,16 @@ public class CreateUsersDialog extends JDialog {
 									, txSpeciality2.getText(), Long.parseLong(txCollege2.getText()));
 							nurseService.createNurse(as);
 							JOptionPane.showMessageDialog(null, "Nurse created");
-							txCity2.setText("");
-							txZip2.setText("");
-							txSurname2.setText("");
-							txStreet2.setText("");
-							txPass2.setText("");
-							txName2.setText("");
-							txEmail2.setText("");
-							txDni2.setText("");
-							txSpeciality.setText("");
-							txCollege.setText("");
+							txCity3.setText("");
+							txZip3.setText("");
+							txSurname3.setText("");
+							txStreet3.setText("");
+							txPass3.setText("");
+							txName3.setText("");
+							txEmail3.setText("");
+							txDni3.setText("");
+							txSpeciality2.setText("");
+							txCollege2.setText("");
 						}
 						
 					}
@@ -319,7 +368,118 @@ public class CreateUsersDialog extends JDialog {
 	}
 	private JButton getBtnAddPatient() {
 		if (btnAddPatient == null) {
-			btnAddPatient = new JButton("Add Patient");
+			btnAddPatient = new JButton("Add");
+			btnAddPatient.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					List<Patient> patients = patientService.findAllPatient();
+					List<Doctor> doctors = doctorService.findAllDoctors();
+					List<AdminAssistant> assistants = adminService.findAllAdminAssistant();
+					List<Nurse> nurses = nurseService.findAllNurses();
+					boolean check = false;
+					String a = String.valueOf(txPass4.getText().length());
+					String b = String.valueOf(txCard.getText().length());
+					if(txCity4.getText().equals("") || txDni4.getText().equals("") || txZip4.getText().equals("") 
+							|| txName4.getText().equals("") || txPass4.getText().equals("") || txSurname4.getText().equals("") 
+							|| txStreet4.getText().equals("") || txEmail4.getText().equals("") || txCard.getText().equals("")
+							|| txHistory.getText().equals("")) {
+						JOptionPane.showMessageDialog(null, "Fill the fields");
+					}else if(!txEmail4.getText().matches("[a-zA-Z1-9]+@[a-zA-Z1-9]+.[a-zA-Z1-9]+")){
+						JOptionPane.showMessageDialog(null, "Wrong email format");
+					}else if(a.equals("0") || a.equals("1") || a.equals("2") || a.equals("3") || a.equals("4")){
+						JOptionPane.showMessageDialog(null, "Wrong password lenght");
+					}else if(!b.equals("10")){
+						JOptionPane.showMessageDialog(null, "Wrong health card lenght");
+					}else if(!txDni4.getText().matches("[0-9]+[A-Z]") || !String.valueOf(txDni4.getText().length()).equals("9")){
+						JOptionPane.showMessageDialog(null, "Wrong dni format");
+					}else if(!isNumeric(txHistory.getText())) {
+						JOptionPane.showMessageDialog(null, "Wrong history number format");
+					}else if(Integer.parseInt(txHistory.getText()) < 1) {
+						JOptionPane.showMessageDialog(null, "College number must be a positive value (>0)");
+					}else {
+						for(Patient p: patients) {
+							if(txDni4.getText().equals(p.getDni()) || Integer.parseInt(txHistory.getText())==p.getHistoryNumber()
+									|| txCard.getText().equals(p.getHealthCardNumber())) {
+								JOptionPane.showMessageDialog(null, "Patient already exists");
+								check=true;
+							}
+						}
+						for(Doctor aa: doctors) {
+							if(txDni4.getText().equals(aa.getDni())) {
+								int dialogButton = JOptionPane.YES_NO_OPTION;
+								int dialogResult = JOptionPane.showConfirmDialog(null, "Patient is a staff member that will be added with his data. Do you want do that?",
+										"Warning",dialogButton);
+								if(dialogResult == JOptionPane.YES_OPTION){
+									txName4.setText(aa.getName());
+									txSurname4.setText(aa.getSurname());
+									txEmail4.setText(aa.getEmail());
+									txStreet4.setText(aa.getAddress().getStreet());
+									txCity4.setText(aa.getAddress().getCity());
+									txZip4.setText(aa.getAddress().getZipCode());
+									txPass4.setText(aa.getPassword());
+								}else {
+									check=true;
+									JOptionPane.showMessageDialog(null,"Process canceled");
+								}
+							}
+						}
+						for(AdminAssistant aa: assistants) {
+							if(txDni4.getText().equals(aa.getDni())) {
+								int dialogButton = JOptionPane.YES_NO_OPTION;
+								int dialogResult = JOptionPane.showConfirmDialog(null, "Patient is a staff member that will be added with his data. Do you want do that?",
+										"Warning",dialogButton);
+								if(dialogResult == JOptionPane.YES_OPTION){
+									txName4.setText(aa.getName());
+									txSurname4.setText(aa.getSurname());
+									txEmail4.setText(aa.getEmail());
+									txStreet4.setText(aa.getAddress().getStreet());
+									txCity4.setText(aa.getAddress().getCity());
+									txZip4.setText(aa.getAddress().getZipCode());
+									txPass4.setText(aa.getPassword());
+								}else {
+									check=true;
+									JOptionPane.showMessageDialog(null,"Process canceled");
+								}
+							}
+						}
+						for(Nurse aa: nurses) {
+							if(txDni4.getText().equals(aa.getDni())) {
+								int dialogButton = JOptionPane.YES_NO_OPTION;
+								int dialogResult = JOptionPane.showConfirmDialog(null, "Patient is a staff member that will be added with his data. Do you want do that?",
+										"Warning",dialogButton);
+								if(dialogResult == JOptionPane.YES_OPTION){
+									txName4.setText(aa.getName());
+									txSurname4.setText(aa.getSurname());
+									txEmail4.setText(aa.getEmail());
+									txStreet4.setText(aa.getAddress().getStreet());
+									txCity4.setText(aa.getAddress().getCity());
+									txZip4.setText(aa.getAddress().getZipCode());
+									txPass4.setText(aa.getPassword());
+								}else {
+									check=true;
+									JOptionPane.showMessageDialog(null,"Process canceled");
+								}
+							}
+						}
+						if(!check){
+							Patient patient = new Patient(txDni4.getText(),txName4.getText(),txSurname4.getText(),
+									txEmail4.getText(), txStreet4.getText(), txCity4.getText(), txZip4.getText(),
+									txCard.getText(), Integer.parseInt(txHistory.getText()));
+							patientService.createPatient(patient);
+							JOptionPane.showMessageDialog(null, "Patient created");
+							txCity4.setText("");
+							txZip4.setText("");
+							txSurname4.setText("");
+							txStreet4.setText("");
+							txPass4.setText("");
+							txName4.setText("");
+							txEmail4.setText("");
+							txDni4.setText("");
+							txHistory.setText("");
+							txCard.setText("");
+						}
+					}
+				}
+			});
 		}
 		return btnAddPatient;
 	}
@@ -422,7 +582,7 @@ public class CreateUsersDialog extends JDialog {
 	}
 	private JButton getBtnAddAdmin() {
 		if (btnAddAdmin == null) {
-			btnAddAdmin = new JButton("Add Admin");
+			btnAddAdmin = new JButton("Add");
 			btnAddAdmin.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					List<Doctor> doctors = doctorService.findAllDoctors();
@@ -709,7 +869,7 @@ public class CreateUsersDialog extends JDialog {
 	}
 	private JButton getBtnAddDoctor() {
 		if (btnAddDoctor == null) {
-			btnAddDoctor = new JButton("Add Doctor");
+			btnAddDoctor = new JButton("Add");
 			btnAddDoctor.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					List<Doctor> doctors = doctorService.findAllDoctors();
@@ -953,5 +1113,170 @@ public class CreateUsersDialog extends JDialog {
 			horizontalStrut_15 = Box.createHorizontalStrut(20);
 		}
 		return horizontalStrut_15;
+	}
+	private JLabel getLabel_18() {
+		if (label_18 == null) {
+			label_18 = new JLabel("Dni");
+			label_18.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		return label_18;
+	}
+	private JTextField getTxDni4() {
+		if (txDni4 == null) {
+			txDni4 = new JTextField();
+			txDni4.setColumns(10);
+		}
+		return txDni4;
+	}
+	private JLabel getLabel_19() {
+		if (label_19 == null) {
+			label_19 = new JLabel("Name");
+			label_19.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		return label_19;
+	}
+	private JTextField getTxName4() {
+		if (txName4 == null) {
+			txName4 = new JTextField();
+			txName4.setColumns(10);
+		}
+		return txName4;
+	}
+	private JLabel getLabel_20() {
+		if (label_20 == null) {
+			label_20 = new JLabel("Surname");
+			label_20.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		return label_20;
+	}
+	private JTextField getTxSurname4() {
+		if (txSurname4 == null) {
+			txSurname4 = new JTextField();
+			txSurname4.setColumns(10);
+		}
+		return txSurname4;
+	}
+	private JLabel getLabel_21() {
+		if (label_21 == null) {
+			label_21 = new JLabel("Email");
+			label_21.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		return label_21;
+	}
+	private JTextField getTxEmail4() {
+		if (txEmail4 == null) {
+			txEmail4 = new JTextField();
+			txEmail4.setColumns(10);
+		}
+		return txEmail4;
+	}
+	private JLabel getLabel_22() {
+		if (label_22 == null) {
+			label_22 = new JLabel("Password");
+			label_22.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		return label_22;
+	}
+	private JTextField getTxPass4() {
+		if (txPass4 == null) {
+			txPass4 = new JTextField();
+			txPass4.setColumns(10);
+		}
+		return txPass4;
+	}
+	private JLabel getLabel_23() {
+		if (label_23 == null) {
+			label_23 = new JLabel("Addres Street");
+			label_23.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		return label_23;
+	}
+	private JTextField getTxStreet4() {
+		if (txStreet4 == null) {
+			txStreet4 = new JTextField();
+			txStreet4.setColumns(10);
+		}
+		return txStreet4;
+	}
+	private JLabel getLabel_24() {
+		if (label_24 == null) {
+			label_24 = new JLabel("Address City");
+			label_24.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		return label_24;
+	}
+	private JTextField getTxCity4() {
+		if (txCity4 == null) {
+			txCity4 = new JTextField();
+			txCity4.setColumns(10);
+		}
+		return txCity4;
+	}
+	private JLabel getLabel_25() {
+		if (label_25 == null) {
+			label_25 = new JLabel("ZIP Code");
+			label_25.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		return label_25;
+	}
+	private JTextField getTxZip4() {
+		if (txZip4 == null) {
+			txZip4 = new JTextField();
+			txZip4.setColumns(10);
+		}
+		return txZip4;
+	}
+	private JLabel getLblHistorynumber() {
+		if (lblHistorynumber == null) {
+			lblHistorynumber = new JLabel("History Nº");
+			lblHistorynumber.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		return lblHistorynumber;
+	}
+	private JTextField getTxHistory() {
+		if (txHistory == null) {
+			txHistory = new JTextField();
+			txHistory.setText("");
+			txHistory.setColumns(10);
+		}
+		return txHistory;
+	}
+	private JLabel getLblHealthCard() {
+		if (lblHealthCard == null) {
+			lblHealthCard = new JLabel("Health Card");
+			lblHealthCard.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		return lblHealthCard;
+	}
+	private JTextField getTxCard() {
+		if (txCard == null) {
+			txCard = new JTextField();
+			txCard.setColumns(10);
+		}
+		return txCard;
+	}
+	private java.awt.Component getHorizontalStrut_16() {
+		if (horizontalStrut_16 == null) {
+			horizontalStrut_16 = Box.createHorizontalStrut(20);
+		}
+		return horizontalStrut_16;
+	}
+	private java.awt.Component getHorizontalStrut_17() {
+		if (horizontalStrut_17 == null) {
+			horizontalStrut_17 = Box.createHorizontalStrut(20);
+		}
+		return horizontalStrut_17;
+	}
+	private java.awt.Component getHorizontalStrut_18() {
+		if (horizontalStrut_18 == null) {
+			horizontalStrut_18 = Box.createHorizontalStrut(20);
+		}
+		return horizontalStrut_18;
+	}
+	private java.awt.Component getHorizontalStrut_19() {
+		if (horizontalStrut_19 == null) {
+			horizontalStrut_19 = Box.createHorizontalStrut(20);
+		}
+		return horizontalStrut_19;
 	}
 }

@@ -140,7 +140,7 @@ public class AdminDialog extends JDialog {
 					launchCreateUsers();
 				}
 			});
-			btnCreateUsers.setFont(new Font("Tahoma", Font.PLAIN, 10));
+			btnCreateUsers.setFont(new Font("Tahoma", Font.BOLD, 11));
 		}
 		return btnCreateUsers;
 	}
