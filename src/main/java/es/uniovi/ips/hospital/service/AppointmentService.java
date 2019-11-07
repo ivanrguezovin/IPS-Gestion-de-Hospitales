@@ -21,6 +21,10 @@ public class AppointmentService {
         appointmentRepository.save(appointment);
         return appointmentRepository.findByPatientAndStartTime(appointment.getPatient(), appointment.getStartTime());
     }
+    
+    public void updateAppointment(Appointment appointment) {
+    	appointmentRepository.save(appointment);
+    }
 
 	public List<Appointment> findAllAppointments() {
 		return appointmentRepository.findAll();

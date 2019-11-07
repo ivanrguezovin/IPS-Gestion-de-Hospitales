@@ -180,6 +180,7 @@ public class HospitalApplication implements CommandLineRunner {
 	    		appointment.setStartTime(LocalDateTime.of(2019, 12, faker.number().numberBetween(1, 31), faker.number().numberBetween(0, 11), 0));
 	    		appointment.setRoom(rooms.get(faker.number().numberBetween(0, rooms.size()-1)));
 	    		appointment.setUrgent(faker.bool().bool());
+	    		appointment.setContactInfo(patient.getEmail());
 				appointmentService.createAppointment(appointment);
 			} catch (BusinessException e) {}
     	}

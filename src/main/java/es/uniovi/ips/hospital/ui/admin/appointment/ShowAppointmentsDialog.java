@@ -30,6 +30,9 @@ import es.uniovi.ips.hospital.util.compare.AppointmentComparator;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import java.awt.event.WindowFocusListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 @Component
 public class ShowAppointmentsDialog extends JDialog {
@@ -38,9 +41,12 @@ public class ShowAppointmentsDialog extends JDialog {
 	
 	@Autowired	private AppointmentService appointmentService;
 	
+	@Autowired	private EditAppointmentDialog editAppointmentDialog;
+	
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtSearch;
 	private TextMatcherEditor<Appointment> textMatcherEditor;
+	private FilterList<Appointment> filterList;
 	private JScrollPane spTable;
 	private JTable tblAppointments;
 	private JPanel pnBottom;
@@ -50,6 +56,7 @@ public class ShowAppointmentsDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public ShowAppointmentsDialog() {
+		addWindowFocusListener(new ListReloader());
 		setTitle("Administrator: choose an appointment to edit");
 		setBounds(100, 100, 450, 700);
 		getContentPane().setLayout(new BorderLayout());
@@ -94,6 +101,7 @@ public class ShowAppointmentsDialog extends JDialog {
 	private JButton getBtnEdit() {
 		if (btnEdit == null) {
 			btnEdit = new JButton("Edit");
+			btnEdit.addActionListener(actionEvent -> launchEditAppointment());
 		}
 		return btnEdit;
 	}
@@ -104,7 +112,7 @@ public class ShowAppointmentsDialog extends JDialog {
 		EventList<Appointment> eventList = new BasicEventList<Appointment>();
 		eventList.addAll(appointmentService.findAllAppointments());
 		SortedList<Appointment> sortedList = new SortedList<Appointment>(eventList, new AppointmentComparator());
-        FilterList<Appointment> filterList = new FilterList<Appointment>(sortedList, textMatcherEditor);
+        filterList = new FilterList<Appointment>(sortedList, textMatcherEditor);
 		AdvancedTableModel<Appointment> tableModel = GlazedListsSwing.eventTableModelWithThreadProxyList(filterList, new AppointmentTableFormat());
 		tblAppointments.setModel(tableModel);
 		TableComparatorChooser.install(tblAppointments, sortedList, TableComparatorChooser.MULTIPLE_COLUMN_MOUSE);
@@ -131,5 +139,23 @@ public class ShowAppointmentsDialog extends JDialog {
 	        else if(column == 3) return (appointment.isUrgent()) ? "YES" : "";
 	        throw new IllegalStateException();
 	    }
+	}
+	
+	private class ListReloader extends WindowAdapter {
+		
+		public void windowGainedFocus(WindowEvent arg0) {
+			filterList.clear();
+			filterList.addAll(appointmentService.findAllAppointments());
+		}
+	}
+	
+	// LANZAMIENTO DE LA EDICION DE LA CITA ----------------------------------------------------------------------------
+	
+	@SuppressWarnings("unchecked")
+	public void launchEditAppointment() {
+		editAppointmentDialog.fillComboBoxes();
+		editAppointmentDialog.setAppointment(((AdvancedTableModel<Appointment>) tblAppointments.getModel()).getElementAt(tblAppointments.getSelectedRow()));
+		editAppointmentDialog.setLocationRelativeTo(this);
+		editAppointmentDialog.setVisible(true);
 	}
 }

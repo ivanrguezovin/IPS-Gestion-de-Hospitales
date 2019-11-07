@@ -65,9 +65,9 @@ import java.awt.Label;
 import javax.swing.JComboBox;
 
 @Component
-public class CreateAppointmentDialog extends JDialog {
+public class EditAppointmentDialog extends JDialog {
 
-	private static final long serialVersionUID = 8434535298528019736L;
+	private static final long serialVersionUID = 3489197994027411322L;
 	
 	@Autowired 	private MedicalRecordDialog medicalRecordDialog;
 	@Autowired	private PatientService patientService;
@@ -81,6 +81,7 @@ public class CreateAppointmentDialog extends JDialog {
 	private List<Doctor> selectedDoctors;
 	private List<Doctor> availableDoctors;
 	private LocalDateTime appointmentDateTime;
+	private Appointment appointment;
 	
 	private final JPanel contentPanel = new JPanel();
 	private JPanel pnAppointment;
@@ -126,7 +127,7 @@ public class CreateAppointmentDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public CreateAppointmentDialog() {
+	public EditAppointmentDialog() {
 		setTitle("Administrator: Create new appointment");
 		setModal(true);
 		setPreferredSize(new Dimension(700, 500));
@@ -313,8 +314,8 @@ public class CreateAppointmentDialog extends JDialog {
 	}
 	private JButton getBtnCreate() {
 		if (btnCreate == null) {
-			btnCreate = new JButton("Create");
-			btnCreate.addActionListener(action -> createAppointment());
+			btnCreate = new JButton("Confirm");
+			btnCreate.addActionListener(action -> modifyAppointment());
 		}
 		return btnCreate;
 	}
@@ -428,12 +429,30 @@ public class CreateAppointmentDialog extends JDialog {
         if (autoCompleteRoom == null)
         	autoCompleteRoom = AutoCompleteSupport.install(getCbRoom(), roomList, new RoomTextFilterator(), roomFormat);
     }
+    
+    public void setAppointment(Appointment appointment) {
+    	this.appointment = appointment;
+    	cbPatient.setSelectedItem(appointment.getPatient());
+    	txtContactInfo.setText(appointment.getContactInfo());
+    	calendar.setDate(Date.from(appointment.getStartTime().toLocalDate().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+    	chckbxUrgent.setSelected(appointment.isUrgent());
+    	cbRoom.setSelectedItem(appointment.getRoom());
+    	timePicker.setTime(appointment.getStartTime().toLocalTime());
+    	selectedDoctors = new ArrayList<Doctor>(appointment.getDoctors());
+    	selectedDoctorsList.addAll(selectedDoctors);
+    	doctorList.removeAll(selectedDoctors);
+		lblDoctors.setText("<html><p style=\"width:500px\">"
+				+ selectedDoctors.stream().map(d -> d.guiToString()).collect(Collectors.joining(", "))
+				+ "<p></html>");
+    }
+    
     private class SetDateAction implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			setDate();
 		}  	
     }
+    
     private class ModifyDateAction implements ActionListener {
     	@Override
 		public void actionPerformed(ActionEvent e) {
@@ -444,7 +463,7 @@ public class CreateAppointmentDialog extends JDialog {
     // METODOS DE EJECUCION -------------------------------------------------------------------------
     
     // Carga todos los datos introducidos y crea la cita
-    private void createAppointment() {
+    private void modifyAppointment() {
     	try {
     		// Comprobación de que tenemos todos los campos necesarios
     		checkPatient();
@@ -453,19 +472,20 @@ public class CreateAppointmentDialog extends JDialog {
     		checkTime();
     		checkRoom();
     		// Comprobación de que los doctores están disponibles, aviso en caso contrario
+    		if (JOptionPane.showConfirmDialog(this, "This will modify the selected appointment, are you sure?") != JOptionPane.YES_OPTION)
+    			return;
     		if (isThereUnavailableDoctor())
 	    		if (JOptionPane.showConfirmDialog(this, "One of the selected doctors doesn't work on the specified time, are you sure?") != JOptionPane.YES_OPTION)
 	    			return;
     		// Creación de la cita
     		Set<Doctor> doctorsSet = new HashSet<Doctor>(selectedDoctors);
-    		Appointment appointment = new Appointment();
     		appointment.setPatient((Patient) cbPatient.getSelectedItem());
     		appointment.setStartTime(appointmentDateTime);
     		appointment.setUrgent(chckbxUrgent.isSelected());
     		appointment.setContactInfo(txtContactInfo.getText());
     		appointment.setRoom((Room) cbRoom.getSelectedItem());
     		appointment.setDoctors(doctorsSet);
-    		appointmentService.createAppointment(appointment);
+    		appointmentService.updateAppointment(appointment);
     		// Envío del email si es urgente y se ha seleccionado algún doctor
     		if (chckbxUrgent.isSelected() && !selectedDoctors.isEmpty())
     			appointment.sendEmail();
@@ -569,10 +589,6 @@ public class CreateAppointmentDialog extends JDialog {
 	private void setDoctorComponentsEnabled(boolean b) {
 		cbDoctor.setEnabled(b);
 		btnAdd.setEnabled(b);
-		if (!selectedDoctors.isEmpty()) {
-			cbSelectedDoctors.setEnabled(b);
-			btnRemove.setEnabled(b);
-		}
 	}
 	
 	private void swapButton() {
