@@ -14,9 +14,13 @@ import org.springframework.stereotype.Component;
 
 import es.uniovi.ips.hospital.ui.admin.appointment.CreateAppointmentDialog;
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageWorkScheduleDialog;
+import es.uniovi.ips.hospital.ui.admin.users.CreateUsersDialog;
+
 import javax.swing.border.EtchedBorder;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 @Component
 public class AdminDialog extends JDialog {
@@ -35,6 +39,9 @@ public class AdminDialog extends JDialog {
 	private CreateAppointmentDialog createAppointmentDialog;
 	@Autowired
 	private ManageWorkScheduleDialog manageWorkScheduleDialog;
+	@Autowired
+	private CreateUsersDialog createUsersDialog;
+	
 	private JPanel pnCreateUsers;
 	private JButton btnCreateUsers;
 
@@ -112,6 +119,11 @@ public class AdminDialog extends JDialog {
 		createAppointmentDialog.setLocationRelativeTo(this);
 		createAppointmentDialog.setVisible(true);
 	}
+	
+	private void launchCreateUsers() {
+		createUsersDialog.setLocationRelativeTo(null);
+		createUsersDialog.setVisible(true);
+	}
 	private JPanel getPnCreateUsers() {
 		if (pnCreateUsers == null) {
 			pnCreateUsers = new JPanel();
@@ -123,6 +135,11 @@ public class AdminDialog extends JDialog {
 	private JButton getBtnCreateUsers() {
 		if (btnCreateUsers == null) {
 			btnCreateUsers = new JButton("Create Users");
+			btnCreateUsers.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					launchCreateUsers();
+				}
+			});
 			btnCreateUsers.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		}
 		return btnCreateUsers;
