@@ -2,15 +2,19 @@ package es.uniovi.ips.hospital;
 
 import com.github.javafaker.Faker;
 import es.uniovi.ips.hospital.domain.*;
+import es.uniovi.ips.hospital.exception.BusinessException;
 import es.uniovi.ips.hospital.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @SpringBootApplication
+@EnableTransactionManagement
 public class HospitalApplication implements CommandLineRunner {
 
     @Autowired
@@ -27,6 +31,10 @@ public class HospitalApplication implements CommandLineRunner {
     private MedicalRecordService medicalRecordService;
     @Autowired
     private ScheduleService scheduleService;
+    @Autowired
+    private AppointmentService appointmentService;
+    @Autowired
+    private ICD10Service icd10Service;
 
     private Faker faker;
 
@@ -39,11 +47,12 @@ public class HospitalApplication implements CommandLineRunner {
         faker = new Faker();
         generateFakeAdminAssistants(10);
         generateTestAssistant();
+        generateFakeNurses(10);
+        generateFakePatients(10);
+        generateFakeRooms(10);
         generateFakeDoctors(10);
         generateTestDoctor();
-        generateFakeNurses(10);
-        generateFakePatients(100);
-        generateFakeRooms(10);
+        icd10Service.load();
     }
 
     private void generateFakeAdminAssistants(int n) {
@@ -100,8 +109,9 @@ public class HospitalApplication implements CommandLineRunner {
                 faker.address().streetAddress(),
                 faker.address().city(),
                 faker.address().zipCode());
-        doctorService.createDoctor(doctor);
+        doctor = doctorService.createDoctor(doctor);
         generateSchedule(doctor);
+        generateAppointments(doctor, 10);
     }
 
     private void generateFakeNurses(int n) {
@@ -141,6 +151,7 @@ public class HospitalApplication implements CommandLineRunner {
             Room room = new Room();
             room.setLocation(faker.numerify("###"));
             roomService.createRoom(room);
+            roomService.createRoom(room);
         }
     }
 
@@ -162,6 +173,27 @@ public class HospitalApplication implements CommandLineRunner {
             schedule.setStartTime(LocalDateTime.of(2019, 12, i + 1, faker.number().numberBetween(0, 11), 0));
             schedule.setEndTime(LocalDateTime.of(2019, 12, i + 1, faker.number().numberBetween(12, 23), 0));
             scheduleService.createSchedule(schedule);
+        }
+    }
+
+    private void generateAppointments(Doctor doctor, int n) {
+        List<Patient> patients = patientService.findAllPatient();
+        List<Room> rooms = roomService.findAllRooms();
+        for (int i = 0; i < n; i++) {
+            Appointment appointment = new Appointment();
+            appointment.setStartTime(LocalDateTime.now());
+            appointment.setEndTime(LocalDateTime.now().plusMinutes(45));
+            appointment.setPatient(patients.get(0));
+            appointment.addDoctor(doctor);
+            appointment.setRoom(rooms.get(0));
+            try {
+
+                appointmentService.createAppointment(appointment);
+            } catch (BusinessException e) {
+                e.printStackTrace();
+            }
+            doctor.addAppointment(appointment);
+            doctorService.updateDoctor(doctor);
         }
     }
 }

@@ -1,8 +1,8 @@
 package es.uniovi.ips.hospital.domain;
 
-import org.hibernate.validator.constraints.Length;
-
 import es.uniovi.ips.hospital.ui.util.PrintableOnGui;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -12,13 +12,14 @@ import java.util.Set;
 
 @Entity
 @Table(name = "patients")
+@Transactional
 public class Patient implements PrintableOnGui {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SequenceGenerator(name = "sequenceGenerator")
     @Column(name = "id")
     private Long id;
-    
+
     @NotNull
     @Column(name = "dni")
     @Length(message = "Your DNI is not a valid one")
@@ -50,22 +51,23 @@ public class Patient implements PrintableOnGui {
     @OneToMany(mappedBy = "patient", fetch = FetchType.EAGER)
     private Set<MedicalRecord> medicalRecords;
 
-    public Patient() { }
+    public Patient() {
+    }
 
     public Patient(@NotEmpty(message = "Please, provide the dni or equivalent") String dni,
-					@NotEmpty(message = "Please, provide the name") String name,
-					@NotEmpty(message = "Please, provide the surname") String surname,
-					@Email(message = "Please, provide a valid email") @NotEmpty(message = "Please, provide the email") String email,
-					@NotEmpty(message = "Please, provide a password") @Length(min = 5, message = "Your password must have at least 5 characters") String password,
-					@NotNull String addressStreet,
-					@NotNull String addressCity,
-					@NotNull String addressZIPCode) {
-    	this.dni = dni;
+                   @NotEmpty(message = "Please, provide the name") String name,
+                   @NotEmpty(message = "Please, provide the surname") String surname,
+                   @Email(message = "Please, provide a valid email") @NotEmpty(message = "Please, provide the email") String email,
+                   @NotEmpty(message = "Please, provide a password") @Length(min = 5, message = "Your password must have at least 5 characters") String password,
+                   @NotNull String addressStreet,
+                   @NotNull String addressCity,
+                   @NotNull String addressZIPCode) {
+        this.dni = dni;
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.password = password;
-        this.address = new Address(addressStreet,addressCity,addressZIPCode);
+        this.address = new Address(addressStreet, addressCity, addressZIPCode);
     }
 
     public Long getId() {
@@ -77,14 +79,14 @@ public class Patient implements PrintableOnGui {
     }
 
     public String getDni() {
-		return dni;
-	}
+        return dni;
+    }
 
-	public void setDni(String dni) {
-		this.dni = dni;
-	}
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
 
-	public String getName() {
+    public String getName() {
         return name;
     }
 
@@ -117,12 +119,12 @@ public class Patient implements PrintableOnGui {
     }
 
     public Address getAddress() {
-		return address;
-	}
+        return address;
+    }
 
-	public void setAddress(Address address) {
-		this.address = address;
-	}
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 
     public Set<MedicalRecord> getMedicalRecords() {
         return medicalRecords;
@@ -132,13 +134,13 @@ public class Patient implements PrintableOnGui {
         this.medicalRecords = medicalRecords;
     }
 
-	@Override
-	public String toString() {
-		return "Patient [id=" + id + ", dni=" + dni + ", name=" + name + ", surname=" + surname + ", email=" + email
-				+ ", password=" + password + ", address=" + address + ", medicalRecords=" + medicalRecords + "]";
-	}
+    @Override
+    public String toString() {
+        return "Patient [id=" + id + ", dni=" + dni + ", name=" + name + ", surname=" + surname + ", email=" + email
+                + ", password=" + password + ", address=" + address + ", medicalRecords=" + medicalRecords + "]";
+    }
 
-	public String guiToString() {
-		return name + " " + surname + " - " + dni;
-	}
+    public String guiToString() {
+        return name + " " + surname + " - " + dni;
+    }
 }

@@ -1,26 +1,26 @@
 package es.uniovi.ips.hospital.domain;
 
-import org.hibernate.validator.constraints.Length;
-
 import es.uniovi.ips.hospital.ui.util.PrintableOnGui;
-
-import java.util.HashSet;
-import java.util.Set;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@Transactional
 public class Staff implements PrintableOnGui {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SequenceGenerator(name = "sequenceGenerator")
     @Column(name = "id")
     private Long id;
-    
+
     @NotNull
     @Column(name = "dni")
     @Length(message = "Your DNI is not a valid one")
@@ -54,22 +54,23 @@ public class Staff implements PrintableOnGui {
             fetch = FetchType.EAGER)
     private Set<Schedule> schedules = new HashSet<>();
 
-    public Staff() {}
+    public Staff() {
+    }
 
     public Staff(@NotEmpty(message = "Please, provide the dni or equivalent") String dni,
-    			@NotEmpty(message = "Please, provide the name") String name,
-                @NotEmpty(message = "Please, provide the surname") String surname,
-                @Email(message = "Please, provide a valid email") @NotEmpty(message = "Please, provide the email") String email,
-                @NotEmpty(message = "Please, provide a password") @Length(min = 5, message = "Your password must have at least 5 characters") String password,
-                @NotNull String addressStreet,
-                @NotNull String addressCity,
-                @NotNull String addressZIPCode) {
-    	this.dni = dni;
+                 @NotEmpty(message = "Please, provide the name") String name,
+                 @NotEmpty(message = "Please, provide the surname") String surname,
+                 @Email(message = "Please, provide a valid email") @NotEmpty(message = "Please, provide the email") String email,
+                 @NotEmpty(message = "Please, provide a password") @Length(min = 5, message = "Your password must have at least 5 characters") String password,
+                 @NotNull String addressStreet,
+                 @NotNull String addressCity,
+                 @NotNull String addressZIPCode) {
+        this.dni = dni;
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.password = password;
-        this.address = new Address(addressStreet,addressCity,addressZIPCode);
+        this.address = new Address(addressStreet, addressCity, addressZIPCode);
     }
 
     public Long getId() {
@@ -121,14 +122,14 @@ public class Staff implements PrintableOnGui {
     }
 
     public Address getAddress() {
-		return address;
-	}
+        return address;
+    }
 
-	public void setAddress(Address address) {
-		this.address = address;
-	}
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 
-	public Set<Schedule> getSchedules() {
+    public Set<Schedule> getSchedules() {
         return schedules;
     }
 
@@ -137,31 +138,31 @@ public class Staff implements PrintableOnGui {
     }
 
     @Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Staff other = (Staff) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Staff other = (Staff) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
+    }
 
-	@Override
+    @Override
     public String toString() {
         return "Staff{" +
                 "id=" + id +
@@ -173,9 +174,9 @@ public class Staff implements PrintableOnGui {
                 ", address=" + address +
                 '}';
     }
-	
-	@Override
-	public String guiToString() {
-		return id + " - " + name + " " + surname;
-	}
+
+    @Override
+    public String guiToString() {
+        return id + " - " + name + " " + surname;
+    }
 }

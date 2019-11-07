@@ -19,16 +19,27 @@ public class DoctorService {
         return doctorRepository.findAll();
     }
 
+
     public Doctor createDoctor(Doctor doctor) {
         doctorRepository.save(doctor);
         return doctorRepository.findByEmail(doctor.getEmail());
     }
 
-	public Optional<Doctor> findById(String string) {
-		return doctorRepository.findById(Long.parseLong(string));
-	}
+    public Doctor updateDoctor(Doctor doctor) {
+        doctorRepository.save(doctor);
+        return doctorRepository.findByEmail(doctor.getEmail());
+    }
 
-	public List<Doctor> findAvailableDoctors(LocalDateTime appointmentDateTime) {
-		return doctorRepository.findAvailableDoctors(appointmentDateTime);
-	}
+    public Optional<Doctor> findById(String string) {
+        return doctorRepository.findById(Long.parseLong(string));
+    }
+
+    public Doctor findByEmail(String email) {
+        return doctorRepository.findByEmail(email);
+    }
+
+
+    public List<Doctor> findAvailableDoctors(LocalDateTime appointmentDateTime) {
+        return doctorRepository.findAvailableDoctors(appointmentDateTime);
+    }
 }

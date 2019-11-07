@@ -1,13 +1,13 @@
 package es.uniovi.ips.hospital.domain;
 
+import es.uniovi.ips.hospital.util.comunication.SendEmail;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-
-import es.uniovi.ips.hospital.util.comunication.SendEmail;
-
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -22,7 +22,11 @@ public class Appointment {
     @NotNull
     @Column(name = "startTime", nullable = false)
     private LocalDateTime startTime;
-    
+
+    @NotNull
+    @Column(name = "endTime", nullable = false)
+    private LocalDateTime endTime;
+
     @NotNull
     @Column(name = "urgent", nullable = false)
     private boolean urgent;
@@ -35,30 +39,34 @@ public class Appointment {
 
     @ManyToOne
     private Room room;
-    
-    public Appointment() {}
+
+    public Appointment() {
+        doctors = new HashSet<>();
+        this.urgent = false;
+    }
 
     public Appointment(@NotNull LocalDateTime startTime,
                        @NotNull LocalDateTime endTime,
                        Set<Doctor> doctors,
                        Patient patient,
                        Room room) {
+        super();
         this.startTime = startTime;
-        this.urgent = false;
+        this.endTime = endTime;
         this.doctors = doctors;
         this.patient = patient;
         this.room = room;
     }
-    
+
     public Appointment(@NotNull LocalDateTime startTime,
-			            @NotNull LocalDateTime endTime,
-			            boolean urgent,
-			            Set<Doctor> doctors,
-			            Patient patient,
-			            Room room) {
-    	this(startTime, endTime, doctors, patient, room);
-    	this.urgent = urgent;
-	}
+                       @NotNull LocalDateTime endTime,
+                       boolean urgent,
+                       Set<Doctor> doctors,
+                       Patient patient,
+                       Room room) {
+        this(startTime, endTime, doctors, patient, room);
+        this.urgent = urgent;
+    }
 
     public Long getId() {
         return id;
@@ -76,15 +84,23 @@ public class Appointment {
         this.startTime = startTime;
     }
 
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
     public boolean isUrgent() {
-		return urgent;
-	}
+        return urgent;
+    }
 
-	public void setUrgent(boolean urgent) {
-		this.urgent = urgent;
-	}
+    public void setUrgent(boolean urgent) {
+        this.urgent = urgent;
+    }
 
-	public Set<Doctor> getDoctors() {
+    public Set<Doctor> getDoctors() {
         return doctors;
     }
 
@@ -108,56 +124,64 @@ public class Appointment {
         this.room = room;
     }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((patient == null) ? 0 : patient.hashCode());
-		result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Appointment other = (Appointment) obj;
-		if (patient == null) {
-			if (other.patient != null)
-				return false;
-		} else if (!patient.equals(other.patient))
-			return false;
-		if (startTime == null) {
-			if (other.startTime != null)
-				return false;
-		} else if (!startTime.equals(other.startTime))
-			return false;
-		return true;
-	}
-
-	@Override
-	public String toString() {
-		return "Appointment [id=" + id + ", startTime=" + startTime + ", urgent=" + urgent
-				+ ", doctors=" + doctors + ", patient=" + patient + ", room=" + room + "]";
-	}
-
-	public String guiToString() {
-		return patient.guiToString() + " - " + startTime + " - " + room + " " + urgentString();
-	}
-
-	private String urgentString() {
-		return (urgent) ? "(URGENT)" : "";
-	}
-	
-	// BUSINESS METHODS
-
-    public void sendEmail() throws AddressException, MessagingException {
-    	new SendEmail(this).execute();
+    public void addDoctor(Doctor doctor) {
+        doctors.add(doctor);
     }
 
-    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((patient == null) ? 0 : patient.hashCode());
+        result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Appointment other = (Appointment) obj;
+        if (patient == null) {
+            if (other.patient != null)
+                return false;
+        } else if (!patient.equals(other.patient))
+            return false;
+        if (startTime == null) {
+            if (other.startTime != null)
+                return false;
+        } else if (!startTime.equals(other.startTime))
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Appointment{" +
+                "id=" + id +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", urgent=" + urgent +
+                '}';
+    }
+
+    public String guiToString() {
+        return patient.guiToString() + " - " + startTime + " - " + room + " " + urgentString();
+    }
+
+    private String urgentString() {
+        return (urgent) ? "(URGENT)" : "";
+    }
+
+    // BUSINESS METHODS
+
+    public void sendEmail() throws AddressException, MessagingException {
+        new SendEmail(this).execute();
+    }
+
+
 }
