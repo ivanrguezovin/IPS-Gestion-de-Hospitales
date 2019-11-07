@@ -14,6 +14,9 @@ import org.springframework.stereotype.Component;
 
 import es.uniovi.ips.hospital.ui.admin.appointment.CreateAppointmentDialog;
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageWorkScheduleDialog;
+import javax.swing.border.EtchedBorder;
+import java.awt.Color;
+import java.awt.Font;
 
 @Component
 public class AdminDialog extends JDialog {
@@ -32,6 +35,8 @@ public class AdminDialog extends JDialog {
 	private CreateAppointmentDialog createAppointmentDialog;
 	@Autowired
 	private ManageWorkScheduleDialog manageWorkScheduleDialog;
+	private JPanel pnCreateUsers;
+	private JButton btnCreateUsers;
 
 	/**
 	 * Create the dialog.
@@ -56,7 +61,8 @@ public class AdminDialog extends JDialog {
 	private JPanel getPnButtons() {
 		if (pnButtons == null) {
 			pnButtons = new JPanel();
-			pnButtons.setLayout(new GridLayout(2, 0, 0, 0));
+			pnButtons.setLayout(new GridLayout(0, 1, 0, 0));
+			pnButtons.add(getPnCreateUsers());
 			pnButtons.add(getPnAppointments());
 			pnButtons.add(getPnSchedules());
 		}
@@ -105,5 +111,20 @@ public class AdminDialog extends JDialog {
 		createAppointmentDialog.fillComboBoxes();
 		createAppointmentDialog.setLocationRelativeTo(this);
 		createAppointmentDialog.setVisible(true);
+	}
+	private JPanel getPnCreateUsers() {
+		if (pnCreateUsers == null) {
+			pnCreateUsers = new JPanel();
+			pnCreateUsers.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Create Users", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+			pnCreateUsers.add(getBtnCreateUsers());
+		}
+		return pnCreateUsers;
+	}
+	private JButton getBtnCreateUsers() {
+		if (btnCreateUsers == null) {
+			btnCreateUsers = new JButton("Create Users");
+			btnCreateUsers.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		}
+		return btnCreateUsers;
 	}
 }

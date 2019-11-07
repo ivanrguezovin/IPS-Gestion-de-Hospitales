@@ -75,6 +75,7 @@ public class HospitalApplication implements CommandLineRunner {
     }
 
     private void generateFakeDoctors(int n) {
+    	Long l = 1L;
         for (int i = 0; i < n; i++) {
             Doctor doctor = new Doctor(
                     faker.bothify("########?").toUpperCase(),
@@ -84,7 +85,8 @@ public class HospitalApplication implements CommandLineRunner {
                     faker.internet().password(5, 10),
                     faker.address().streetAddress(),
                     faker.address().city(),
-                    faker.address().zipCode());
+                    faker.address().zipCode(), "Especialidad de prueba", l);
+            l++;
             doctorService.createDoctor(doctor);
             generateSchedule(doctor);
         }
@@ -99,12 +101,13 @@ public class HospitalApplication implements CommandLineRunner {
                 "password",
                 faker.address().streetAddress(),
                 faker.address().city(),
-                faker.address().zipCode());
+                faker.address().zipCode(), "Especialidad de prueba", 11L);
         doctorService.createDoctor(doctor);
         generateSchedule(doctor);
     }
 
     private void generateFakeNurses(int n) {
+    	Long l = 12L;
         for (int i = 0; i < n; i++) {
             Nurse nurse = new Nurse(
                     faker.bothify("########?").toUpperCase(),
@@ -114,7 +117,8 @@ public class HospitalApplication implements CommandLineRunner {
                     faker.internet().password(5, 10),
                     faker.address().streetAddress(),
                     faker.address().city(),
-                    faker.address().zipCode());
+                    faker.address().zipCode(),"Especialidad de prueba", l);
+            l++;
             nurseService.createNurse(nurse);
         }
     }
