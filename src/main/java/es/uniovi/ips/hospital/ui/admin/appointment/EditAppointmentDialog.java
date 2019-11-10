@@ -107,7 +107,7 @@ public class EditAppointmentDialog extends JDialog {
     private JButton btnRemove;
 	private JLabel lblDoctors;
 	private JPanel pnSouth;
-	private JButton btnCreate;
+	private JButton btnUpdate;
 	private JPanel pnDateTime;
 	private JPanel pnDetails;
 	private JCheckBox chckbxUrgent;
@@ -128,7 +128,7 @@ public class EditAppointmentDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public EditAppointmentDialog() {
-		setTitle("Administrator: Create new appointment");
+		setTitle("Administrator: Edit appointment");
 		setModal(true);
 		setPreferredSize(new Dimension(700, 500));
 		setMinimumSize(new Dimension(700, 500));
@@ -308,16 +308,16 @@ public class EditAppointmentDialog extends JDialog {
 			pnSouth = new JPanel();
 			FlowLayout flowLayout = (FlowLayout) pnSouth.getLayout();
 			flowLayout.setAlignment(FlowLayout.RIGHT);
-			pnSouth.add(getBtnCreate());
+			pnSouth.add(getBtnUpdate());
 		}
 		return pnSouth;
 	}
-	private JButton getBtnCreate() {
-		if (btnCreate == null) {
-			btnCreate = new JButton("Confirm");
-			btnCreate.addActionListener(action -> modifyAppointment());
+	private JButton getBtnUpdate() {
+		if (btnUpdate == null) {
+			btnUpdate = new JButton("Confirm");
+			btnUpdate.addActionListener(action -> modifyAppointment());
 		}
-		return btnCreate;
+		return btnUpdate;
 	}
 	private JPanel getPnDateTime() {
 		if (pnDateTime == null) {
@@ -491,7 +491,8 @@ public class EditAppointmentDialog extends JDialog {
     			appointment.sendEmail();
     		// Notificación de creación satisfactoria y restauración de la ventana
     		modifyDate();
-    		JOptionPane.showMessageDialog(this, "The appointment was created succesfully");
+    		JOptionPane.showMessageDialog(this, "The appointment was edited succesfully");
+    		dispose();
     	} catch(Exception ie) {
     		JOptionPane.showMessageDialog(this, ie.getMessage());
     	}
@@ -517,7 +518,7 @@ public class EditAppointmentDialog extends JDialog {
     	if (getCbSelectedDoctors().getSelectedItem() != null) {
 			Doctor doctor = (Doctor) getCbSelectedDoctors().getSelectedItem();
 			selectedDoctors.remove(doctor);
-			selectedDoctorsList.remove((Doctor) doctor);
+			selectedDoctorsList.remove(doctor);
 			doctorList.add(doctor);
 			cbSelectedDoctors.setSelectedItem(null);
 			lblDoctors.setText("<html><p style=\"width:500px\">"
@@ -556,9 +557,6 @@ public class EditAppointmentDialog extends JDialog {
 			swapButton();
 			// Obtenemos la lista de doctores disponibles para esa cita y activamos su panel
 			availableDoctors = doctorService.findAvailableDoctors(appointmentDateTime);
-			List<Doctor> allDoctors = doctorService.findAllDoctors();
-			doctorList.clear();
-			doctorList.addAll(allDoctors);
 			cbDoctor.setRenderer(new StaffCellRenderer(availableDoctors));
 			setDoctorComponentsEnabled(true);
 		} catch (InputException ie) {
@@ -589,6 +587,10 @@ public class EditAppointmentDialog extends JDialog {
 	private void setDoctorComponentsEnabled(boolean b) {
 		cbDoctor.setEnabled(b);
 		btnAdd.setEnabled(b);
+		if (!selectedDoctors.isEmpty()) {
+			cbSelectedDoctors.setEnabled(b);
+			btnRemove.setEnabled(b);
+		}
 	}
 	
 	private void swapButton() {

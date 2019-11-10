@@ -136,6 +136,7 @@ public class MedicalRecordDialog extends JDialog {
 	private JButton getBtnAccept() {
 		if (btnAccept == null) {
 			btnAccept = new JButton("Accept");
+			btnAccept.addActionListener(actionEvent -> dispose());
 		}
 		return btnAccept;
 	}

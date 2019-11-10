@@ -43,12 +43,7 @@ public class AdminDialog extends JDialog {
 	@Autowired	private ShowAppointmentsDialog showAppointmentsDialog;
 	@Autowired	private ManageWorkScheduleDialog manageWorkScheduleDialog;
 	@Autowired	private ManageBreakScheduleDialog manageBreakScheduleDialog;
-	@Autowired
-	private CreateAppointmentDialog createAppointmentDialog;
-	@Autowired
-	private ManageWorkScheduleDialog manageWorkScheduleDialog;
-	@Autowired
-	private CreateUsersDialog createUsersDialog;
+	@Autowired	private CreateUsersDialog createUsersDialog;
 
 	private JPanel pnCreateUsers;
 	private JButton btnCreateUsers;
