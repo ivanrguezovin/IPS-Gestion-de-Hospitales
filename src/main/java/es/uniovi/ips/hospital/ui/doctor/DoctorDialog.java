@@ -74,8 +74,11 @@ public class DoctorDialog extends JDialog {
     private JPanel getAppointmentsPanel() {
         if (appointmentsPanel == null) {
             appointmentsPanel = new JPanel();
+            BoxLayout boxLayout = new BoxLayout(appointmentsPanel, BoxLayout.Y_AXIS);
+            appointmentsPanel.setLayout(boxLayout);
             JLabel label = new JLabel("Your appointments for today");
             JScrollPane scrollPane = new JScrollPane();
+
             scrollPane.setViewportView(getAppointments());
             appointmentsPanel.add(BorderLayout.NORTH, label);
             appointmentsPanel.add(BorderLayout.SOUTH, scrollPane);

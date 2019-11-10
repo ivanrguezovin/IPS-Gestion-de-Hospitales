@@ -1,21 +1,19 @@
 package es.uniovi.ips.hospital.domain;
 
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "doctors")
-@Transactional
 public class Doctor extends Staff {
 
     @ManyToMany(mappedBy = "doctors", fetch = FetchType.EAGER)
     private Set<Appointment> appointments = new HashSet<>();
+
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Diagnostic> diagnostics;
 
     public Doctor() {
         super();
@@ -36,6 +34,14 @@ public class Doctor extends Staff {
 
     public void addAppointment(Appointment appointment) {
         appointments.add(appointment);
+    }
+
+    public List<Diagnostic> getDiagnostics() {
+        return diagnostics;
+    }
+
+    public void setDiagnostics(List<Diagnostic> diagnostics) {
+        this.diagnostics = diagnostics;
     }
 
     @Override

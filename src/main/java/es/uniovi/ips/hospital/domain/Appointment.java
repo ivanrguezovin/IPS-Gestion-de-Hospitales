@@ -40,8 +40,12 @@ public class Appointment {
     @ManyToOne
     private Room room;
 
+    @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Diagnostic> diagnostics;
+
     public Appointment() {
         doctors = new HashSet<>();
+        diagnostics = new HashSet<>();
         this.urgent = false;
     }
 
@@ -126,6 +130,15 @@ public class Appointment {
 
     public void addDoctor(Doctor doctor) {
         doctors.add(doctor);
+    }
+
+
+    public Set<Diagnostic> getDiagnostics() {
+        return diagnostics;
+    }
+
+    public void setDiagnostics(Set<Diagnostic> diagnostics) {
+        this.diagnostics = diagnostics;
     }
 
     @Override

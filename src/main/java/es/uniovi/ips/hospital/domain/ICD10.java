@@ -1,6 +1,7 @@
 package es.uniovi.ips.hospital.domain;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "codes")
@@ -29,6 +30,9 @@ public class ICD10 {
 
     @Column(name = "categoryTitle")
     private String categoryTitle;
+
+    @ManyToMany
+    private Set<Diagnostic> diagnostics;
 
     public ICD10() {
         // Nothing here.
@@ -98,6 +102,14 @@ public class ICD10 {
 
     public void setCategoryTitle(String categoryTitle) {
         this.categoryTitle = categoryTitle;
+    }
+
+    public Set<Diagnostic> getDiagnostics() {
+        return diagnostics;
+    }
+
+    public void setDiagnostics(Set<Diagnostic> diagnostics) {
+        this.diagnostics = diagnostics;
     }
 
     @Override

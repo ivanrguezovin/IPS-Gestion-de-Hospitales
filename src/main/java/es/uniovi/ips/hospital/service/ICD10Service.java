@@ -32,4 +32,8 @@ public class ICD10Service {
     public List<ICD10> findAll() {
         return icd10Repository.findAll();
     }
+
+    public List<String> findAllCategories() {
+        return icd10Repository.findCategories();
+    }
 }
