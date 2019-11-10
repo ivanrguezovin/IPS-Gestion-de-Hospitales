@@ -22,7 +22,7 @@ public class Staff implements PrintableOnGui {
     private Long id;
     
     @NotNull
-    @Column(name = "dni")
+    @Column(name = "dni", unique=true)
     @Length(message = "Your DNI is not a valid one")
     private String dni;
 
