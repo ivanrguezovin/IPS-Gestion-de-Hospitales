@@ -10,5 +10,6 @@ import es.uniovi.ips.hospital.domain.Patient;
 public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, Long> {
 
 	MedicalRecord findByPatientAndDateAndDescriptionAndPrescription(Patient patient, LocalDateTime date, String description, String prescription);
+	MedicalRecord findByPatient(Patient patient);
 	
 }
