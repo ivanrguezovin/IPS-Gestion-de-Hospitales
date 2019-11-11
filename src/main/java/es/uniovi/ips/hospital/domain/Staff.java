@@ -22,7 +22,7 @@ public class Staff implements PrintableOnGui {
     private Long id;
 
     @NotNull
-    @Column(name = "dni")
+    @Column(name = "dni", unique = true)
     @Length(message = "Your DNI is not a valid one")
     private String dni;
 
@@ -151,8 +151,8 @@ public class Staff implements PrintableOnGui {
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
-            return false;
+//		if (getClass() != obj.getClass())
+//			return false;
         Staff other = (Staff) obj;
         if (id == null) {
             if (other.id != null)

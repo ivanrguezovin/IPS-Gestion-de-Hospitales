@@ -12,10 +12,10 @@ import es.uniovi.ips.hospital.domain.Patient;
 public class PatientTextFilterator implements TextFilterator<Patient> {
 	
     public void getFilterStrings(List<String> baseList, Patient patient) {
+        baseList.add(patient.getId().toString());
         baseList.add(patient.getDni());
         baseList.add(patient.getName());
         baseList.add(patient.getSurname());
         baseList.add(patient.getEmail());
-        baseList.add("" + patient.getId());
     }
 }

@@ -25,4 +25,12 @@ public class AppointmentService {
     public List<Appointment> findAllByDoctor(Doctor myself) {
         return appointmentRepository.findAllByDoctors(myself);
     }
+
+    public void updateAppointment(Appointment appointment) {
+        appointmentRepository.save(appointment);
+    }
+
+    public List<Appointment> findAllAppointments() {
+        return appointmentRepository.findAll();
+    }
 }

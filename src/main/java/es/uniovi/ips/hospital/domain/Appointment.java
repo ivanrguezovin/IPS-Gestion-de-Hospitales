@@ -31,7 +31,11 @@ public class Appointment {
     @Column(name = "urgent", nullable = false)
     private boolean urgent;
 
-    @ManyToMany
+    @NotNull
+    @Column(name = "contactInfo", nullable = false)
+    private String contactInfo;
+
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Doctor> doctors;
 
     @ManyToOne
@@ -50,26 +54,26 @@ public class Appointment {
     }
 
     public Appointment(@NotNull LocalDateTime startTime,
-                       @NotNull LocalDateTime endTime,
                        Set<Doctor> doctors,
                        Patient patient,
                        Room room) {
         super();
         this.startTime = startTime;
-        this.endTime = endTime;
+        this.urgent = false;
+        this.contactInfo = patient.getEmail();
         this.doctors = doctors;
         this.patient = patient;
         this.room = room;
     }
 
     public Appointment(@NotNull LocalDateTime startTime,
-                       @NotNull LocalDateTime endTime,
                        boolean urgent,
+                       String contactInfo,
                        Set<Doctor> doctors,
                        Patient patient,
                        Room room) {
-        this(startTime, endTime, doctors, patient, room);
-        this.urgent = urgent;
+        this(startTime, doctors, patient, room);
+        this.contactInfo = contactInfo;
     }
 
     public Long getId() {
@@ -104,12 +108,24 @@ public class Appointment {
         this.urgent = urgent;
     }
 
+    public String getContactInfo() {
+        return contactInfo;
+    }
+
+    public void setContactInfo(String contactInfo) {
+        this.contactInfo = contactInfo;
+    }
+
     public Set<Doctor> getDoctors() {
         return doctors;
     }
 
     public void setDoctors(Set<Doctor> doctors) {
         this.doctors = doctors;
+    }
+
+    public void addDoctor(Doctor doctor) {
+        this.getDoctors().add(doctor);
     }
 
     public Patient getPatient() {
@@ -127,11 +143,6 @@ public class Appointment {
     public void setRoom(Room room) {
         this.room = room;
     }
-
-    public void addDoctor(Doctor doctor) {
-        doctors.add(doctor);
-    }
-
 
     public Set<Diagnostic> getDiagnostics() {
         return diagnostics;
@@ -170,16 +181,6 @@ public class Appointment {
         } else if (!startTime.equals(other.startTime))
             return false;
         return true;
-    }
-
-    @Override
-    public String toString() {
-        return "Appointment{" +
-                "id=" + id +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", urgent=" + urgent +
-                '}';
     }
 
     public String guiToString() {

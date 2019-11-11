@@ -33,5 +33,28 @@ public class ScheduleService {
 	public void updateSchedules(List<Schedule> schedules) {
 		schedules.forEach(x -> updateSchedule(x));
 	}
+
+	public void updateBreakSchedule(Schedule break_) {
+		Schedule left = scheduleRepository.findMatchingSchedule(break_.getStartTime(), break_.getEmployee());
+		Schedule right = scheduleRepository.findMatchingSchedule(break_.getEndTime(), break_.getEmployee());
+		if (left == null && right == null)														// No schedule clashes with this break
+			return;
+		if (left.equals(right)) {																// One schedule wraps the whole break, divide it
+			createSchedule(new Schedule(break_.getEndTime(), right.getEndTime(), break_.getEmployee()));
+			left.setEndTime(break_.getStartTime());
+			scheduleRepository.save(left);
+			return;			}
+		if (left != null) {																		// One schedule clashes with the break on the extreme, modify it
+			left.setEndTime(break_.getStartTime());
+			scheduleRepository.save(left);			}
+		if (right != null) {																	// One schedule clashes with the break on the extreme, modify it
+			right.setStartTime(break_.getEndTime());
+			scheduleRepository.save(right);			}
+		
+	}
+
+	public void updateBreakSchedules(List<Schedule> breaks) {
+		breaks.forEach(x -> updateBreakSchedule(x));
+	}
 	
 }

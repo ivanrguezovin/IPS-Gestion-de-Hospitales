@@ -100,8 +100,7 @@ public class MainWindow {
             System.out.println("AdminAssistant");
             adminDialog.setVisible(true);
         } else {
-            // TODO Show incorrect user login
-            System.out.println("TODO Show incorrect user login");
+            JOptionPane.showMessageDialog(frame, "Wrong user/credentials");
         }
     }
 }

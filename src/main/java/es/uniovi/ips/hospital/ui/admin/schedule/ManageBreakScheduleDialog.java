@@ -45,22 +45,20 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Ventana prototipo de la gesti�n de horarios
+ * Ventana prototipo de la gestion de descansos
  *
  * @author Ricardo Soto (uo265710)
  */
 @Component
-public class ManageWorkScheduleDialog extends JDialog {
+public class ManageBreakScheduleDialog extends JDialog {
 
     private static final long serialVersionUID = 1490803176753932725L;
-    //private static final String[] DAYS = {"l", "m", "x", "j", "v", "s", "d"};
+    
+    @Autowired	private DoctorService doctorService;
+    @Autowired	private NurseService nurseService;
+    @Autowired	private ScheduleService scheduleService;
+    
     private final JPanel contentPanel = new JPanel();
-    @Autowired
-    private DoctorService doctorService;
-    @Autowired
-    private NurseService nurseService;
-    @Autowired
-    private ScheduleService scheduleService;
     private JPanel pnCenter;
     private JPanel pnSouth;
     private JButton btnAdd;
@@ -105,8 +103,8 @@ public class ManageWorkScheduleDialog extends JDialog {
     /**
      * Create the dialog.
      */
-    public ManageWorkScheduleDialog() {
-    	setTitle("Administrator: create a new schedule");
+    public ManageBreakScheduleDialog() {
+    	setTitle("Administrator: create a new break");
     	setModal(true);
         setBounds(100, 100, 800, 500);
         getContentPane().setLayout(new BorderLayout());
@@ -473,13 +471,13 @@ public class ManageWorkScheduleDialog extends JDialog {
             // Comprueba que se ha seleccionado alguno
             if (selectedStaff.isEmpty())
                 throw new InputException("You must select at least one employee");
-            // Rellena una lista de horarios a añadir
+            // Rellena una lista de horarios de descansos a añadir
             Map<LocalDateTime, LocalDateTime> daySchedules = generateDaySchedules();
             for (LocalDateTime startTime : daySchedules.keySet())
                 selectedStaff.forEach(x -> schedules.add(new Schedule(startTime, daySchedules.get(startTime), x)));
             // Guarda los horarios
-            scheduleService.updateSchedules(schedules);
-            JOptionPane.showMessageDialog(this, "All the schedules were updated successfully");
+            scheduleService.updateBreakSchedules(schedules);
+            JOptionPane.showMessageDialog(this, "All the breaks were updated successfully");
         } catch (InputException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }

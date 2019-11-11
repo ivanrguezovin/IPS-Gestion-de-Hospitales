@@ -1,146 +1,126 @@
 package es.uniovi.ips.hospital.ui.doctor;
 
-import es.uniovi.ips.hospital.domain.Appointment;
 import es.uniovi.ips.hospital.domain.Doctor;
-import es.uniovi.ips.hospital.domain.Patient;
-import es.uniovi.ips.hospital.service.AppointmentService;
-import es.uniovi.ips.hospital.service.PatientService;
-import es.uniovi.ips.hospital.ui.util.render.AppointmentCellRenderer;
+import es.uniovi.ips.hospital.ui.doctor.vaccine.VaccineDoctorDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 @Component
 public class DoctorDialog extends JDialog {
 
+    private final JPanel contentPanel = new JPanel();
 
-    private JTabbedPane mainPanel;
-    private JPanel appointmentsPanel;
-    private JPanel patientsPanel;
-    private JMenuBar menuBar;
-    private JList<Appointment> appointments;
-    private JList<Patient> patients;
+    private Doctor doctor;
 
-    private Doctor myself;
     @Autowired
-    private AppointmentService appointmentService;
-    @Autowired
-    private PatientService patientService;
-    @Autowired
-    private AppointmentDialog appointmentDialog;
+    private VaccineDoctorDialog vdd;
+
 
     public DoctorDialog() {
-        myself = new Doctor();
-        this.setModal(true);
-        this.setSize(500, 800);
-
-        this.getContentPane().add(BorderLayout.NORTH, getMenuBar());
-        this.getContentPane().add(BorderLayout.CENTER, getMainPanel());
-    }
-
-    private JMenuBar getMenuBar() {
-        if (menuBar == null) {
-            menuBar = new JMenuBar();
-            JMenu menuFile = new JMenu("File");
-            JMenu menuHelp = new JMenu("Help");
-            menuBar.add(menuFile);
-            menuBar.add(menuHelp);
-
-            JMenuItem menuItemExit = new JMenuItem("Exit");
-            menuFile.add(menuItemExit);
-            menuItemExit.addActionListener(actionEvent -> {
-                this.dispose();
-                System.exit(1);
-            });
-        }
-        return menuBar;
-
-    }
-
-    private JTabbedPane getMainPanel() {
-        if (mainPanel == null) {
-            mainPanel = new JTabbedPane();
-            mainPanel.addTab("Appointments", getAppointmentsPanel());
-            mainPanel.addTab("Patients", getPatientsPanel());
-        }
-        return mainPanel;
-    }
-
-
-    private JPanel getAppointmentsPanel() {
-        if (appointmentsPanel == null) {
-            appointmentsPanel = new JPanel();
-            BoxLayout boxLayout = new BoxLayout(appointmentsPanel, BoxLayout.Y_AXIS);
-            appointmentsPanel.setLayout(boxLayout);
-            JLabel label = new JLabel("Your appointments for today");
-            JScrollPane scrollPane = new JScrollPane();
-
-            scrollPane.setViewportView(getAppointments());
-            appointmentsPanel.add(BorderLayout.NORTH, label);
-            appointmentsPanel.add(BorderLayout.SOUTH, scrollPane);
-        }
-        return appointmentsPanel;
-    }
-
-    private JList<Appointment> getAppointments() {
-        if (appointments == null) {
-            appointments = new JList<>();
-            appointments.setCellRenderer(new AppointmentCellRenderer());
-            appointments.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (e.getClickCount() == 2) {
-                        appointmentDialog.run(appointments.getSelectedValue());
+        setResizable(false);
+        setTitle("Doctor Menu");
+        setBounds(100, 100, 660, 246);
+        setLocationRelativeTo(null);
+        getContentPane().setLayout(new BorderLayout());
+        contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        getContentPane().add(contentPanel, BorderLayout.CENTER);
+        contentPanel.setLayout(new GridLayout(1, 0, 0, 0));
+        {
+            JPanel panel = new JPanel();
+            contentPanel.add(panel);
+            panel.setLayout(new GridLayout(2, 3, 0, 0));
+            {
+                java.awt.Component horizontalStrut = Box.createHorizontalStrut(20);
+                panel.add(horizontalStrut);
+            }
+            {
+                JLabel lblAppointments = new JLabel("Appointments");
+                lblAppointments.setHorizontalAlignment(SwingConstants.CENTER);
+                panel.add(lblAppointments);
+            }
+            {
+                JButton btnSeeAppointments = new JButton("Appointments");
+                btnSeeAppointments.setMnemonic('a');
+                panel.add(btnSeeAppointments);
+            }
+            {
+                java.awt.Component horizontalStrut = Box.createHorizontalStrut(20);
+                panel.add(horizontalStrut);
+            }
+            {
+                java.awt.Component horizontalStrut = Box.createHorizontalStrut(20);
+                panel.add(horizontalStrut);
+            }
+            {
+                JLabel lblNewLabel = new JLabel("Vaccines");
+                lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                panel.add(lblNewLabel);
+            }
+            {
+                JButton btnSeeVaccines = new JButton("Vaccines");
+                btnSeeVaccines.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        setVisible(false);
+                        vdd.setVisible(true);
+                        vdd.setDoctor(doctor);
                     }
-                }
-            });
+                });
+                btnSeeVaccines.setMnemonic('v');
+                panel.add(btnSeeVaccines);
+            }
+            {
+                java.awt.Component horizontalStrut = Box.createHorizontalStrut(20);
+                panel.add(horizontalStrut);
+            }
         }
-        return appointments;
+        {
+            JPanel buttonPane = new JPanel();
+            buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+            getContentPane().add(buttonPane, BorderLayout.SOUTH);
+            {
+                JButton okButton = new JButton("Back");
+                okButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        dispose();
+                    }
+                });
+                okButton.setMnemonic('b');
+                okButton.setActionCommand("OK");
+                buttonPane.add(okButton);
+                getRootPane().setDefaultButton(okButton);
+            }
+            {
+                JButton cancelButton = new JButton("Exit");
+                cancelButton.setMnemonic('s');
+                cancelButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        System.exit(-1);
+                    }
+                });
+                cancelButton.setActionCommand("Cancel");
+                buttonPane.add(cancelButton);
+            }
+        }
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
 
-
-    private JPanel getPatientsPanel() {
-        if (patientsPanel == null) {
-            patientsPanel = new JPanel();
-            JScrollPane scrollPane = new JScrollPane();
-            scrollPane.setViewportView(getPatients());
-            patientsPanel.add(BorderLayout.CENTER, scrollPane);
-        }
-        return patientsPanel;
+    public Doctor getDoctor() {
+        return doctor;
     }
 
-    private JList<Patient> getPatients() {
-        if (patients == null) {
-            patients = new JList<>();
-        }
-        return patients;
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
     }
 
     public void run(Doctor doctor) {
-        this.setMyself(doctor);
-        this.setTitle("Hello Dr." + myself.getSurname());
-        this.setLocationRelativeTo(null);
-        this.loadAppointments();
-        this.loadPatients();
+        this.setDoctor(doctor);
         this.setVisible(true);
     }
 
-    private void setMyself(Doctor myself) {
-        this.myself = myself;
-    }
-
-    private void loadAppointments() {
-        DefaultListModel<Appointment> model = new DefaultListModel<>();
-        for (Appointment appointment : appointmentService.findAllByDoctor(myself)) {
-            model.addElement(appointment);
-        }
-        appointments.setModel(model);
-    }
-
-    private void loadPatients() {
-    }
 }

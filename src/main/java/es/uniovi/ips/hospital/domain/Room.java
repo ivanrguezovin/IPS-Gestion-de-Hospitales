@@ -49,7 +49,7 @@ public class Room implements PrintableOnGui {
 
 	@Override
 	public String toString() {
-		return "Room [id=" + id + ", location=" + location + ", appointments=" + appointments + "]";
+		return "Room [id=" + id + ", location=" + location + "]";
 	}
 
 	@Override
