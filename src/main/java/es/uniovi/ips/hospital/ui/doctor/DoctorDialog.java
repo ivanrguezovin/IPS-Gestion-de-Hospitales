@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 @Component
 public class DoctorDialog extends JDialog {
@@ -69,12 +67,10 @@ public class DoctorDialog extends JDialog {
             }
             {
                 JButton btnSeeVaccines = new JButton("Vaccines");
-                btnSeeVaccines.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        setVisible(false);
-                        vdd.setVisible(true);
-                        vdd.setDoctor(doctor);
-                    }
+                btnSeeVaccines.addActionListener(e -> {
+                    setVisible(false);
+                    vdd.setVisible(true);
+                    vdd.setDoctor(doctor);
                 });
                 btnSeeVaccines.setMnemonic('v');
                 panel.add(btnSeeVaccines);
@@ -90,11 +86,7 @@ public class DoctorDialog extends JDialog {
             getContentPane().add(buttonPane, BorderLayout.SOUTH);
             {
                 JButton okButton = new JButton("Back");
-                okButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        dispose();
-                    }
-                });
+                okButton.addActionListener(e -> dispose());
                 okButton.setMnemonic('b');
                 okButton.setActionCommand("OK");
                 buttonPane.add(okButton);
@@ -103,11 +95,7 @@ public class DoctorDialog extends JDialog {
             {
                 JButton cancelButton = new JButton("Exit");
                 cancelButton.setMnemonic('s');
-                cancelButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        System.exit(-1);
-                    }
-                });
+                cancelButton.addActionListener(e -> System.exit(-1));
                 cancelButton.setActionCommand("Cancel");
                 buttonPane.add(cancelButton);
             }

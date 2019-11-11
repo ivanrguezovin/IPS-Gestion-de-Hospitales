@@ -6,6 +6,7 @@ import es.uniovi.ips.hospital.domain.ICD10;
 import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.service.DiagnosticService;
 import es.uniovi.ips.hospital.service.ICD10Service;
+import es.uniovi.ips.hospital.ui.doctor.diagnostic.CreateDiagnosticDialog;
 import es.uniovi.ips.hospital.ui.util.render.DiagnosticCellRenderer;
 import es.uniovi.ips.hospital.ui.util.render.ICD10CellRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import java.io.IOException;
 public class AppointmentDialog extends JDialog {
     private Appointment appointment;
     private Patient patient;
+    private Diagnostic newDiagnostic;
 
     private JPanel patientInfoPanel;
     private JPanel diagnosticPanel;
@@ -43,6 +45,9 @@ public class AppointmentDialog extends JDialog {
 
     @Autowired
     private DiagnosticService diagnosticService;
+
+    @Autowired
+    private CreateDiagnosticDialog createDiagnosticDialog;
 
     public AppointmentDialog() {
         appointment = new Appointment();
@@ -125,15 +130,7 @@ public class AppointmentDialog extends JDialog {
             JButton createButton = new JButton("Create diagnostic");
             JButton deleteButton = new JButton("Delete diagnostic");
 
-            createButton.addActionListener(actionEvent -> {
-//                JOptionPane.showConfirmDialog(
-//                        this,
-//                        getCreateDiagnosticPanel(),
-//                        "Create diagnostic",
-//                        JOptionPane.OK_CANCEL_OPTION,
-//                        JOptionPane.PLAIN_MESSAGE);
-//                System.out.println(diagnosticArea.getText());
-            });
+            createButton.addActionListener(actionEvent -> createDiagnosticDialog.run());
             deleteButton.addActionListener(actionEvent -> System.out.println("Delete"));
 
             buttonPanel.add(BorderLayout.WEST, createButton);
