@@ -97,7 +97,6 @@ public class MainWindow {
             doctorDialog.run((Doctor) user);
 
         } else if (user instanceof AdminAssistant) {
-            System.out.println("AdminAssistant");
             adminDialog.setVisible(true);
         } else {
             JOptionPane.showMessageDialog(frame, "Wrong user/credentials");

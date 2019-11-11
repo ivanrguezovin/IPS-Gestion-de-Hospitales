@@ -1,4 +1,4 @@
-package es.uniovi.ips.hospital.ui.doctor;
+package es.uniovi.ips.hospital.ui.doctor.appointment;
 
 import es.uniovi.ips.hospital.domain.Appointment;
 import es.uniovi.ips.hospital.domain.Diagnostic;

@@ -1,6 +1,7 @@
 package es.uniovi.ips.hospital.ui.doctor;
 
 import es.uniovi.ips.hospital.domain.Doctor;
+import es.uniovi.ips.hospital.ui.doctor.appointment.MyAppointmentsDialog;
 import es.uniovi.ips.hospital.ui.doctor.vaccine.VaccineDoctorDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,9 @@ public class DoctorDialog extends JDialog {
 
     @Autowired
     private VaccineDoctorDialog vdd;
+
+    @Autowired
+    private MyAppointmentsDialog myAppointmentsDialog;
 
 
     public DoctorDialog() {
@@ -46,6 +50,7 @@ public class DoctorDialog extends JDialog {
             }
             {
                 JButton btnSeeAppointments = new JButton("Appointments");
+                btnSeeAppointments.addActionListener(actionEvent -> myAppointmentsDialog.run(doctor));
                 btnSeeAppointments.setMnemonic('a');
                 panel.add(btnSeeAppointments);
             }
