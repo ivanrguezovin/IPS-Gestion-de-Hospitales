@@ -20,8 +20,12 @@ public class Patient implements PrintableOnGui {
     private Long id;
     
     @NotNull
-    @Column(name = "dni")
-    @Length(message = "Your DNI is not a valid one")
+    @Column(name = "historyNumber", unique=true)
+    private int historyNumber;
+    
+    @NotNull
+    @Column(name = "dni", unique=true)
+    @Length(min=9, max=9, message = "Your DNI is not a valid one")
     private String dni;
 
     @NotEmpty(message = "Please, provide the name")
@@ -37,38 +41,67 @@ public class Patient implements PrintableOnGui {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @NotEmpty(message = "Please, provide a password")
-    @Column(name = "password", nullable = false)
-    @Length(min = 5, message = "Your password must have at least 5 characters")
-    private String password;
-
     @NotNull
     @Embedded
     @Column(name = "address", nullable = false)
     private Address address;
+    
+    @NotNull
+    @Length(min=10, max=10, message = "Your health card number is not a valid one")
+    @Column(name="healthCardNumber", unique=true)
+    private String healthCardNumber;
 
     @OneToMany(mappedBy = "patient", fetch = FetchType.EAGER)
     private Set<MedicalRecord> medicalRecords;
+    
+    @OneToMany(mappedBy="patient", fetch=FetchType.EAGER)
+    private Set<Vaccine> vaccines;
 
-    public Patient() { }
+    
+    
+    public int getHistoryNumber() {
+		return historyNumber;
+	}
+
+	public void setHistoryNumber(int historyNumber) {
+		this.historyNumber = historyNumber;
+	}
+
+	public String getHealthCardNumber() {
+		return healthCardNumber;
+	}
+
+	public void setHealthCardNumber(String healthCardNumber) {
+		this.healthCardNumber = healthCardNumber;
+	}
+
+	public Patient() { }
 
     public Patient(@NotEmpty(message = "Please, provide the dni or equivalent") String dni,
 					@NotEmpty(message = "Please, provide the name") String name,
 					@NotEmpty(message = "Please, provide the surname") String surname,
 					@Email(message = "Please, provide a valid email") @NotEmpty(message = "Please, provide the email") String email,
-					@NotEmpty(message = "Please, provide a password") @Length(min = 5, message = "Your password must have at least 5 characters") String password,
 					@NotNull String addressStreet,
 					@NotNull String addressCity,
-					@NotNull String addressZIPCode) {
+					@NotNull String addressZIPCode,@NotEmpty String healthCardNumber, int historyNumber) {
     	this.dni = dni;
         this.name = name;
         this.surname = surname;
         this.email = email;
-        this.password = password;
         this.address = new Address(addressStreet,addressCity,addressZIPCode);
+		this.healthCardNumber = healthCardNumber;
+		this.historyNumber=historyNumber;
     }
 
-    public Long getId() {
+	public Set<Vaccine> getVaccines() {
+		return vaccines;
+	}
+
+	public void setVaccines(Set<Vaccine> vaccines) {
+		this.vaccines = vaccines;
+	}
+
+	public Long getId() {
         return id;
     }
 
@@ -108,14 +141,6 @@ public class Patient implements PrintableOnGui {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public Address getAddress() {
 		return address;
 	}
@@ -135,7 +160,7 @@ public class Patient implements PrintableOnGui {
 	@Override
 	public String toString() {
 		return "Patient [id=" + id + ", dni=" + dni + ", name=" + name + ", surname=" + surname + ", email=" + email
-				+ ", password=" + password + ", address=" + address + ", medicalRecords=" + medicalRecords + "]";
+				+ ", address=" + address + ", medicalRecords=" + medicalRecords + "]";
 	}
 
 	public String guiToString() {

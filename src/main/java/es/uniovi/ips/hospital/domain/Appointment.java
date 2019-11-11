@@ -26,8 +26,12 @@ public class Appointment {
     @NotNull
     @Column(name = "urgent", nullable = false)
     private boolean urgent;
+    
+    @NotNull
+    @Column(name = "contactInfo", nullable = false)
+    private String contactInfo;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Doctor> doctors;
 
     @ManyToOne
@@ -39,26 +43,35 @@ public class Appointment {
     public Appointment() {}
 
     public Appointment(@NotNull LocalDateTime startTime,
-                       @NotNull LocalDateTime endTime,
                        Set<Doctor> doctors,
                        Patient patient,
                        Room room) {
         this.startTime = startTime;
         this.urgent = false;
+        this.contactInfo = patient.getEmail();
         this.doctors = doctors;
         this.patient = patient;
         this.room = room;
     }
     
     public Appointment(@NotNull LocalDateTime startTime,
-			            @NotNull LocalDateTime endTime,
 			            boolean urgent,
 			            Set<Doctor> doctors,
 			            Patient patient,
 			            Room room) {
-    	this(startTime, endTime, doctors, patient, room);
+    	this(startTime, doctors, patient, room);
     	this.urgent = urgent;
 	}
+
+    public Appointment(@NotNull LocalDateTime startTime,
+			           boolean urgent,
+			           String contactInfo,
+                       Set<Doctor> doctors,
+                       Patient patient,
+                       Room room) {
+        this(startTime, doctors, patient, room);
+        this.contactInfo = contactInfo;
+    }
 
     public Long getId() {
         return id;
@@ -82,6 +95,14 @@ public class Appointment {
 
 	public void setUrgent(boolean urgent) {
 		this.urgent = urgent;
+	}
+
+	public String getContactInfo() {
+		return contactInfo;
+	}
+
+	public void setContactInfo(String contactInfo) {
+		this.contactInfo = contactInfo;
 	}
 
 	public Set<Doctor> getDoctors() {

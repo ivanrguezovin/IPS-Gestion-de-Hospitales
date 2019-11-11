@@ -13,6 +13,7 @@ import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.gui.TableFormat;
 import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
+import ca.odell.glazedlists.swing.TableComparatorChooser;
 import es.uniovi.ips.hospital.domain.MedicalRecord;
 import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.util.compare.MedicalRecordComparator;
@@ -123,6 +124,22 @@ public class MedicalRecordDialog extends JDialog {
 		}
 		return lblAddress;
 	}
+	private JPanel getPnButton() {
+		if (pnButton == null) {
+			pnButton = new JPanel();
+			FlowLayout flowLayout = (FlowLayout) pnButton.getLayout();
+			flowLayout.setAlignment(FlowLayout.RIGHT);
+			pnButton.add(getBtnAccept());
+		}
+		return pnButton;
+	}
+	private JButton getBtnAccept() {
+		if (btnAccept == null) {
+			btnAccept = new JButton("Accept");
+			btnAccept.addActionListener(actionEvent -> dispose());
+		}
+		return btnAccept;
+	}
 
     // METODOS Y CLASES DE INICIALIZACION ------------------------------------------------------------
 	
@@ -136,6 +153,7 @@ public class MedicalRecordDialog extends JDialog {
 		SortedList<MedicalRecord> sortedList = new SortedList<MedicalRecord>(eventList, new MedicalRecordComparator());
 		AdvancedTableModel<MedicalRecord> tableModel = GlazedListsSwing.eventTableModelWithThreadProxyList(sortedList, new RecordTableFormat());
 		tblMedicalRecord.setModel(tableModel);
+		TableComparatorChooser.install(tblMedicalRecord, sortedList, TableComparatorChooser.MULTIPLE_COLUMN_MOUSE);
 		this.setModal(true);
 		this.setVisible(true);
 	}
@@ -158,20 +176,5 @@ public class MedicalRecordDialog extends JDialog {
 	        else if(column == 2) return record.getPrescription();
 	        throw new IllegalStateException();
 	    }
-	}
-	private JPanel getPnButton() {
-		if (pnButton == null) {
-			pnButton = new JPanel();
-			FlowLayout flowLayout = (FlowLayout) pnButton.getLayout();
-			flowLayout.setAlignment(FlowLayout.RIGHT);
-			pnButton.add(getBtnAccept());
-		}
-		return pnButton;
-	}
-	private JButton getBtnAccept() {
-		if (btnAccept == null) {
-			btnAccept = new JButton("Accept");
-		}
-		return btnAccept;
 	}
 }

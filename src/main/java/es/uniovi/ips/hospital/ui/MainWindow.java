@@ -5,6 +5,8 @@ import es.uniovi.ips.hospital.domain.Doctor;
 import es.uniovi.ips.hospital.domain.Staff;
 import es.uniovi.ips.hospital.service.LoginService;
 import es.uniovi.ips.hospital.ui.admin.AdminDialog;
+import es.uniovi.ips.hospital.ui.doctor.DoctorDialog;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +22,9 @@ public class MainWindow {
 
     @Autowired
     private AdminDialog adminDialog;
+    
+    @Autowired
+    private DoctorDialog doctorDialog;
 
     public MainWindow() {
 
@@ -81,14 +86,16 @@ public class MainWindow {
         Staff user = loginService.login(email, password);
 
         if (user instanceof Doctor) {
-            // TODO Run Doctor dialog
-            System.out.println("Doctor");
+        	System.out.println("Doctor");
+        	doctorDialog.setVisible(true);
+        	doctorDialog.setDoctor((Doctor) user);
+        	
         }
 
         if (user instanceof AdminAssistant) {
             System.out.println("AdminAssistant");
             adminDialog.setVisible(true);
         }
-
+        
     }
 }
