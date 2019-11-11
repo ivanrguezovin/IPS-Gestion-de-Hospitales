@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import es.uniovi.ips.hospital.ui.admin.appointment.CreateAppointmentDialog;
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageBreakScheduleDialog;
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageWorkScheduleDialog;
+import es.uniovi.ips.hospital.ui.admin.showMedicalRecord.ShowMedicalRecordOfPatient;
 
 @Component
 public class AdminDialog extends JDialog {
@@ -36,6 +37,10 @@ public class AdminDialog extends JDialog {
 	private ManageWorkScheduleDialog manageWorkScheduleDialog;
 	@Autowired
 	private ManageBreakScheduleDialog manageBreakScheduleDialog;
+	@Autowired
+	private ShowMedicalRecordOfPatient showMedicalRecordOfPatient;
+	private JPanel pnPatients;
+	private JButton btnShowMedicalRecords;
 
 	/**
 	 * Create the dialog.
@@ -54,6 +59,8 @@ public class AdminDialog extends JDialog {
 	private JPanel getPnSide() {
 		if (pnSide == null) {
 			pnSide = new JPanel();
+			pnSide.setLayout(new GridLayout(2, 1, 0, 0));
+			pnSide.add(getPnPatients());
 		}
 		return pnSide;
 	}
@@ -104,6 +111,21 @@ public class AdminDialog extends JDialog {
 		}
 		return btnManageBreaks;
 	}
+	private JPanel getPnPatients() {
+		if (pnPatients == null) {
+			pnPatients = new JPanel();
+			pnPatients.setBorder(new TitledBorder(null, "Patients", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			pnPatients.add(getBtnShowMedicalRecords());
+		}
+		return pnPatients;
+	}
+	private JButton getBtnShowMedicalRecords() {
+		if (btnShowMedicalRecords == null) {
+			btnShowMedicalRecords = new JButton("Show Medical Records");
+			btnShowMedicalRecords.addActionListener(actionEvent -> launchShowMedialRecordDialog() );
+		}
+		return btnShowMedicalRecords;
+	}
 	
 	// METODOS DE LANZAMIENTO DE VENTANAS
 
@@ -123,5 +145,11 @@ public class AdminDialog extends JDialog {
 		createAppointmentDialog.fillComboBoxes();
 		createAppointmentDialog.setLocationRelativeTo(this);
 		createAppointmentDialog.setVisible(true);
+	}
+	
+	private void launchShowMedialRecordDialog() {
+		showMedicalRecordOfPatient.fillComboBoxes();
+		showMedicalRecordOfPatient.setLocationRelativeTo(this);
+		showMedicalRecordOfPatient.setVisible(true);
 	}
 }
