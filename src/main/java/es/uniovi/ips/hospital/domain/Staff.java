@@ -13,7 +13,6 @@ import java.util.Set;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@Transactional
 public class Staff implements PrintableOnGui {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

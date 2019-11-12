@@ -1,6 +1,7 @@
 package es.uniovi.ips.hospital.domain;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -31,14 +32,19 @@ public class ICD10 {
     @Column(name = "categoryTitle")
     private String categoryTitle;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Diagnostic> diagnostics;
 
     public ICD10() {
         // Nothing here.
     }
 
-    public ICD10(String categoryCode, String diagnosisCode, String fullCode, String abbreviatedDescription, String fullDescription, String categoryTitle) {
+    public ICD10(String categoryCode,
+                 String diagnosisCode,
+                 String fullCode,
+                 String abbreviatedDescription,
+                 String fullDescription,
+                 String categoryTitle) {
         super();
         this.categoryCode = categoryCode;
         this.diagnosisCode = diagnosisCode;
@@ -46,6 +52,7 @@ public class ICD10 {
         this.abbreviatedDescription = abbreviatedDescription;
         this.fullDescription = fullDescription;
         this.categoryTitle = categoryTitle;
+        this.diagnostics = new HashSet<>();
     }
 
     public Long getId() {
@@ -110,6 +117,10 @@ public class ICD10 {
 
     public void setDiagnostics(Set<Diagnostic> diagnostics) {
         this.diagnostics = diagnostics;
+    }
+
+    public void addDiagnostic(Diagnostic diagnostic) {
+        this.diagnostics.add(diagnostic);
     }
 
     @Override

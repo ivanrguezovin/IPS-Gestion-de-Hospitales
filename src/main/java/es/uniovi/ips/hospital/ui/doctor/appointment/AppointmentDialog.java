@@ -2,13 +2,11 @@ package es.uniovi.ips.hospital.ui.doctor.appointment;
 
 import es.uniovi.ips.hospital.domain.Appointment;
 import es.uniovi.ips.hospital.domain.Diagnostic;
-import es.uniovi.ips.hospital.domain.ICD10;
+import es.uniovi.ips.hospital.domain.Doctor;
 import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.service.DiagnosticService;
-import es.uniovi.ips.hospital.service.ICD10Service;
 import es.uniovi.ips.hospital.ui.doctor.diagnostic.CreateDiagnosticDialog;
 import es.uniovi.ips.hospital.ui.util.render.DiagnosticCellRenderer;
-import es.uniovi.ips.hospital.ui.util.render.ICD10CellRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
@@ -25,23 +23,16 @@ import java.io.IOException;
 public class AppointmentDialog extends JDialog {
     private Appointment appointment;
     private Patient patient;
-    private Diagnostic newDiagnostic;
+    private Doctor doctor;
 
     private JPanel patientInfoPanel;
     private JPanel diagnosticPanel;
-    private JPanel createDiagnosticPanel;
-    private JPanel icd10Panel;
     private JPanel medicalHistoryPanel;
 
     private JLabel nameField;
     private JLabel surnameField;
 
-    private JList<ICD10> icd10List;
     private JList<Diagnostic> diagnosticList;
-    private JTextArea diagnosticArea;
-
-    @Autowired
-    private ICD10Service icd10Service;
 
     @Autowired
     private DiagnosticService diagnosticService;
@@ -57,7 +48,7 @@ public class AppointmentDialog extends JDialog {
 
         this.getContentPane().add(BorderLayout.NORTH, getPatientInfoPanel());
         this.getContentPane().add(BorderLayout.CENTER, getDiagnosticPanel());
-        this.getContentPane().add(BorderLayout.SOUTH, getMedicalHistoryPanel());
+        //this.getContentPane().add(BorderLayout.SOUTH, getMedicalHistoryPanel());
     }
 
     private JPanel getPatientInfoPanel() {
@@ -129,12 +120,15 @@ public class AppointmentDialog extends JDialog {
             JPanel buttonPanel = new JPanel();
             JButton createButton = new JButton("Create diagnostic");
             JButton deleteButton = new JButton("Delete diagnostic");
+            JButton refreshButton = new JButton("Refresh");
 
-            createButton.addActionListener(actionEvent -> createDiagnosticDialog.run());
+            createButton.addActionListener(actionEvent -> createDiagnosticDialog.run(this.getAppointment(), this.getDoctor()));
             deleteButton.addActionListener(actionEvent -> System.out.println("Delete"));
+            refreshButton.addActionListener(actionEvent -> this.loadDiagnostics());
 
             buttonPanel.add(BorderLayout.WEST, createButton);
             buttonPanel.add(BorderLayout.EAST, deleteButton);
+            buttonPanel.add(BorderLayout.EAST, refreshButton);
 
             diagnosticPanel.add(BorderLayout.NORTH, jScrollPane);
             diagnosticPanel.add(BorderLayout.SOUTH, buttonPanel);
@@ -150,43 +144,6 @@ public class AppointmentDialog extends JDialog {
         return diagnosticList;
     }
 
-    private JPanel getCreateDiagnosticPanel() {
-        if (createDiagnosticPanel == null) {
-            createDiagnosticPanel = new JPanel();
-            diagnosticArea = new JTextArea();
-            createDiagnosticPanel.add(BorderLayout.SOUTH, getICD10Panel());
-            createDiagnosticPanel.add(BorderLayout.NORTH, diagnosticArea);
-        }
-        return createDiagnosticPanel;
-    }
-
-    private JPanel getICD10Panel() {
-        if (icd10Panel == null) {
-            icd10Panel = new JPanel();
-            JTextField icd10TextField = new JTextField();
-            DefaultListModel<ICD10> icd10Model = new DefaultListModel<>();
-            icd10List = new JList<>(icd10Model);
-
-            DefaultListModel<ICD10> model = new DefaultListModel<>();
-            for (ICD10 code : icd10Service.findAll()) {
-                model.addElement(code);
-            }
-            icd10List.setModel(model);
-
-            icd10List.setCellRenderer(new ICD10CellRenderer());
-            icd10List.setLayoutOrientation(JList.VERTICAL);
-
-            JScrollPane jScrollPane = new JScrollPane(icd10List,
-                    JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                    JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-            icd10Panel.setLayout(new BorderLayout(0, 0));
-            icd10Panel.add(BorderLayout.NORTH, icd10TextField);
-            icd10Panel.add(BorderLayout.CENTER, jScrollPane);
-            icd10Panel.add(BorderLayout.SOUTH, new JButton("Add"));
-        }
-        return icd10Panel;
-    }
-
     private JPanel getMedicalHistoryPanel() {
         if (medicalHistoryPanel == null) {
             medicalHistoryPanel = new JPanel();
@@ -196,8 +153,9 @@ public class AppointmentDialog extends JDialog {
         return medicalHistoryPanel;
     }
 
-    void run(Appointment appointment) {
+    void run(Appointment appointment, Doctor doctor) {
         this.setAppointment(appointment);
+        this.setDoctor(doctor);
         this.setPatient(appointment.getPatient());
         this.setTitle("Your appointment with " + patient.getName());
         this.nameField.setText(patient.getName());
@@ -221,6 +179,14 @@ public class AppointmentDialog extends JDialog {
 
     public void setPatient(Patient patient) {
         this.patient = patient;
+    }
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
     }
 
     private void loadDiagnostics() {

@@ -18,4 +18,7 @@ public class DiagnosticService {
         return diagnosticRepository.findAllByAppointment(appointment);
     }
 
+    public Diagnostic createDiagnostic(Diagnostic diagnostic) {
+        return diagnosticRepository.save(diagnostic);
+    }
 }

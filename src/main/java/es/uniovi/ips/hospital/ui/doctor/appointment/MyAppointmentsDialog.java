@@ -110,7 +110,7 @@ public class MyAppointmentsDialog extends JDialog {
     private JButton getOpenAppointmentButton() {
         if (openAppointmentButton == null) {
             openAppointmentButton = new JButton("Open");
-            openAppointmentButton.addActionListener(actionEvent -> appointmentDialog.run(this.getSelectedAppointment()));
+            openAppointmentButton.addActionListener(actionEvent -> appointmentDialog.run(this.getSelectedAppointment(), this.myself));
         }
         return openAppointmentButton;
     }

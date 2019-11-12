@@ -1,13 +1,13 @@
 package es.uniovi.ips.hospital.domain;
 
+import es.uniovi.ips.hospital.util.comunication.SendEmail;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-
-import es.uniovi.ips.hospital.util.comunication.SendEmail;
-
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -65,15 +65,15 @@ public class Appointment {
         this.patient = patient;
         this.room = room;
     }
-    
+
     public Appointment(@NotNull LocalDateTime startTime,
-			            boolean urgent,
-			            Set<Doctor> doctors,
-			            Patient patient,
-			            Room room) {
-    	this(startTime, doctors, patient, room);
-    	this.urgent = urgent;
-	}
+                       boolean urgent,
+                       Set<Doctor> doctors,
+                       Patient patient,
+                       Room room) {
+        this(startTime, doctors, patient, room);
+        this.urgent = urgent;
+    }
 
     public Appointment(@NotNull LocalDateTime startTime,
                        boolean urgent,
@@ -110,22 +110,22 @@ public class Appointment {
     }
 
     public boolean isUrgent() {
-		return urgent;
-	}
+        return urgent;
+    }
 
-	public void setUrgent(boolean urgent) {
-		this.urgent = urgent;
-	}
+    public void setUrgent(boolean urgent) {
+        this.urgent = urgent;
+    }
 
-	public String getContactInfo() {
-		return contactInfo;
-	}
+    public String getContactInfo() {
+        return contactInfo;
+    }
 
-	public void setContactInfo(String contactInfo) {
-		this.contactInfo = contactInfo;
-	}
+    public void setContactInfo(String contactInfo) {
+        this.contactInfo = contactInfo;
+    }
 
-	public Set<Doctor> getDoctors() {
+    public Set<Doctor> getDoctors() {
         return doctors;
     }
 

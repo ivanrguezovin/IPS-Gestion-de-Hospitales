@@ -36,4 +36,8 @@ public class ICD10Service {
     public List<String> findAllCategories() {
         return icd10Repository.findCategories();
     }
+
+    public List<ICD10> findByFullCodeIn(List<String> fullCodes) {
+        return icd10Repository.findByFullCodeIn(fullCodes);
+    }
 }

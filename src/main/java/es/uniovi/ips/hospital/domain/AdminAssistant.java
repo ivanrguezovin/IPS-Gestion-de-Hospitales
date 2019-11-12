@@ -7,7 +7,6 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "adminAssistants")
-@Transactional
 public class AdminAssistant extends Staff {
 
     public AdminAssistant() {

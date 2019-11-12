@@ -10,4 +10,6 @@ public interface ICD10Repository extends JpaRepository<ICD10, Long> {
 
     @Query("SELECT DISTINCT icd10.categoryCode FROM ICD10 icd10")
     List<String> findCategories();
+
+    List<ICD10> findByFullCodeIn(List<String> fullCode);
 }

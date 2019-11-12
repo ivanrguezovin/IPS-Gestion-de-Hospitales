@@ -3,7 +3,7 @@ package es.uniovi.ips.hospital.domain;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "diagnostics")
@@ -23,9 +23,8 @@ public class Diagnostic {
     @ManyToOne
     private Doctor doctor;
 
-    @NotNull
     @ManyToMany(mappedBy = "diagnostics", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<ICD10> codes;
+    private List<ICD10> codes;
 
     @NotNull
     @ManyToOne
@@ -41,7 +40,7 @@ public class Diagnostic {
 
     public Diagnostic(@NotNull String comment,
                       @NotNull Doctor doctor,
-                      @NotNull Set<ICD10> codes,
+                      @NotNull List<ICD10> codes,
                       @NotNull Appointment appointment,
                       @NotNull LocalDateTime created) {
         super();
@@ -76,11 +75,11 @@ public class Diagnostic {
         this.doctor = doctor;
     }
 
-    public Set<ICD10> getCodes() {
+    public List<ICD10> getCodes() {
         return codes;
     }
 
-    public void setCodes(Set<ICD10> codes) {
+    public void setCodes(List<ICD10> codes) {
         this.codes = codes;
     }
 
