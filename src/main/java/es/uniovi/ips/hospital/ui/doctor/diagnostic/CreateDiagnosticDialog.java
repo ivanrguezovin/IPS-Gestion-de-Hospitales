@@ -37,7 +37,7 @@ public class CreateDiagnosticDialog extends JDialog {
     private Doctor doctor;
 
     public CreateDiagnosticDialog() {
-        setContentPane(contentPane);
+        this.setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 

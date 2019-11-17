@@ -91,7 +91,7 @@ public class MainWindow {
         Staff user = loginService.login(email, password);
 
         // TODO Remove me
-        user = doctorService.findByEmail("doctor@ips.test");
+        //user = doctorService.findByEmail("doctor@ips.test");
         if (user instanceof Doctor) {
             //frame.setVisible(false);
             doctorDialog.run((Doctor) user);

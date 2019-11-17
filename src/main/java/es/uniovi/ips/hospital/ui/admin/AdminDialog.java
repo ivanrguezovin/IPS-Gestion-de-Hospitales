@@ -32,16 +32,22 @@ public class AdminDialog extends JDialog {
     private JButton btnManageSchedules;
     private JButton btnManageBreaks;
 
-	@Autowired
-	private CreateAppointmentDialog createAppointmentDialog;
-	@Autowired
-	private ManageWorkScheduleDialog manageWorkScheduleDialog;
-	@Autowired
-	private ManageBreakScheduleDialog manageBreakScheduleDialog;
-	@Autowired
-	private ShowMedicalRecordOfPatient showMedicalRecordOfPatient;
-	private JPanel pnPatients;
-	private JButton btnShowMedicalRecords;
+    @Autowired
+    private CreateAppointmentDialog createAppointmentDialog;
+    @Autowired
+    private ManageWorkScheduleDialog manageWorkScheduleDialog;
+    @Autowired
+    private ManageBreakScheduleDialog manageBreakScheduleDialog;
+    @Autowired
+    private ShowMedicalRecordOfPatient showMedicalRecordOfPatient;
+    @Autowired
+    private CreateUsersDialog createUsersDialog;
+    @Autowired
+    private ShowAppointmentsDialog showAppointmentsDialog;
+    private JPanel pnPatients;
+    private JButton btnShowMedicalRecords;
+    private JPanel pnCreateUsers;
+    private JButton btnCreateUsers;
 
     /**
      * Create the dialog.
@@ -58,100 +64,152 @@ public class AdminDialog extends JDialog {
         contentPanel.add(getPnButtons());
     }
 
-	private JPanel getPnSide() {
-		if (pnSide == null) {
-			pnSide = new JPanel();
-			pnSide.setLayout(new GridLayout(2, 1, 0, 0));
-			pnSide.add(getPnPatients());
-		}
-		return pnSide;
-	}
-	private JPanel getPnButtons() {
-		if (pnButtons == null) {
-			pnButtons = new JPanel();
-			pnButtons.setLayout(new GridLayout(2, 0, 0, 0));
-			pnButtons.add(getPnAppointments());
-			pnButtons.add(getPnSchedules());
-		}
-		return pnButtons;
-	}
-	private JPanel getPnAppointments() {
-		if (pnAppointments == null) {
-			pnAppointments = new JPanel();
-			pnAppointments.setBorder(new TitledBorder(null, "Appointments", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			pnAppointments.add(getBtnCreateAppointment());
-		}
-		return pnAppointments;
-	}
-	private JPanel getPnSchedules() {
-		if (pnSchedules == null) {
-			pnSchedules = new JPanel();
-			pnSchedules.setBorder(new TitledBorder(null, "Schedules", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			pnSchedules.add(getBtnManageSchedules());
-			pnSchedules.add(getBtnManageBreaks());
-		}
-		return pnSchedules;
-	}
-	private JButton getBtnCreateAppointment() {
-		if (btnCreateAppointment == null) {
-			btnCreateAppointment = new JButton("Create appointment");
-			btnCreateAppointment.addActionListener(actionEvent -> launchCreateAppointmentDialog());
-		}
-		return btnCreateAppointment;
-	}
-	private JButton getBtnManageSchedules() {
-		if (btnManageSchedules == null) {
-			btnManageSchedules = new JButton("Manage schedules");
-			btnManageSchedules.addActionListener(actionEvent -> launchScheduleDialog() );
-		}
-		return btnManageSchedules;
-	}
-	private JButton getBtnManageBreaks() {
-		if (btnManageBreaks == null) {
-			btnManageBreaks = new JButton("Manage breaks");
-			btnManageBreaks.addActionListener(actionEvent -> launchBreakDialog() );
-		}
-		return btnManageBreaks;
-	}
-	private JPanel getPnPatients() {
-		if (pnPatients == null) {
-			pnPatients = new JPanel();
-			pnPatients.setBorder(new TitledBorder(null, "Patients", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			pnPatients.add(getBtnShowMedicalRecords());
-		}
-		return pnPatients;
-	}
-	private JButton getBtnShowMedicalRecords() {
-		if (btnShowMedicalRecords == null) {
-			btnShowMedicalRecords = new JButton("Show Medical Records");
-			btnShowMedicalRecords.addActionListener(actionEvent -> launchShowMedialRecordDialog() );
-		}
-		return btnShowMedicalRecords;
-	}
+    private JPanel getPnSide() {
+        if (pnSide == null) {
+            pnSide = new JPanel();
+            pnSide.setLayout(new GridLayout(2, 1, 0, 0));
+            pnSide.add(getPnPatients());
+            pnSide.add(getPnCreateUsers());
+        }
+        return pnSide;
+    }
 
-	// METODOS DE LANZAMIENTO DE VENTANAS
+    private JPanel getPnButtons() {
+        if (pnButtons == null) {
+            pnButtons = new JPanel();
+            pnButtons.setLayout(new GridLayout(2, 0, 0, 0));
+            pnButtons.add(getPnAppointments());
+            pnButtons.add(getPnSchedules());
+        }
+        return pnButtons;
+    }
 
-	private void launchScheduleDialog() {
-		manageWorkScheduleDialog.fillLists();
-		manageWorkScheduleDialog.setLocationRelativeTo(this);
-		manageWorkScheduleDialog.setVisible(true);
-	}
+    private JPanel getPnAppointments() {
+        if (pnAppointments == null) {
+            pnAppointments = new JPanel();
+            pnAppointments.setBorder(new TitledBorder(null, "Appointments", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+            pnAppointments.add(getBtnCreateAppointment());
+            pnAppointments.add(getBtnEditAppointment());
+        }
+        return pnAppointments;
+    }
 
-	private void launchBreakDialog() {
-		manageBreakScheduleDialog.fillLists();
-		manageBreakScheduleDialog.setLocationRelativeTo(this);
-		manageBreakScheduleDialog.setVisible(true);
-	}
+    private JPanel getPnSchedules() {
+        if (pnSchedules == null) {
+            pnSchedules = new JPanel();
+            pnSchedules.setBorder(new TitledBorder(null, "Schedules", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+            pnSchedules.add(getBtnManageSchedules());
+            pnSchedules.add(getBtnManageBreaks());
+        }
+        return pnSchedules;
+    }
 
-	private void launchCreateAppointmentDialog() {
-		createAppointmentDialog.fillComboBoxes();
-		createAppointmentDialog.setLocationRelativeTo(this);
-		createAppointmentDialog.setVisible(true);
-	}
+    private JButton getBtnCreateAppointment() {
+        if (btnCreateAppointment == null) {
+            btnCreateAppointment = new JButton("Create appointment");
+            btnCreateAppointment.addActionListener(actionEvent -> launchCreateAppointmentDialog());
+        }
+        return btnCreateAppointment;
+    }
 
-	private void launchShowMedialRecordDialog() {
-		showMedicalRecordOfPatient.fillComboBoxes();
-		showMedicalRecordOfPatient.setLocationRelativeTo(this);
-		showMedicalRecordOfPatient.setVisible(true);
-	}
+    private JButton getBtnEditAppointment() {
+        if (btnEditAppointment == null) {
+            btnEditAppointment = new JButton("Edit appointment");
+            btnEditAppointment.addActionListener(actionEvent -> launchShowAppointmentsDialog());
+        }
+        return btnEditAppointment;
+    }
+
+    private JButton getBtnManageSchedules() {
+        if (btnManageSchedules == null) {
+            btnManageSchedules = new JButton("Manage schedules");
+            btnManageSchedules.addActionListener(actionEvent -> launchScheduleDialog());
+        }
+        return btnManageSchedules;
+    }
+
+    private JButton getBtnManageBreaks() {
+        if (btnManageBreaks == null) {
+            btnManageBreaks = new JButton("Manage breaks");
+            btnManageBreaks.addActionListener(actionEvent -> launchBreakDialog());
+        }
+        return btnManageBreaks;
+    }
+
+    private JPanel getPnPatients() {
+        if (pnPatients == null) {
+            pnPatients = new JPanel();
+            pnPatients.setBorder(new TitledBorder(null, "Patients", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+            pnPatients.add(getBtnShowMedicalRecords());
+        }
+        return pnPatients;
+    }
+
+    private JButton getBtnShowMedicalRecords() {
+        if (btnShowMedicalRecords == null) {
+            btnShowMedicalRecords = new JButton("Show Medical Records");
+            btnShowMedicalRecords.addActionListener(actionEvent -> launchShowMedialRecordDialog());
+        }
+        return btnShowMedicalRecords;
+    }
+
+    // METODOS DE LANZAMIENTO DE VENTANAS
+
+    private void launchCreateAppointmentDialog() {
+        createAppointmentDialog.fillComboBoxes();
+        createAppointmentDialog.setLocationRelativeTo(this);
+        createAppointmentDialog.setVisible(true);
+    }
+
+    private void launchShowAppointmentsDialog() {
+        showAppointmentsDialog.showAppointments();
+        showAppointmentsDialog.setLocationRelativeTo(this);
+        showAppointmentsDialog.setVisible(true);
+    }
+
+    private void launchScheduleDialog() {
+        manageWorkScheduleDialog.fillLists();
+        manageWorkScheduleDialog.setLocationRelativeTo(this);
+        manageWorkScheduleDialog.setVisible(true);
+    }
+
+    private void launchBreakDialog() {
+        manageBreakScheduleDialog.fillLists();
+        manageBreakScheduleDialog.setLocationRelativeTo(this);
+        manageBreakScheduleDialog.setVisible(true);
+    }
+
+
+    private void launchCreateUsers() {
+        createUsersDialog.setLocationRelativeTo(null);
+        createUsersDialog.setVisible(true);
+    }
+
+    private JPanel getPnCreateUsers() {
+        if (pnCreateUsers == null) {
+            pnCreateUsers = new JPanel();
+            pnCreateUsers.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Create Users", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+            pnCreateUsers.add(getBtnCreateUsers());
+        }
+        return pnCreateUsers;
+    }
+
+    private JButton getBtnCreateUsers() {
+        if (btnCreateUsers == null) {
+            btnCreateUsers = new JButton("Create Users");
+            btnCreateUsers.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    launchCreateUsers();
+                }
+            });
+            btnCreateUsers.setFont(new Font("Tahoma", Font.BOLD, 11));
+        }
+        return btnCreateUsers;
+    }
+
+    private void launchShowMedialRecordDialog() {
+        showMedicalRecordOfPatient.fillComboBoxes();
+        showMedicalRecordOfPatient.setLocationRelativeTo(this);
+        showMedicalRecordOfPatient.setVisible(true);
+    }
 }

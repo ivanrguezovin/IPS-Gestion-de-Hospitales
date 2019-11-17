@@ -23,8 +23,7 @@ public class Appointment {
     @Column(name = "startTime", nullable = false)
     private LocalDateTime startTime;
 
-    @NotNull
-    @Column(name = "endTime", nullable = false)
+    @Column(name = "endTime")
     private LocalDateTime endTime;
 
     @NotNull
