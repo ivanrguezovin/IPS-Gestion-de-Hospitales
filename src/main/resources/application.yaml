@@ -1,0 +1,27 @@
+# Hibernate
+spring:
+  mvc:
+    favicon:
+      enabled: false
+  datasource:
+    url: jdbc:h2:mem:hospitaldb
+    username: sa
+    password:
+  application:
+    name: "IPS"
+  h2:
+    console:
+      enabled: true
+      path: /db
+
+  # JPA
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.H2Dialect
+
+# Logging
+logging:
+  level:
+    org: info
