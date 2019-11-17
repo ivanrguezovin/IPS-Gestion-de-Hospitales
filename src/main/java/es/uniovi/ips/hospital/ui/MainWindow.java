@@ -3,10 +3,10 @@ package es.uniovi.ips.hospital.ui;
 import es.uniovi.ips.hospital.domain.AdminAssistant;
 import es.uniovi.ips.hospital.domain.Doctor;
 import es.uniovi.ips.hospital.domain.Staff;
+import es.uniovi.ips.hospital.service.DoctorService;
 import es.uniovi.ips.hospital.service.LoginService;
 import es.uniovi.ips.hospital.ui.admin.AdminDialog;
 import es.uniovi.ips.hospital.ui.doctor.DoctorDialog;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,13 +22,18 @@ public class MainWindow {
 
     @Autowired
     private AdminDialog adminDialog;
-    
+
     @Autowired
     private DoctorDialog doctorDialog;
 
-    public MainWindow() {
+    // TODO Remove me
+    @Autowired
+    private DoctorService doctorService;
 
-        JFrame frame = new JFrame("Login");
+    private JFrame frame;
+
+    public MainWindow() {
+        frame = new JFrame("Hospital");
 
         JLabel emailLabel = new JLabel("Email");
         JLabel passwordLabel = new JLabel("Password");
@@ -85,17 +90,16 @@ public class MainWindow {
     private void login(String email, char[] password) {
         Staff user = loginService.login(email, password);
 
+        // TODO Remove me
+        //user = doctorService.findByEmail("doctor@ips.test");
         if (user instanceof Doctor) {
-        	System.out.println("Doctor");
-        	doctorDialog.setVisible(true);
-        	doctorDialog.setDoctor((Doctor) user);
-        	
-        }
+            //frame.setVisible(false);
+            doctorDialog.run((Doctor) user);
 
-        if (user instanceof AdminAssistant) {
-            System.out.println("AdminAssistant");
+        } else if (user instanceof AdminAssistant) {
             adminDialog.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(frame, "Wrong user/credentials");
         }
-        
     }
 }

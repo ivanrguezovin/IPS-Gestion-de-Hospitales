@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @SpringBootApplication
+@EnableTransactionManagement
 public class HospitalApplication implements CommandLineRunner {
 
     @Autowired
@@ -31,6 +33,8 @@ public class HospitalApplication implements CommandLineRunner {
     private ScheduleService scheduleService;
     @Autowired
     private AppointmentService appointmentService;
+    @Autowired
+    private ICD10Service icd10Service;
 
     private Faker faker;
 
@@ -43,15 +47,15 @@ public class HospitalApplication implements CommandLineRunner {
         faker = new Faker();
         generateFakeAdminAssistants(10);
         generateTestAssistant();
+        generateFakeNurses(10);
+        generateFakePatients(10);
+        generateFakeRooms(10);
         generateFakeDoctors(10);
         generateTestDoctor();
-        generateFakeNurses(10);
-        generateFakePatients(100);
-        generateFakeRooms(10);
-        generateAppointments();
+        icd10Service.load();
     }
 
-	private void generateFakeAdminAssistants(int n) {
+    private void generateFakeAdminAssistants(int n) {
         for (int i = 0; i < n; i++) {
             AdminAssistant adminAssistant = new AdminAssistant(
                     faker.bothify("########?").toUpperCase(),
@@ -80,7 +84,7 @@ public class HospitalApplication implements CommandLineRunner {
     }
 
     private void generateFakeDoctors(int n) {
-    	Long l = 1L;
+        Long l = 1L;
         for (int i = 0; i < n; i++) {
             Doctor doctor = new Doctor(
                     faker.bothify("########?").toUpperCase(),
@@ -107,12 +111,13 @@ public class HospitalApplication implements CommandLineRunner {
                 faker.address().streetAddress(),
                 faker.address().city(),
                 faker.address().zipCode(), "Especialidad de prueba", 11L);
-        doctorService.createDoctor(doctor);
+        doctor = doctorService.createDoctor(doctor);
         generateSchedule(doctor);
+        generateAppointments(doctor, 10);
     }
 
     private void generateFakeNurses(int n) {
-    	Long l = 12L;
+        Long l = 12L;
         for (int i = 0; i < n; i++) {
             Nurse nurse = new Nurse(
                     faker.bothify("########?").toUpperCase(),
@@ -122,7 +127,7 @@ public class HospitalApplication implements CommandLineRunner {
                     faker.internet().password(5, 10),
                     faker.address().streetAddress(),
                     faker.address().city(),
-                    faker.address().zipCode(),"Especialidad de prueba", l);
+                    faker.address().zipCode(), "Especialidad de prueba", l);
             l++;
             nurseService.createNurse(nurse);
         }
@@ -151,6 +156,7 @@ public class HospitalApplication implements CommandLineRunner {
             Room room = new Room();
             room.setLocation(faker.numerify("###"));
             roomService.createRoom(room);
+            roomService.createRoom(room);
         }
     }
 
@@ -175,19 +181,26 @@ public class HospitalApplication implements CommandLineRunner {
         }
     }
 
-    private void generateAppointments() {
-    	List<Patient> patients = patientService.findAllPatient();
-    	List<Room> rooms = roomService.findAllRooms();
-    	for(Patient patient: patients) {
-    		try {
-	    		Appointment appointment = new Appointment();
-	    		appointment.setPatient(patient);
-	    		appointment.setStartTime(LocalDateTime.of(2019, 12, faker.number().numberBetween(1, 31), faker.number().numberBetween(0, 11), 0));
-	    		appointment.setRoom(rooms.get(faker.number().numberBetween(0, rooms.size()-1)));
-	    		appointment.setUrgent(faker.bool().bool());
-	    		appointment.setContactInfo(patient.getEmail());
-				appointmentService.createAppointment(appointment);
-			} catch (BusinessException e) {}
-    	}
+
+    private void generateAppointments(Doctor doctor, int n) {
+        List<Patient> patients = patientService.findAllPatient();
+        List<Room> rooms = roomService.findAllRooms();
+        for (int i = 0; i < n; i++) {
+            Appointment appointment = new Appointment();
+            appointment.setStartTime(LocalDateTime.now());
+            appointment.setEndTime(LocalDateTime.now().plusMinutes(45));
+            appointment.setPatient(patients.get(0));
+            appointment.addDoctor(doctor);
+            appointment.setRoom(rooms.get(0));
+            appointment.setContactInfo(appointment.getPatient().getEmail());
+            try {
+
+                appointmentService.createAppointment(appointment);
+            } catch (BusinessException e) {
+                e.printStackTrace();
+            }
+            doctor.addAppointment(appointment);
+            doctorService.updateDoctor(doctor);
+        }
     }
 }

@@ -1,8 +1,7 @@
 package es.uniovi.ips.hospital.domain;
 
-import org.hibernate.validator.constraints.Length;
-
 import es.uniovi.ips.hospital.ui.util.PrintableOnGui;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -18,14 +17,14 @@ public class Patient implements PrintableOnGui {
     @SequenceGenerator(name = "sequenceGenerator")
     @Column(name = "id")
     private Long id;
-    
+
     @NotNull
-    @Column(name = "historyNumber", unique=true)
-    private int historyNumber;
-    
+    @Column(name = "historyNumber", unique = true)
+    private Integer historyNumber;
+
     @NotNull
-    @Column(name = "dni", unique=true)
-    @Length(min=9, max=9, message = "Your DNI is not a valid one")
+    @Column(name = "dni", unique = true)
+    @Length(min = 9, max = 9, message = "Your DNI is not a valid one")
     private String dni;
 
     @NotEmpty(message = "Please, provide the name")
@@ -45,63 +44,42 @@ public class Patient implements PrintableOnGui {
     @Embedded
     @Column(name = "address", nullable = false)
     private Address address;
-    
+
     @NotNull
-    @Length(min=10, max=10, message = "Your health card number is not a valid one")
-    @Column(name="healthCardNumber", unique=true)
+    @Length(min = 10, max = 10, message = "Your health card number is not a valid one")
+    @Column(name = "healthCardNumber", unique = true)
     private String healthCardNumber;
 
     @OneToMany(mappedBy = "patient", fetch = FetchType.EAGER)
     private Set<MedicalRecord> medicalRecords;
-    
-    @OneToMany(mappedBy="patient", fetch=FetchType.EAGER)
+
+    @OneToMany(mappedBy = "patient", fetch = FetchType.EAGER)
     private Set<Vaccine> vaccines;
 
-    
-    
-    public int getHistoryNumber() {
-		return historyNumber;
-	}
-
-	public void setHistoryNumber(int historyNumber) {
-		this.historyNumber = historyNumber;
-	}
-
-	public String getHealthCardNumber() {
-		return healthCardNumber;
-	}
-
-	public void setHealthCardNumber(String healthCardNumber) {
-		this.healthCardNumber = healthCardNumber;
-	}
-
-	public Patient() { }
+    public Patient() {
+        // Nothing here.
+    }
 
     public Patient(@NotEmpty(message = "Please, provide the dni or equivalent") String dni,
-					@NotEmpty(message = "Please, provide the name") String name,
-					@NotEmpty(message = "Please, provide the surname") String surname,
-					@Email(message = "Please, provide a valid email") @NotEmpty(message = "Please, provide the email") String email,
-					@NotNull String addressStreet,
-					@NotNull String addressCity,
-					@NotNull String addressZIPCode,@NotEmpty String healthCardNumber, int historyNumber) {
-    	this.dni = dni;
+                   @NotEmpty(message = "Please, provide the name") String name,
+                   @NotEmpty(message = "Please, provide the surname") String surname,
+                   @Email(message = "Please, provide a valid email")
+                   @NotEmpty(message = "Please, provide the email") String email,
+                   @NotNull String addressStreet,
+                   @NotNull String addressCity,
+                   @NotNull String addressZIPCode,
+                   @NotEmpty String healthCardNumber,
+                   Integer historyNumber) {
+        this.dni = dni;
         this.name = name;
         this.surname = surname;
         this.email = email;
-        this.address = new Address(addressStreet,addressCity,addressZIPCode);
-		this.healthCardNumber = healthCardNumber;
-		this.historyNumber=historyNumber;
+        this.address = new Address(addressStreet, addressCity, addressZIPCode);
+        this.healthCardNumber = healthCardNumber;
+        this.historyNumber = historyNumber;
     }
 
-	public Set<Vaccine> getVaccines() {
-		return vaccines;
-	}
-
-	public void setVaccines(Set<Vaccine> vaccines) {
-		this.vaccines = vaccines;
-	}
-
-	public Long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -109,15 +87,23 @@ public class Patient implements PrintableOnGui {
         this.id = id;
     }
 
+    public Integer getHistoryNumber() {
+        return historyNumber;
+    }
+
+    public void setHistoryNumber(Integer historyNumber) {
+        this.historyNumber = historyNumber;
+    }
+
     public String getDni() {
-		return dni;
-	}
+        return dni;
+    }
 
-	public void setDni(String dni) {
-		this.dni = dni;
-	}
+    public void setDni(String dni) {
+        this.dni = dni;
+    }
 
-	public String getName() {
+    public String getName() {
         return name;
     }
 
@@ -142,12 +128,20 @@ public class Patient implements PrintableOnGui {
     }
 
     public Address getAddress() {
-		return address;
-	}
+        return address;
+    }
 
-	public void setAddress(Address address) {
-		this.address = address;
-	}
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public String getHealthCardNumber() {
+        return healthCardNumber;
+    }
+
+    public void setHealthCardNumber(String healthCardNumber) {
+        this.healthCardNumber = healthCardNumber;
+    }
 
     public Set<MedicalRecord> getMedicalRecords() {
         return medicalRecords;
@@ -157,13 +151,21 @@ public class Patient implements PrintableOnGui {
         this.medicalRecords = medicalRecords;
     }
 
-	@Override
-	public String toString() {
-		return "Patient [id=" + id + ", dni=" + dni + ", name=" + name + ", surname=" + surname + ", email=" + email
-				+ ", address=" + address + ", medicalRecords=" + medicalRecords + "]";
-	}
+    public Set<Vaccine> getVaccines() {
+        return vaccines;
+    }
 
-	public String guiToString() {
-		return name + " " + surname + " - " + dni;
-	}
+    public void setVaccines(Set<Vaccine> vaccines) {
+        this.vaccines = vaccines;
+    }
+
+    @Override
+    public String toString() {
+        return "Patient [id=" + id + ", dni=" + dni + ", name=" + name + ", surname=" + surname + ", email=" + email
+                + ", address=" + address + ", medicalRecords=" + medicalRecords + "]";
+    }
+
+    public String guiToString() {
+        return name + " " + surname + " - " + dni;
+    }
 }

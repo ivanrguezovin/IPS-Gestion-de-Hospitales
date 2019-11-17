@@ -7,6 +7,7 @@ import javax.mail.internet.AddressException;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -21,6 +22,9 @@ public class Appointment {
     @NotNull
     @Column(name = "startTime", nullable = false)
     private LocalDateTime startTime;
+
+    @Column(name = "endTime")
+    private LocalDateTime endTime;
 
     @NotNull
     @Column(name = "urgent", nullable = false)
@@ -39,13 +43,20 @@ public class Appointment {
     @ManyToOne
     private Room room;
 
+    @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Diagnostic> diagnostics;
+
     public Appointment() {
+        doctors = new HashSet<>();
+        diagnostics = new HashSet<>();
+        this.urgent = false;
     }
 
     public Appointment(@NotNull LocalDateTime startTime,
                        Set<Doctor> doctors,
                        Patient patient,
                        Room room) {
+        super();
         this.startTime = startTime;
         this.urgent = false;
         this.contactInfo = patient.getEmail();
@@ -89,6 +100,14 @@ public class Appointment {
         this.startTime = startTime;
     }
 
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
     public boolean isUrgent() {
         return urgent;
     }
@@ -121,6 +140,10 @@ public class Appointment {
         return aux.toString();
     }
 
+    public void addDoctor(Doctor doctor) {
+        this.getDoctors().add(doctor);
+    }
+
     public Patient getPatient() {
         return patient;
     }
@@ -135,6 +158,14 @@ public class Appointment {
 
     public void setRoom(Room room) {
         this.room = room;
+    }
+
+    public Set<Diagnostic> getDiagnostics() {
+        return diagnostics;
+    }
+
+    public void setDiagnostics(Set<Diagnostic> diagnostics) {
+        this.diagnostics = diagnostics;
     }
 
     @Override
@@ -166,12 +197,6 @@ public class Appointment {
         } else if (!startTime.equals(other.startTime))
             return false;
         return true;
-    }
-
-    @Override
-    public String toString() {
-        return "Appointment [id=" + id + ", startTime=" + startTime + ", urgent=" + urgent
-                + ", doctors=" + doctors + ", patient=" + patient + ", room=" + room + "]";
     }
 
     public String guiToString() {
