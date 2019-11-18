@@ -5,7 +5,6 @@ import es.uniovi.ips.hospital.domain.Diagnostic;
 import es.uniovi.ips.hospital.domain.Doctor;
 import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.service.DiagnosticService;
-import es.uniovi.ips.hospital.ui.doctor.diagnostic.CreateDiagnosticDialog;
 import es.uniovi.ips.hospital.ui.util.render.DiagnosticCellRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,9 +35,6 @@ public class AppointmentDialog extends JDialog {
 
     @Autowired
     private DiagnosticService diagnosticService;
-
-    @Autowired
-    private CreateDiagnosticDialog createDiagnosticDialog;
 
     public AppointmentDialog() {
         appointment = new Appointment();
@@ -122,7 +118,6 @@ public class AppointmentDialog extends JDialog {
             JButton deleteButton = new JButton("Delete diagnostic");
             JButton refreshButton = new JButton("Refresh");
 
-            createButton.addActionListener(actionEvent -> createDiagnosticDialog.run(this.getAppointment(), this.getDoctor()));
             deleteButton.addActionListener(actionEvent -> System.out.println("Delete"));
             refreshButton.addActionListener(actionEvent -> this.loadDiagnostics());
 
