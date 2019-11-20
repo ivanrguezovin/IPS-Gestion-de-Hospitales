@@ -2,8 +2,6 @@ package es.uniovi.ips.hospital.domain;
 
 import es.uniovi.ips.hospital.ui.util.PrintableOnGui;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;

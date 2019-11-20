@@ -1,7 +1,5 @@
 package es.uniovi.ips.hospital.domain;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.Entity;
 import javax.persistence.Table;
 

@@ -8,7 +8,12 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "schedule")
 public class Schedule implements Serializable {
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -547853882370610317L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;

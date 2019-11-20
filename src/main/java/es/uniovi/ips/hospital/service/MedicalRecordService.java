@@ -1,11 +1,8 @@
 package es.uniovi.ips.hospital.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import es.uniovi.ips.hospital.domain.Doctor;
 import es.uniovi.ips.hospital.domain.MedicalRecord;
 import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.repository.MedicalRecordRepository;
