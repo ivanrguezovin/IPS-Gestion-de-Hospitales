@@ -33,6 +33,10 @@ public class Appointment {
     @NotNull
     @Column(name = "contactInfo", nullable = false)
     private String contactInfo;
+    
+    @NotNull
+    @Column(name = "confirmed", nullable = false)
+    private boolean confirmed;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Doctor> doctors;
@@ -50,6 +54,7 @@ public class Appointment {
         doctors = new HashSet<>();
         diagnostics = new HashSet<>();
         this.urgent = false;
+        this.confirmed = true;
     }
 
     public Appointment(@NotNull LocalDateTime startTime,
@@ -112,7 +117,15 @@ public class Appointment {
         return urgent;
     }
 
-    public void setUrgent(boolean urgent) {
+    public boolean isConfirmed() {
+		return confirmed;
+	}
+
+	public void setConfirmed(boolean confirmed) {
+		this.confirmed = confirmed;
+	}
+
+	public void setUrgent(boolean urgent) {
         this.urgent = urgent;
     }
 

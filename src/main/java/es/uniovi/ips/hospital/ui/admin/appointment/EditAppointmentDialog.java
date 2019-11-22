@@ -81,6 +81,7 @@ public class EditAppointmentDialog extends JDialog {
 	private List<Doctor> selectedDoctors;
 	private List<Doctor> availableDoctors;
 	private LocalDateTime appointmentDateTime;
+    private LocalDateTime appointmentEndTime;
 	private Appointment appointment;
 	
 	private final JPanel contentPanel = new JPanel();
@@ -121,6 +122,8 @@ public class EditAppointmentDialog extends JDialog {
 	private Label lblTime;
     private TimePicker timePicker;
     private JButton btnSetDate;
+    private Label lblEnd;
+    private TimePicker timePickerEnd;
     private ActionListener setDateAction;
     private ActionListener modifyDateAction;
 
@@ -378,6 +381,8 @@ public class EditAppointmentDialog extends JDialog {
 			pnTimePicker = new Panel();
 			pnTimePicker.add(getLblTime());
 			pnTimePicker.add(getTimePicker());
+            pnTimePicker.add(getLblEnd());
+            pnTimePicker.add(getTimePickerEnd());
 		}
 		return pnTimePicker;
 	}
@@ -393,6 +398,20 @@ public class EditAppointmentDialog extends JDialog {
         }
         return timePicker;
     }
+    
+	private Label getLblEnd() {
+		if (lblEnd == null) {
+			lblEnd = new Label("Start:");
+		}
+		return lblEnd;
+	}
+	
+	private TimePicker getTimePickerEnd() {
+		if (timePickerEnd == null) {
+			timePickerEnd = new TimePicker();
+		}
+		return timePickerEnd;
+	}
 	private JButton getBtnSetDate() {
 		if (btnSetDate == null) {
 			btnSetDate = new JButton("Set date");
@@ -438,6 +457,7 @@ public class EditAppointmentDialog extends JDialog {
     	chckbxUrgent.setSelected(appointment.isUrgent());
     	cbRoom.setSelectedItem(appointment.getRoom());
     	timePicker.setTime(appointment.getStartTime().toLocalTime());
+    	timePickerEnd.setTime(appointment.getEndTime().toLocalTime());
     	selectedDoctors = new ArrayList<Doctor>(appointment.getDoctors());
     	selectedDoctorsList.addAll(selectedDoctors);
     	doctorList.removeAll(selectedDoctors);
@@ -481,6 +501,7 @@ public class EditAppointmentDialog extends JDialog {
     		Set<Doctor> doctorsSet = new HashSet<Doctor>(selectedDoctors);
     		appointment.setPatient((Patient) cbPatient.getSelectedItem());
     		appointment.setStartTime(appointmentDateTime);
+    		appointment.setEndTime(appointmentEndTime);
     		appointment.setUrgent(chckbxUrgent.isSelected());
     		appointment.setContactInfo(txtContactInfo.getText());
     		appointment.setRoom((Room) cbRoom.getSelectedItem());
@@ -552,6 +573,10 @@ public class EditAppointmentDialog extends JDialog {
 			checkTime();
 			LocalDate date = calendar.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 			appointmentDateTime = LocalDateTime.of(date, timePicker.getTime());
+            if (timePicker.getTime().isBefore(timePickerEnd.getTime()))
+            	appointmentEndTime = LocalDateTime.of(date, timePickerEnd.getTime());
+            else
+            	appointmentEndTime = LocalDateTime.of(date.plusDays(1), timePickerEnd.getTime());
 			// Desactivamos los elementos de selección de fecha y cambiamos el botón
 			setAppointmentComponentsEnabled(false);
 			swapButton();
@@ -566,6 +591,7 @@ public class EditAppointmentDialog extends JDialog {
 
 	private void modifyDate() {
 		appointmentDateTime = null;
+        appointmentEndTime = null;
 		// Reiniciamos los doctores seleccionados, en otra hora pueden no trabajar
 		selectedDoctors.clear();
 		lblDoctors.setText("");
@@ -623,8 +649,10 @@ public class EditAppointmentDialog extends JDialog {
 	}
 
 	private void checkTime() throws InputException {
-		if (timePicker.getTime() == null)
-			throw new InputException("You must select a time for the appointment");
+        if (timePicker.getTime() == null)
+            throw new InputException("You must select a start time for the appointment");
+        if (timePicker.getTime() == null)
+            throw new InputException("You must select an end time for the appointment");
 	}
 	
 	private void checkRoom() throws InputException {

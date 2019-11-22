@@ -1,4 +1,4 @@
-package es.uniovi.ips.hospital.ui.admin.appointment;
+package es.uniovi.ips.hospital.ui.doctor.appointment;
 
 import ca.odell.glazedlists.BasicEventList;
 import ca.odell.glazedlists.EventList;
@@ -37,7 +37,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class CreateAppointmentDialog extends JDialog {
+public class ApplyForAppointmentDialog extends JDialog {
 
     private static final long serialVersionUID = 8434535298528019736L;
     private final JPanel contentPanel = new JPanel();
@@ -97,16 +97,16 @@ public class CreateAppointmentDialog extends JDialog {
     private Panel pnTimePicker;
     private Label lblTime;
     private TimePicker timePicker;
+    private JButton btnSetDate;
     private Label lblEnd;
     private TimePicker timePickerEnd;
-    private JButton btnSetDate;
     private ActionListener setDateAction;
     private ActionListener modifyDateAction;
 
     /**
      * Create the dialog.
      */
-    public CreateAppointmentDialog() {
+    public ApplyForAppointmentDialog() {
         setTitle("Administrator: Create new appointment");
         setModal(true);
         setPreferredSize(new Dimension(700, 500));
@@ -459,6 +459,16 @@ public class CreateAppointmentDialog extends JDialog {
         if (autoCompleteRoom == null)
             autoCompleteRoom = AutoCompleteSupport.install(getCbRoom(), roomList, new RoomTextFilterator(), roomFormat);
     }
+    
+    public void setDoctor(Doctor doctor) {
+        selectedDoctors.add(doctor);
+    	selectedDoctorsList.add(doctor);
+    	doctorList.remove(doctor);
+        lblDoctors.setText("<html><p style=\"width:500px\">"
+                + selectedDoctors.stream().map(d -> d.guiToString()).collect(Collectors.joining(", "))
+                + "<p></html>");
+        cbSelectedDoctors.setEnabled(true);
+    }
 
     // Carga todos los datos introducidos y crea la cita
     private void createAppointment() {
@@ -468,7 +478,6 @@ public class CreateAppointmentDialog extends JDialog {
             checkContactInfo();
             checkDate();
             checkTime();
-            checkRoom();
             // Comprobación de que los doctores están disponibles, aviso en caso contrario
             if (isThereUnavailableDoctor())
                 if (JOptionPane.showConfirmDialog(this, "One of the selected doctors doesn't work on the specified time, are you sure?") != JOptionPane.YES_OPTION)
@@ -483,13 +492,11 @@ public class CreateAppointmentDialog extends JDialog {
             appointment.setContactInfo(txtContactInfo.getText());
             appointment.setRoom((Room) cbRoom.getSelectedItem());
             appointment.setDoctors(doctorsSet);
+            appointment.setConfirmed(false);
             appointmentService.createAppointment(appointment);
-            // Envío del email si es urgente y se ha seleccionado algún doctor
-            if (chckbxUrgent.isSelected() && !selectedDoctors.isEmpty())
-                appointment.sendEmail();
             // Notificación de creación satisfactoria y restauración de la ventana
             modifyDate();
-            JOptionPane.showMessageDialog(this, "The appointment was created succesfully");
+            JOptionPane.showMessageDialog(this, "The appointment was solicited succesfully");
         } catch (Exception ie) {
             JOptionPane.showMessageDialog(this, ie.getMessage());
         }
@@ -634,12 +641,6 @@ public class CreateAppointmentDialog extends JDialog {
             throw new InputException("You must select a start time for the appointment");
         if (timePicker.getTime() == null)
             throw new InputException("You must select an end time for the appointment");
-    }
-
-    private void checkRoom() throws InputException {
-        if (cbRoom.getSelectedItem() == null) {
-            throw new InputException("You must select a room for the appointment");
-        }
     }
 
     private boolean isThereUnavailableDoctor() {

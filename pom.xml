@@ -86,6 +86,11 @@
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-csv</artifactId>
         </dependency>
+        <dependency>
+		    <groupId>com.weblookandfeel</groupId>
+		    <artifactId>weblaf-ui</artifactId>
+		    <version>1.2.10</version>
+		</dependency>
     </dependencies>
 
     <build>

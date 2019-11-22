@@ -1,6 +1,7 @@
 package es.uniovi.ips.hospital.ui.doctor;
 
 import es.uniovi.ips.hospital.domain.Doctor;
+import es.uniovi.ips.hospital.ui.doctor.appointment.ApplyForAppointmentDialog;
 import es.uniovi.ips.hospital.ui.doctor.appointment.MyAppointmentsDialog;
 import es.uniovi.ips.hospital.ui.doctor.vaccine.VaccineDoctorDialog;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class DoctorDialog extends JDialog {
 
     @Autowired
     private MyAppointmentsDialog myAppointmentsDialog;
+
+    @Autowired
+    private ApplyForAppointmentDialog applyForAppointmentDialog;
 
 
     public DoctorDialog() {
@@ -74,6 +78,29 @@ public class DoctorDialog extends JDialog {
                 });
                 btnSeeVaccines.setMnemonic('v');
                 panel.add(btnSeeVaccines);
+            }
+            {
+                java.awt.Component horizontalStrut = Box.createHorizontalStrut(20);
+                panel.add(horizontalStrut);
+            }
+            {
+                java.awt.Component horizontalStrut = Box.createHorizontalStrut(20);
+                panel.add(horizontalStrut);
+            }
+            {
+                JLabel lblAskAppointment = new JLabel("Apply for appointment");
+                lblAskAppointment.setHorizontalAlignment(SwingConstants.CENTER);
+                panel.add(lblAskAppointment);
+            }
+            {
+                JButton btnAskAppointment = new JButton("Apply");
+                btnAskAppointment.addActionListener(e -> {
+                	applyForAppointmentDialog.fillComboBoxes();
+                	applyForAppointmentDialog.setDoctor(doctor);
+                	applyForAppointmentDialog.setVisible(true);
+                });
+                btnAskAppointment.setMnemonic('v');
+                panel.add(btnAskAppointment);
             }
             {
                 java.awt.Component horizontalStrut = Box.createHorizontalStrut(20);

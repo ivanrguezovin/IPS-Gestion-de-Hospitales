@@ -10,6 +10,8 @@ import es.uniovi.ips.hospital.ui.doctor.DoctorDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.alee.laf.WebLookAndFeel;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -34,6 +36,7 @@ public class MainWindow {
 
     public MainWindow() {
         frame = new JFrame("Hospital");
+        //WebLookAndFeel.install(); este puto look and feel no quiere funcionar y mi cerebro no está para pelear con él
 
         JLabel emailLabel = new JLabel("Email");
         JLabel passwordLabel = new JLabel("Password");
