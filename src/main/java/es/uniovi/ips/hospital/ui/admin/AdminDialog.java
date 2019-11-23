@@ -54,7 +54,6 @@ public class AdminDialog extends JDialog {
      */
     public AdminDialog() {
         setTitle("Administrator");
-        setModal(true);
         setBounds(100, 100, 450, 300);
         getContentPane().setLayout(new BorderLayout());
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
