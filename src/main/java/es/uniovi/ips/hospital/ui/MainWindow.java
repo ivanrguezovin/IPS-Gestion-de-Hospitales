@@ -7,26 +7,27 @@ import es.uniovi.ips.hospital.service.LoginService;
 import es.uniovi.ips.hospital.ui.admin.AdminDialog;
 import es.uniovi.ips.hospital.ui.doctor.DoctorDialog;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
+import es.uniovi.ips.hospital.ui.util.components.MyBackPanel;
+import es.uniovi.ips.hospital.ui.util.components.MyBanner;
+import es.uniovi.ips.hospital.ui.util.components.MyButton;
+import es.uniovi.ips.hospital.ui.util.components.MyFrontPanel;
+import es.uniovi.ips.hospital.ui.util.components.MyLabel;
+import es.uniovi.ips.hospital.ui.util.components.MyPasswordField;
+import es.uniovi.ips.hospital.ui.util.components.MySouthPanel;
+import es.uniovi.ips.hospital.ui.util.components.MyTextField;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.border.SoftBevelBorder;
 
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 @Component
 public class MainWindow {
@@ -108,26 +109,14 @@ public class MainWindow {
 
     	private JLabel getBanner() {
     		if (banner == null) {
-    			banner = new JLabel("");
+    			banner = new MyBanner();
     			banner.setHorizontalAlignment(SwingConstants.LEFT);
-    			banner.setBorder(new MatteBorder(0, 0, 1, 0, PaletteFactory.getHighlighter()));
-    			ImageIcon image = new ImageIcon();
-                try {
-                    File file = ResourceUtils.getFile("classpath:estonoesunbanner.png");
-                    BufferedImage img = ImageIO.read(file);
-                    Image i = img.getScaledInstance(600, 100, java.awt.Image.SCALE_SMOOTH);
-                    image = new ImageIcon(i);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-    			banner.setIcon(image);
     		}
     		return banner;
     	}
     	private JPanel getPnCenter() {
     		if (pnCenter == null) {
-    			pnCenter = new JPanel();
-    			pnCenter.setBackground(PaletteFactory.getBaseDark());
+    			pnCenter = new MyBackPanel();
     			GridBagLayout gbl_pnLogIn = new GridBagLayout();
     			gbl_pnLogIn.columnWidths = new int[]{150,300,150};
     			gbl_pnLogIn.rowHeights = new int[]{0};
@@ -145,9 +134,8 @@ public class MainWindow {
     	}
     	private JPanel getPnLogIn() {
     		if (pnLogIn == null) {
-    			pnLogIn = new JPanel();
+    			pnLogIn = new MyFrontPanel();
     			pnLogIn.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, PaletteFactory.getHighlighter(), null, null));
-    			pnLogIn.setBackground(PaletteFactory.getMainDark());
     			pnLogIn.setLayout(new BoxLayout(pnLogIn, BoxLayout.Y_AXIS));
     			pnLogIn.add(Box.createRigidArea(new Dimension(0,20)));
     			pnLogIn.add(getLblLogIn());
@@ -165,8 +153,7 @@ public class MainWindow {
     	}
     	private JLabel getLblLogIn() {
     		if (lblLogIn == null) {
-    			lblLogIn = new JLabel("Log-in");
-    			lblLogIn.setForeground(PaletteFactory.getLighter());
+    			lblLogIn = new MyLabel("Log-in");
     			lblLogIn.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
     			lblLogIn.setHorizontalAlignment(SwingConstants.CENTER);
     			lblLogIn.setFont(new Font("Dialog", Font.BOLD, 16));
@@ -175,8 +162,7 @@ public class MainWindow {
     	}
     	private JLabel getLblUsername() {
     		if (lblUsername == null) {
-    			lblUsername = new JLabel("Email:");
-    			lblUsername.setForeground(PaletteFactory.getLighter());
+    			lblUsername = new MyLabel("Email:");
     			lblUsername.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
     			lblUsername.setHorizontalAlignment(SwingConstants.CENTER);
     		}
@@ -184,12 +170,8 @@ public class MainWindow {
     	}
     	private JTextField getTxtUsername() {
     		if (emailField == null) {
-    			emailField = new JTextField();
+    			emailField = new MyTextField();
     			emailField.setFont(new Font("Tahoma", Font.PLAIN, 13));
-    			emailField.setBorder(new EmptyBorder(5, 5, 5, 5));
-    			emailField.setBackground(PaletteFactory.getBaseDark());
-    			emailField.setForeground(PaletteFactory.getLighter());
-    			emailField.setCaretColor(PaletteFactory.getLighter());
     			emailField.setHorizontalAlignment(SwingConstants.CENTER);
     			emailField.setColumns(25);
     			emailField.setMaximumSize(emailField.getPreferredSize());
@@ -198,8 +180,7 @@ public class MainWindow {
     	}
     	private JLabel getLblPassword() {
     		if (lblPassword == null) {
-    			lblPassword = new JLabel("Password:");
-    			lblPassword.setForeground(PaletteFactory.getLighter());
+    			lblPassword = new MyLabel("Password:");
     			lblPassword.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
     			lblPassword.setHorizontalAlignment(SwingConstants.CENTER);
     		}
@@ -207,12 +188,8 @@ public class MainWindow {
     	}
     	private JPasswordField getPFPass() {
     		if (passwordField == null) {
-    			passwordField = new JPasswordField();
+    			passwordField = new MyPasswordField();
     			passwordField.setFont(new Font("Tahoma", Font.PLAIN, 13));
-    			passwordField.setBorder(new EmptyBorder(5, 5, 5, 5));
-    			passwordField.setBackground(PaletteFactory.getBaseDark());
-    			passwordField.setForeground(PaletteFactory.getLighter());
-    			passwordField.setCaretColor(PaletteFactory.getLighter());
     			passwordField.setHorizontalAlignment(SwingConstants.CENTER);
     			passwordField.setColumns(25);
     			passwordField.setMaximumSize(emailField.getPreferredSize());
@@ -221,30 +198,22 @@ public class MainWindow {
     	}
     	private JButton getBtnLogIn() {
     		if (btnLogIn == null) {
-    			btnLogIn = new JButton("Log in");
+    			btnLogIn = new MyButton("Log in");
     			btnLogIn.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
-    			btnLogIn.setBackground(PaletteFactory.getBaseDark());
-    			btnLogIn.setForeground(PaletteFactory.getLighter());
     			btnLogIn.addActionListener(actionEvent -> login(emailField.getText(), passwordField.getPassword()));
     		}
     		return btnLogIn;
     	}
     	private JPanel getPnSouth() {
     		if (pnSouth == null) {
-    			pnSouth = new JPanel();
-    			pnSouth.setBorder(new MatteBorder(1, 0, 0, 0, PaletteFactory.getHighlighter()));
-    			pnSouth.setBackground(PaletteFactory.getMainDark());
-    			FlowLayout flowLayout = (FlowLayout) pnSouth.getLayout();
-    			flowLayout.setAlignment(FlowLayout.RIGHT);
+    			pnSouth = new MySouthPanel();
     			pnSouth.add(getBtnClose());
     		}
     		return pnSouth;
     	}
     	private JButton getBtnClose() {
     		if (btnClose == null) {
-    			btnClose = new JButton("Close");
-    			btnClose.setBackground(PaletteFactory.getBaseDark());
-    			btnClose.setForeground(PaletteFactory.getLighter());
+    			btnClose = new MyButton("Close");
     			btnClose.addActionListener(actionEvent -> {
     	            dispose();
     	            System.exit(0);
