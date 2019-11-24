@@ -8,6 +8,7 @@ import es.uniovi.ips.hospital.ui.admin.showMedicalRecord.ShowMedicalRecordOfPati
 import es.uniovi.ips.hospital.ui.admin.users.CreateAdminsDialog;
 import es.uniovi.ips.hospital.ui.admin.users.CreateDoctorsDialog;
 import es.uniovi.ips.hospital.ui.admin.users.CreateNursesDialog;
+import es.uniovi.ips.hospital.ui.admin.users.CreatePatientsDialog;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -48,6 +49,8 @@ public class AdminDialog extends JDialog {
     private CreateDoctorsDialog createDoctorsDialog;
     @Autowired
     private CreateNursesDialog createNursesDialog;
+    @Autowired
+    private CreatePatientsDialog createPatientsDialog;
     @Autowired
     private ShowAppointmentsDialog showAppointmentsDialog;
     private JPanel pnPatients;
@@ -255,8 +258,15 @@ public class AdminDialog extends JDialog {
 	}
 	private JButton getBtnCreatePatient() {
 		if (btnCreatePatient == null) {
-			btnCreatePatient = new JButton("Create Patient");
+			btnCreatePatient = new JButton("Create Patients");
 			btnCreatePatient.setFont(new Font("Tahoma", Font.BOLD, 11));
+			btnCreatePatient.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					createPatientsDialog.setLocationRelativeTo(null);
+					createPatientsDialog.setVisible(true);
+			        setVisible(false);
+				}
+			});
 		}
 		return btnCreatePatient;
 	}
