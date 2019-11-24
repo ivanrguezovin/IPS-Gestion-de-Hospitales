@@ -14,6 +14,7 @@ import es.uniovi.ips.hospital.domain.Nurse;
 import es.uniovi.ips.hospital.service.AdminAssistantService;
 import es.uniovi.ips.hospital.service.DoctorService;
 import es.uniovi.ips.hospital.service.NurseService;
+import es.uniovi.ips.hospital.ui.admin.AdminDialog;
 
 import java.awt.GridLayout;
 import javax.swing.JLabel;
@@ -51,10 +52,6 @@ public class CreateAdminsDialog extends JDialog {
 	private JTextField txZip;
 	private java.awt.Component horizontalStrut;
 	private java.awt.Component horizontalStrut_1;
-	private java.awt.Component horizontalStrut_2;
-	private java.awt.Component horizontalStrut_3;
-	private java.awt.Component horizontalStrut_4;
-	private java.awt.Component horizontalStrut_5;
 	private JButton btAdd;
 	private JButton btnBack;
 	
@@ -63,12 +60,13 @@ public class CreateAdminsDialog extends JDialog {
 	@Autowired private NurseService nurseService;
 
 	
-	@Autowired private CreateUsersDialog cud;
+	@Autowired private AdminDialog cud;
 
 	/**
 	 * Create the dialog.
 	 */
 	public CreateAdminsDialog() {
+		setTitle("Create Admins");
 		setResizable(false);
 		setBounds(100, 100, 450, 300);
 		getContentPane().add(getPanel(), BorderLayout.CENTER);
@@ -99,10 +97,6 @@ public class CreateAdminsDialog extends JDialog {
 			panel.add(getTxZip());
 			panel.add(getHorizontalStrut());
 			panel.add(getHorizontalStrut_1());
-			panel.add(getHorizontalStrut_2());
-			panel.add(getHorizontalStrut_3());
-			panel.add(getHorizontalStrut_4());
-			panel.add(getHorizontalStrut_5());
 			panel.add(getBtnBack());
 			panel.add(getBtAdd());
 		}
@@ -230,30 +224,6 @@ public class CreateAdminsDialog extends JDialog {
 			horizontalStrut_1 = Box.createHorizontalStrut(20);
 		}
 		return horizontalStrut_1;
-	}
-	private java.awt.Component getHorizontalStrut_2() {
-		if (horizontalStrut_2 == null) {
-			horizontalStrut_2 = Box.createHorizontalStrut(20);
-		}
-		return horizontalStrut_2;
-	}
-	private java.awt.Component getHorizontalStrut_3() {
-		if (horizontalStrut_3 == null) {
-			horizontalStrut_3 = Box.createHorizontalStrut(20);
-		}
-		return horizontalStrut_3;
-	}
-	private java.awt.Component getHorizontalStrut_4() {
-		if (horizontalStrut_4 == null) {
-			horizontalStrut_4 = Box.createHorizontalStrut(20);
-		}
-		return horizontalStrut_4;
-	}
-	private java.awt.Component getHorizontalStrut_5() {
-		if (horizontalStrut_5 == null) {
-			horizontalStrut_5 = Box.createHorizontalStrut(20);
-		}
-		return horizontalStrut_5;
 	}
 	private JButton getBtAdd() {
 		if (btAdd == null) {

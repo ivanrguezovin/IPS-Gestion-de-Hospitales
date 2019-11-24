@@ -13,7 +13,12 @@ import java.awt.*;
 @Component
 public class DoctorDialog extends JDialog {
 
-    private final JPanel contentPanel = new JPanel();
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 5096718821173184889L;
+
+	private final JPanel contentPanel = new JPanel();
 
     private Doctor doctor;
 

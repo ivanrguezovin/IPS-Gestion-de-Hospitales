@@ -85,10 +85,7 @@ public class MainWindow {
     private void login(String email, char[] password) {
         Staff user = loginService.login(email, password);
 
-        // TODO Remove me
-        //user = doctorService.findByEmail("doctor@ips.test");
         if (user instanceof Doctor) {
-            //frame.setVisible(false);
             doctorDialog.run((Doctor) user);
 
         } else if (user instanceof AdminAssistant) {

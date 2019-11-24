@@ -5,7 +5,10 @@ import es.uniovi.ips.hospital.ui.admin.appointment.ShowAppointmentsDialog;
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageBreakScheduleDialog;
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageWorkScheduleDialog;
 import es.uniovi.ips.hospital.ui.admin.showMedicalRecord.ShowMedicalRecordOfPatient;
-import es.uniovi.ips.hospital.ui.admin.users.CreateUsersDialog;
+import es.uniovi.ips.hospital.ui.admin.users.CreateAdminsDialog;
+import es.uniovi.ips.hospital.ui.admin.users.CreateDoctorsDialog;
+import es.uniovi.ips.hospital.ui.admin.users.CreateNursesDialog;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +34,6 @@ public class AdminDialog extends JDialog {
     private JButton btnEditAppointment;
     private JButton btnManageSchedules;
     private JButton btnManageBreaks;
-
     @Autowired
     private CreateAppointmentDialog createAppointmentDialog;
     @Autowired
@@ -41,13 +43,20 @@ public class AdminDialog extends JDialog {
     @Autowired
     private ShowMedicalRecordOfPatient showMedicalRecordOfPatient;
     @Autowired
-    private CreateUsersDialog createUsersDialog;
+    private CreateAdminsDialog createAdminsDialog;
+    @Autowired
+    private CreateDoctorsDialog createDoctorsDialog;
+    @Autowired
+    private CreateNursesDialog createNursesDialog;
     @Autowired
     private ShowAppointmentsDialog showAppointmentsDialog;
     private JPanel pnPatients;
     private JButton btnShowMedicalRecords;
     private JPanel pnCreateUsers;
-    private JButton btnCreateUsers;
+    private JButton btnCreateAdmins;
+    private JButton btnCreateDoctors;
+    private JButton btnCreateNurses;
+    private JButton btnCreatePatient;
 
     /**
      * Create the dialog.
@@ -55,7 +64,7 @@ public class AdminDialog extends JDialog {
     public AdminDialog() {
         setTitle("Administrator");
         setModal(true);
-        setBounds(100, 100, 450, 300);
+        setBounds(100, 100, 465, 326);
         getContentPane().setLayout(new BorderLayout());
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -181,8 +190,8 @@ public class AdminDialog extends JDialog {
 
 
     private void launchCreateUsers() {
-        createUsersDialog.setLocationRelativeTo(null);
-        createUsersDialog.setVisible(true);
+        createAdminsDialog.setLocationRelativeTo(null);
+        createAdminsDialog.setVisible(true);
         setVisible(false);
     }
 
@@ -190,22 +199,25 @@ public class AdminDialog extends JDialog {
         if (pnCreateUsers == null) {
             pnCreateUsers = new JPanel();
             pnCreateUsers.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Create Users", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-            pnCreateUsers.add(getBtnCreateUsers());
+            pnCreateUsers.add(getBtnCreateAdmins());
+            pnCreateUsers.add(getBtnCreateDoctors());
+            pnCreateUsers.add(getBtnCreateNurses());
+            pnCreateUsers.add(getBtnCreatePatient());
         }
         return pnCreateUsers;
     }
 
-    private JButton getBtnCreateUsers() {
-        if (btnCreateUsers == null) {
-            btnCreateUsers = new JButton("Create Users");
-            btnCreateUsers.addActionListener(new ActionListener() {
+    private JButton getBtnCreateAdmins() {
+        if (btnCreateAdmins == null) {
+            btnCreateAdmins = new JButton("Create Admins");
+            btnCreateAdmins.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     launchCreateUsers();
                 }
             });
-            btnCreateUsers.setFont(new Font("Tahoma", Font.BOLD, 11));
+            btnCreateAdmins.setFont(new Font("Tahoma", Font.BOLD, 11));
         }
-        return btnCreateUsers;
+        return btnCreateAdmins;
     }
 
     private void launchShowMedialRecordDialog() {
@@ -213,4 +225,39 @@ public class AdminDialog extends JDialog {
         showMedicalRecordOfPatient.setLocationRelativeTo(this);
         showMedicalRecordOfPatient.setVisible(true);
     }
+	private JButton getBtnCreateDoctors() {
+		if (btnCreateDoctors == null) {
+			btnCreateDoctors = new JButton("Create Doctors");
+			btnCreateDoctors.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					createDoctorsDialog.setLocationRelativeTo(null);
+					createDoctorsDialog.setVisible(true);
+			        setVisible(false);
+				}
+			});
+			btnCreateDoctors.setFont(new Font("Tahoma", Font.BOLD, 11));
+		}
+		return btnCreateDoctors;
+	}
+	private JButton getBtnCreateNurses() {
+		if (btnCreateNurses == null) {
+			btnCreateNurses = new JButton("Create Nurses");
+			btnCreateNurses.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					createNursesDialog.setLocationRelativeTo(null);
+					createNursesDialog.setVisible(true);
+			        setVisible(false);
+				}
+			});
+			btnCreateNurses.setFont(new Font("Tahoma", Font.BOLD, 11));
+		}
+		return btnCreateNurses;
+	}
+	private JButton getBtnCreatePatient() {
+		if (btnCreatePatient == null) {
+			btnCreatePatient = new JButton("Create Patient");
+			btnCreatePatient.setFont(new Font("Tahoma", Font.BOLD, 11));
+		}
+		return btnCreatePatient;
+	}
 }
