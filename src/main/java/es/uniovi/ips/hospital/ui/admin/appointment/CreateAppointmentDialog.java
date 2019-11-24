@@ -13,6 +13,11 @@ import es.uniovi.ips.hospital.service.DoctorService;
 import es.uniovi.ips.hospital.service.PatientService;
 import es.uniovi.ips.hospital.service.RoomService;
 import es.uniovi.ips.hospital.ui.common.MedicalRecordDialogWithoutPrescription;
+import es.uniovi.ips.hospital.ui.util.components.MyBackPanel;
+import es.uniovi.ips.hospital.ui.util.components.MyCheckBox;
+import es.uniovi.ips.hospital.ui.util.components.MyComboBox;
+import es.uniovi.ips.hospital.ui.util.components.MyFrontPanel;
+import es.uniovi.ips.hospital.ui.util.components.MySouthPanel;
 import es.uniovi.ips.hospital.ui.util.filter.PatientTextFilterator;
 import es.uniovi.ips.hospital.ui.util.filter.RoomTextFilterator;
 import es.uniovi.ips.hospital.ui.util.filter.StaffTextFilterator;
@@ -88,16 +93,16 @@ public class CreateAppointmentDialog extends JDialog {
     private JPanel pnDateTime;
     private JPanel pnDetails;
     private JCheckBox chckbxUrgent;
-    private Panel pnRoom;
+    private JPanel pnRoom;
     private JLabel lblRoom;
     private JComboBox<Room> cbRoom;
     private EventList<Room> roomList;
     private AutoCompleteSupport<Room> autoCompleteRoom;
     private JCalendar calendar;
-    private Panel pnTimePicker;
-    private Label lblTime;
+    private JPanel pnTimePicker;
+    private JLabel lblTime;
     private TimePicker timePicker;
-    private Label lblEnd;
+    private JLabel lblEnd;
     private TimePicker timePickerEnd;
     private JButton btnSetDate;
     private ActionListener setDateAction;
@@ -123,7 +128,7 @@ public class CreateAppointmentDialog extends JDialog {
 
     private JPanel getPnAppointment() {
         if (pnAppointment == null) {
-            pnAppointment = new JPanel();
+            pnAppointment = new MyFrontPanel();
             GridBagLayout gbl_pnAppointment = new GridBagLayout();
             gbl_pnAppointment.columnWidths = new int[]{0, 0};
             gbl_pnAppointment.rowHeights = new int[]{50, 100, 100};
@@ -153,7 +158,7 @@ public class CreateAppointmentDialog extends JDialog {
 
     private JPanel getPnPatient() {
         if (pnPatient == null) {
-            pnPatient = new JPanel();
+            pnPatient = new MyFrontPanel();
             pnPatient.setBorder(new TitledBorder(null, "Patient", TitledBorder.LEADING, TitledBorder.TOP, null, null));
             FlowLayout flowLayout = (FlowLayout) pnPatient.getLayout();
             flowLayout.setAlignment(FlowLayout.LEFT);
@@ -167,7 +172,7 @@ public class CreateAppointmentDialog extends JDialog {
 
     private JPanel getPnDoctor() {
         if (pnDoctor == null) {
-            pnDoctor = new JPanel();
+            pnDoctor = new MyFrontPanel();
             pnDoctor.setBorder(new TitledBorder(null, "Doctor", TitledBorder.LEADING, TitledBorder.TOP, null, null));
             pnDoctor.setLayout(new BorderLayout(0, 0));
             pnDoctor.add(getPnSelectDoctor(), BorderLayout.NORTH);
@@ -179,7 +184,7 @@ public class CreateAppointmentDialog extends JDialog {
 
     private JPanel getPnInfo() {
         if (pnInfo == null) {
-            pnInfo = new JPanel();
+            pnInfo = new MyFrontPanel();
             pnInfo.setBorder(new TitledBorder(null, "Appointment", TitledBorder.LEADING, TitledBorder.TOP, null, null));
             pnInfo.setLayout(new GridLayout(0, 2, 0, 0));
             pnInfo.add(getPnDateTime());
@@ -190,7 +195,7 @@ public class CreateAppointmentDialog extends JDialog {
 
     private JComboBox<Patient> getCbPatient() {
         if (cbPatient == null) {
-            cbPatient = new JComboBox<Patient>();
+            cbPatient = new MyComboBox<Patient>();
             cbPatient.addItemListener(itemEvent -> selectPatient());
             autoCompletePatient = null;
         }
@@ -204,13 +209,6 @@ public class CreateAppointmentDialog extends JDialog {
             btnShowMedicalRecord.addActionListener(actionEvent -> showMedicalRecord());
         }
         return btnShowMedicalRecord;
-    }
-
-
-    private void showMedicalRecord() {
-        Patient patient = (Patient) cbPatient.getSelectedItem();
-        System.out.println(patient);
-        medicalRecordDialogWithoutPrescription.showHistoryOf(patient);
     }
 
     private JLabel getLblContactInfo() {
@@ -230,7 +228,7 @@ public class CreateAppointmentDialog extends JDialog {
 
     private JPanel getPnSelectDoctor() {
         if (pnSelectDoctor == null) {
-            pnSelectDoctor = new JPanel();
+            pnSelectDoctor = new MyFrontPanel();
             FlowLayout flowLayout = (FlowLayout) pnSelectDoctor.getLayout();
             flowLayout.setAlignment(FlowLayout.LEFT);
             pnSelectDoctor.add(getCbDoctor());
@@ -241,7 +239,7 @@ public class CreateAppointmentDialog extends JDialog {
 
     private JComboBox<Staff> getCbDoctor() {
         if (cbDoctor == null) {
-            cbDoctor = new JComboBox<Staff>();
+            cbDoctor = new MyComboBox<Staff>();
             cbDoctor.addItemListener(itemEvent -> btnAdd.setEnabled(true));
             autoCompleteDoctor = null;
             cbDoctor.setEnabled(false);
@@ -260,7 +258,7 @@ public class CreateAppointmentDialog extends JDialog {
 
     private JPanel getPnShowDoctors() {
         if (pnShowDoctors == null) {
-            pnShowDoctors = new JPanel();
+            pnShowDoctors = new MyFrontPanel();
             FlowLayout flowLayout = (FlowLayout) pnShowDoctors.getLayout();
             flowLayout.setAlignment(FlowLayout.LEFT);
             pnShowDoctors.add(getLblDoctors());
@@ -277,7 +275,7 @@ public class CreateAppointmentDialog extends JDialog {
 
     private JPanel getPnRemoveDoctor() {
         if (pnRemoveDoctor == null) {
-            pnRemoveDoctor = new JPanel();
+            pnRemoveDoctor = new MyFrontPanel();
             FlowLayout flowLayout = (FlowLayout) pnRemoveDoctor.getLayout();
             flowLayout.setAlignment(FlowLayout.LEFT);
             pnRemoveDoctor.add(getCbSelectedDoctors());
@@ -288,7 +286,7 @@ public class CreateAppointmentDialog extends JDialog {
 
     private JComboBox<Doctor> getCbSelectedDoctors() {
         if (cbSelectedDoctors == null) {
-            cbSelectedDoctors = new JComboBox<Doctor>();
+            cbSelectedDoctors = new MyComboBox<Doctor>();
             cbSelectedDoctors.addItemListener(itemEvent -> getBtnRemove().setEnabled(true));
             autoCompleteSelectedDoctor = null;
             cbSelectedDoctors.setEnabled(false);
@@ -307,7 +305,7 @@ public class CreateAppointmentDialog extends JDialog {
 
     private JPanel getPnSouth() {
         if (pnSouth == null) {
-            pnSouth = new JPanel();
+            pnSouth = new MySouthPanel();
             FlowLayout flowLayout = (FlowLayout) pnSouth.getLayout();
             flowLayout.setAlignment(FlowLayout.RIGHT);
             pnSouth.add(getBtnCreate());
@@ -325,7 +323,7 @@ public class CreateAppointmentDialog extends JDialog {
 
     private JPanel getPnDateTime() {
         if (pnDateTime == null) {
-            pnDateTime = new JPanel();
+            pnDateTime = new MyFrontPanel();
             pnDateTime.setLayout(new BorderLayout(0, 0));
             pnDateTime.add(getCalendar(), BorderLayout.CENTER);
         }
@@ -334,7 +332,7 @@ public class CreateAppointmentDialog extends JDialog {
 
     private JPanel getPnDetails() {
         if (pnDetails == null) {
-            pnDetails = new JPanel();
+            pnDetails = new MyFrontPanel();
             pnDetails.setLayout(new GridLayout(4, 1, 0, 0));
             pnDetails.add(getChckbxUrgent());
             pnDetails.add(getPnRoom());
@@ -346,15 +344,15 @@ public class CreateAppointmentDialog extends JDialog {
 
     private JCheckBox getChckbxUrgent() {
         if (chckbxUrgent == null) {
-            chckbxUrgent = new JCheckBox("URGENT");
+            chckbxUrgent = new MyCheckBox("URGENT");
             chckbxUrgent.setHorizontalAlignment(SwingConstants.CENTER);
         }
         return chckbxUrgent;
     }
 
-    private Panel getPnRoom() {
+    private JPanel getPnRoom() {
         if (pnRoom == null) {
-            pnRoom = new Panel();
+            pnRoom = new MyFrontPanel();
             pnRoom.add(getLblRoom());
             pnRoom.add(getCbRoom());
         }
@@ -370,7 +368,7 @@ public class CreateAppointmentDialog extends JDialog {
 
     private JComboBox<Room> getCbRoom() {
         if (cbRoom == null) {
-            cbRoom = new JComboBox<Room>();
+            cbRoom = new MyComboBox<Room>();
             autoCompleteRoom = null;
         }
         return cbRoom;
@@ -384,9 +382,9 @@ public class CreateAppointmentDialog extends JDialog {
         return calendar;
     }
 
-    private Panel getPnTimePicker() {
+    private JPanel getPnTimePicker() {
         if (pnTimePicker == null) {
-            pnTimePicker = new Panel();
+            pnTimePicker = new MyFrontPanel();
             pnTimePicker.add(getLblTime());
             pnTimePicker.add(getTimePicker());
             pnTimePicker.add(getLblEnd());
@@ -395,9 +393,9 @@ public class CreateAppointmentDialog extends JDialog {
         return pnTimePicker;
     }
 
-    private Label getLblTime() {
+    private JLabel getLblTime() {
         if (lblTime == null) {
-            lblTime = new Label("Start:");
+            lblTime = new JLabel("Start:");
         }
         return lblTime;
     }
@@ -409,9 +407,9 @@ public class CreateAppointmentDialog extends JDialog {
         return timePicker;
     }
     
-	private Label getLblEnd() {
+	private JLabel getLblEnd() {
 		if (lblEnd == null) {
-			lblEnd = new Label("End:");
+			lblEnd = new JLabel("End:");
 		}
 		return lblEnd;
 	}
@@ -458,6 +456,12 @@ public class CreateAppointmentDialog extends JDialog {
         roomList.addAll(roomService.findAllRooms());
         if (autoCompleteRoom == null)
             autoCompleteRoom = AutoCompleteSupport.install(getCbRoom(), roomList, new RoomTextFilterator(), roomFormat);
+    }
+    
+    private void showMedicalRecord() {
+        Patient patient = (Patient) cbPatient.getSelectedItem();
+        System.out.println(patient);
+        medicalRecordDialogWithoutPrescription.showHistoryOf(patient);
     }
 
     // Carga todos los datos introducidos y crea la cita

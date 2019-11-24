@@ -20,4 +20,8 @@ public class PaletteFactory {
 		return new Color(219, 237, 243);
 	}
 
+	public static Color getAltDark() {
+		return new Color(52, 62, 89);
+	}
+
 }

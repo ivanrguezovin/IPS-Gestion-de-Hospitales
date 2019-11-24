@@ -6,23 +6,18 @@ import es.uniovi.ips.hospital.domain.Staff;
 import es.uniovi.ips.hospital.service.LoginService;
 import es.uniovi.ips.hospital.ui.admin.AdminDialog;
 import es.uniovi.ips.hospital.ui.doctor.DoctorDialog;
+import es.uniovi.ips.hospital.ui.util.Designer;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.components.MyBackPanel;
 import es.uniovi.ips.hospital.ui.util.components.MyBanner;
-import es.uniovi.ips.hospital.ui.util.components.MyButton;
 import es.uniovi.ips.hospital.ui.util.components.MyFrontPanel;
-import es.uniovi.ips.hospital.ui.util.components.MyLabel;
-import es.uniovi.ips.hospital.ui.util.components.MyPasswordField;
 import es.uniovi.ips.hospital.ui.util.components.MySouthPanel;
-import es.uniovi.ips.hospital.ui.util.components.MyTextField;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
 import javax.swing.border.SoftBevelBorder;
 
 import java.awt.*;
@@ -48,7 +43,7 @@ public class MainWindow {
         frame.setVisible(true);
     }
 
-    private void login(String email, char[] password) {
+	private void login(String email, char[] password) {
         Staff user = loginService.login(email, password);
 
         // TODO Remove me
@@ -86,6 +81,7 @@ public class MainWindow {
     	 * Create the frame.
     	 */
     	public MainFrame() {
+        	Designer.setDesign();
     		setTitle("Hospital");
     		//WebLookAndFeel.install();
     		setMinimumSize(new Dimension(600, 600));
@@ -153,7 +149,7 @@ public class MainWindow {
     	}
     	private JLabel getLblLogIn() {
     		if (lblLogIn == null) {
-    			lblLogIn = new MyLabel("Log-in");
+    			lblLogIn = new JLabel("Log-in");
     			lblLogIn.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
     			lblLogIn.setHorizontalAlignment(SwingConstants.CENTER);
     			lblLogIn.setFont(new Font("Dialog", Font.BOLD, 16));
@@ -162,7 +158,7 @@ public class MainWindow {
     	}
     	private JLabel getLblUsername() {
     		if (lblUsername == null) {
-    			lblUsername = new MyLabel("Email:");
+    			lblUsername = new JLabel("Email:");
     			lblUsername.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
     			lblUsername.setHorizontalAlignment(SwingConstants.CENTER);
     		}
@@ -170,7 +166,7 @@ public class MainWindow {
     	}
     	private JTextField getTxtUsername() {
     		if (emailField == null) {
-    			emailField = new MyTextField();
+    			emailField = new JTextField();
     			emailField.setFont(new Font("Tahoma", Font.PLAIN, 13));
     			emailField.setHorizontalAlignment(SwingConstants.CENTER);
     			emailField.setColumns(25);
@@ -180,7 +176,7 @@ public class MainWindow {
     	}
     	private JLabel getLblPassword() {
     		if (lblPassword == null) {
-    			lblPassword = new MyLabel("Password:");
+    			lblPassword = new JLabel("Password:");
     			lblPassword.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
     			lblPassword.setHorizontalAlignment(SwingConstants.CENTER);
     		}
@@ -188,7 +184,7 @@ public class MainWindow {
     	}
     	private JPasswordField getPFPass() {
     		if (passwordField == null) {
-    			passwordField = new MyPasswordField();
+    			passwordField = new JPasswordField();
     			passwordField.setFont(new Font("Tahoma", Font.PLAIN, 13));
     			passwordField.setHorizontalAlignment(SwingConstants.CENTER);
     			passwordField.setColumns(25);
@@ -198,7 +194,7 @@ public class MainWindow {
     	}
     	private JButton getBtnLogIn() {
     		if (btnLogIn == null) {
-    			btnLogIn = new MyButton("Log in");
+    			btnLogIn = new JButton("Log in");
     			btnLogIn.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
     			btnLogIn.addActionListener(actionEvent -> login(emailField.getText(), passwordField.getPassword()));
     		}
@@ -213,7 +209,7 @@ public class MainWindow {
     	}
     	private JButton getBtnClose() {
     		if (btnClose == null) {
-    			btnClose = new MyButton("Close");
+    			btnClose = new JButton("Close");
     			btnClose.addActionListener(actionEvent -> {
     	            dispose();
     	            System.exit(0);
