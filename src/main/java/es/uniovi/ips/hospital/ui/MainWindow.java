@@ -3,7 +3,6 @@ package es.uniovi.ips.hospital.ui;
 import es.uniovi.ips.hospital.domain.AdminAssistant;
 import es.uniovi.ips.hospital.domain.Doctor;
 import es.uniovi.ips.hospital.domain.Staff;
-import es.uniovi.ips.hospital.service.DoctorService;
 import es.uniovi.ips.hospital.service.LoginService;
 import es.uniovi.ips.hospital.ui.admin.AdminDialog;
 import es.uniovi.ips.hospital.ui.doctor.DoctorDialog;
@@ -25,10 +24,6 @@ public class MainWindow {
 
     @Autowired
     private DoctorDialog doctorDialog;
-
-    // TODO Remove me
-    @Autowired
-    private DoctorService doctorService;
 
     private JFrame frame;
 

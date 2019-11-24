@@ -183,6 +183,7 @@ public class AdminDialog extends JDialog {
     private void launchCreateUsers() {
         createUsersDialog.setLocationRelativeTo(null);
         createUsersDialog.setVisible(true);
+        setVisible(false);
     }
 
     private JPanel getPnCreateUsers() {
