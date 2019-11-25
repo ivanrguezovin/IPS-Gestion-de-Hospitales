@@ -14,6 +14,7 @@ import es.uniovi.ips.hospital.ui.admin.appointment.EditAppointmentPanel;
 import es.uniovi.ips.hospital.ui.admin.appointment.ShowAppointmentsPanel;
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageBreakScheduleDialog;
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageBreakSchedulePanel;
+import es.uniovi.ips.hospital.ui.admin.schedule.ManageWorkSchedulePanel;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
 import es.uniovi.ips.hospital.ui.util.components.MyBanner;
@@ -34,6 +35,7 @@ public class AdminDialog2 extends JDialog {
     @Autowired	private CreateAppointmentPanel createAppointmentPanel;
     @Autowired	private ShowAppointmentsPanel showAppointmentsPanel;
     @Autowired	private EditAppointmentPanel editAppointmentPanel;
+    @Autowired	private ManageWorkSchedulePanel manageWorkSchedulePanel;
     @Autowired	private ManageBreakSchedulePanel manageBreakSchedulePanel;
 
 	private JPanel current;
@@ -131,6 +133,11 @@ public class AdminDialog2 extends JDialog {
 		editAppointmentPanel.setAppointment(appointment);
 		launch(editAppointmentPanel);
 	}
+
+    void launchWorkScheduleDialog() {
+        manageWorkSchedulePanel.fillLists();
+        launch(manageWorkSchedulePanel);
+    }
 
     void launchBreakDialog() {
         manageBreakSchedulePanel.fillLists();

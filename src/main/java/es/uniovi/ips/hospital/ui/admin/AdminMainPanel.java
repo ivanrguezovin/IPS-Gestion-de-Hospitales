@@ -128,6 +128,7 @@ public class AdminMainPanel extends JPanel implements Shiftable {
     private JButton getBtnManageSchedules() {
         if (btnManageSchedules == null) {
             btnManageSchedules = new JButton("Manage schedules");
+            btnManageSchedules.addActionListener(e -> adminDialog.launchWorkScheduleDialog());
         }
         return btnManageSchedules;
     }

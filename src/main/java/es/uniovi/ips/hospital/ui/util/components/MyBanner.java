@@ -24,7 +24,7 @@ public class MyBanner extends JLabel {
         try {
             File file = ResourceUtils.getFile("classpath:estonoesunbanner.png");
             BufferedImage img = ImageIO.read(file);
-            Image i = img.getScaledInstance(600, 100, java.awt.Image.SCALE_SMOOTH);
+            Image i = img.getScaledInstance(800, 100, java.awt.Image.SCALE_SMOOTH);
             image = new ImageIcon(i);
         } catch (IOException e) {
             e.printStackTrace();
