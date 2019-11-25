@@ -47,22 +47,14 @@ public class CreateAppointmentPanel extends JPanel implements Shiftable {
     private static final long serialVersionUID = 8434535298528019736L;
     private final JPanel contentPanel = new JPanel();
     
-    @Autowired
-    private MedicalRecordDialogWithoutPrescription medicalRecordDialogWithoutPrescription;
-    @Autowired
-    private PatientService patientService;
-    @Autowired
-    private DoctorService doctorService;
-    @Autowired
-    private RoomService roomService;
-    @Autowired
-    private AppointmentService appointmentService;
-    @Autowired
-    private PatientFormat patientFormat;
-    @Autowired
-    private StaffFormat staffFormat;
-    @Autowired
-    private RoomFormat roomFormat;
+    @Autowired private MedicalRecordDialogWithoutPrescription medicalRecordDialogWithoutPrescription;
+    @Autowired private PatientService patientService;
+    @Autowired private DoctorService doctorService;
+    @Autowired private RoomService roomService;
+    @Autowired private AppointmentService appointmentService;
+    @Autowired private PatientFormat patientFormat;
+    @Autowired private StaffFormat staffFormat;
+    @Autowired private RoomFormat roomFormat;
     
     private List<Doctor> selectedDoctors;
     private List<Doctor> availableDoctors;
@@ -114,7 +106,7 @@ public class CreateAppointmentPanel extends JPanel implements Shiftable {
 	private JPanel pnManageDoctor;
 
     /**
-     * Create the dialog.
+     * Create the panel.
      */
     public CreateAppointmentPanel() {
         setBounds(100, 100, 650, 700);

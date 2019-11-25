@@ -31,6 +31,7 @@ public class AdminDialog2 extends JDialog {
     private CreateAppointmentPanel createAppointmentPanel;
 
 	private JPanel current;
+	private JPanel previous;
 	private JLabel banner;
 	private JLabel side;
 	private JPanel pnSouth;
@@ -92,6 +93,7 @@ public class AdminDialog2 extends JDialog {
 	private void launch(JPanel panel) {
 		getContentPane().remove(current);
 		getContentPane().add(panel, BorderLayout.CENTER);
+		previous = current;
 		current = panel;
 		getContentPane().revalidate();
 		getContentPane().repaint();
@@ -99,8 +101,8 @@ public class AdminDialog2 extends JDialog {
 		btnBack.setEnabled(true);
 	}
 	
-	private void back() {
-		launch(mainPanel);
+	public void back() {
+		launch(previous);
 		btnBack.setEnabled(false);
 	}
 	
