@@ -37,6 +37,12 @@ public class Designer {
         
         // Labels
         UIManager.put("Label.foreground", PaletteFactory.getLighter());
+        
+        // Lists
+        UIManager.put("List.background", PaletteFactory.getBaseDark());
+        UIManager.put("List.foreground", PaletteFactory.getLighter());
+        UIManager.put("List.selectionBackground", PaletteFactory.getHighlighter());
+        UIManager.put("List.foreground", PaletteFactory.getLighter());
 
         // OptionPanes
         UIManager.put("OptionPane.background", PaletteFactory.getMainDark());
@@ -49,6 +55,15 @@ public class Designer {
         UIManager.put("PasswordField.background", PaletteFactory.getBaseDark());
         UIManager.put("PasswordField.foreground", PaletteFactory.getLighter());
         UIManager.put("PasswordField.caretForeground", PaletteFactory.getLighter());
+        
+        // TabbedPanes
+        UIManager.put("TabbedPane.background", PaletteFactory.getBaseDark());
+        UIManager.put("TabbedPane.foreground", PaletteFactory.getHighlighter());
+        UIManager.put("TabbedPane.selectedForeground", PaletteFactory.getMainDark());
+        UIManager.put("TabbedPane.selectedHighlight", PaletteFactory.getHighlighter());
+        UIManager.put("TabbedPane.unselectedBackground", PaletteFactory.getBaseDark());
+        UIManager.put("TabbedPane.unselectedTabBackground", PaletteFactory.getBaseDark());
+        UIManager.put("TabbedPane.unselectedTabForeground", PaletteFactory.getLighter());
         
         // Tables
         UIManager.put("Table.background", PaletteFactory.getMainDark());

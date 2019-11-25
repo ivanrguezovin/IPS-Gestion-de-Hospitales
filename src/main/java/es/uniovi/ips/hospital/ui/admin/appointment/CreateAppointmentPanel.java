@@ -17,6 +17,7 @@ import es.uniovi.ips.hospital.ui.util.Designer;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
 import es.uniovi.ips.hospital.ui.util.components.MyBackPanel;
+import es.uniovi.ips.hospital.ui.util.components.MyButton;
 import es.uniovi.ips.hospital.ui.util.components.MyCalendar;
 import es.uniovi.ips.hospital.ui.util.components.MyCheckBox;
 import es.uniovi.ips.hospital.ui.util.components.MyComboBox;
@@ -356,9 +357,7 @@ public class CreateAppointmentPanel extends JPanel implements Shiftable {
 
     private JButton getBtnCreate() {
         if (btnCreate == null) {
-            btnCreate = new JButton("Create");
-            btnCreate.setBackground(PaletteFactory.getHighlighter());
-            btnCreate.setFont(new Font("Tahoma", Font.BOLD, 20));
+            btnCreate = new MyButton("Create");
             btnCreate.addActionListener(action -> createAppointment());
         }
         return btnCreate;

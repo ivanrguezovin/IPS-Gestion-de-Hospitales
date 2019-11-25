@@ -29,12 +29,12 @@ import es.uniovi.ips.hospital.service.AppointmentService;
 import es.uniovi.ips.hospital.service.DoctorService;
 import es.uniovi.ips.hospital.service.PatientService;
 import es.uniovi.ips.hospital.service.RoomService;
-import es.uniovi.ips.hospital.ui.admin.AdminDialog2;
 import es.uniovi.ips.hospital.ui.common.MedicalRecordDialog;
 import es.uniovi.ips.hospital.ui.util.Designer;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
 import es.uniovi.ips.hospital.ui.util.components.MyBackPanel;
+import es.uniovi.ips.hospital.ui.util.components.MyButton;
 import es.uniovi.ips.hospital.ui.util.components.MyCalendar;
 import es.uniovi.ips.hospital.ui.util.components.MyComboBox;
 import es.uniovi.ips.hospital.ui.util.components.MyFrontPanel;
@@ -51,7 +51,6 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
-import java.awt.Font;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -87,7 +86,6 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 	@Autowired	private PatientFormat patientFormat;
 	@Autowired	private StaffFormat staffFormat;
 	@Autowired	private RoomFormat roomFormat;
-	@Autowired	private AdminDialog2 adminDialog;
 	
 	private List<Doctor> selectedDoctors;
 	private List<Doctor> availableDoctors;
@@ -367,9 +365,7 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 	}
 	private JButton getBtnUpdate() {
 		if (btnUpdate == null) {
-			btnUpdate = new JButton("Confirm");
-			btnUpdate.setBackground(PaletteFactory.getHighlighter());
-            btnUpdate.setFont(new Font("Tahoma", Font.BOLD, 20));
+			btnUpdate = new MyButton("Confirm");
 			btnUpdate.addActionListener(action -> modifyAppointment());
 		}
 		return btnUpdate;
@@ -441,7 +437,7 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 	}
 	private Label getLblTime() {
 		if (lblTime == null) {
-			lblTime = new Label("Time:");
+			lblTime = new Label("Start:");
 		}
 		return lblTime;
 	}
@@ -454,7 +450,7 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
     
 	private Label getLblEnd() {
 		if (lblEnd == null) {
-			lblEnd = new Label("Start:");
+			lblEnd = new Label("End:");
 		}
 		return lblEnd;
 	}
@@ -522,6 +518,7 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 		lblDoctors.setText("<html><p style=\"width:500px\">"
 				+ selectedDoctors.stream().map(d -> d.guiToString()).collect(Collectors.joining(", "))
 				+ "<p></html>");
+		setDate();
     }
     
     private class SetDateAction implements ActionListener {
@@ -571,7 +568,6 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
     		// Notificación de creación satisfactoria y restauración de la ventana
     		modifyDate();
     		JOptionPane.showMessageDialog(this, "The appointment was edited succesfully");
-    		adminDialog.back();
     	} catch(Exception ie) {
     		JOptionPane.showMessageDialog(this, ie.getMessage());
     	}
@@ -663,6 +659,7 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 	private void setAppointmentComponentsEnabled(boolean b) {
 		calendar.setEnabled(b);
 		timePicker.setEnabled(b);
+		timePickerEnd.setEnabled(b);
 		chckbxUrgent.setEnabled(b);
 		lblRoom.setEnabled(b);
 		cbRoom.setEnabled(b);

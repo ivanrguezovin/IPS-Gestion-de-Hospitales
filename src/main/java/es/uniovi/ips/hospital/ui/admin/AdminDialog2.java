@@ -12,6 +12,8 @@ import es.uniovi.ips.hospital.domain.Appointment;
 import es.uniovi.ips.hospital.ui.admin.appointment.CreateAppointmentPanel;
 import es.uniovi.ips.hospital.ui.admin.appointment.EditAppointmentPanel;
 import es.uniovi.ips.hospital.ui.admin.appointment.ShowAppointmentsPanel;
+import es.uniovi.ips.hospital.ui.admin.schedule.ManageBreakScheduleDialog;
+import es.uniovi.ips.hospital.ui.admin.schedule.ManageBreakSchedulePanel;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
 import es.uniovi.ips.hospital.ui.util.components.MyBanner;
@@ -32,6 +34,7 @@ public class AdminDialog2 extends JDialog {
     @Autowired	private CreateAppointmentPanel createAppointmentPanel;
     @Autowired	private ShowAppointmentsPanel showAppointmentsPanel;
     @Autowired	private EditAppointmentPanel editAppointmentPanel;
+    @Autowired	private ManageBreakSchedulePanel manageBreakSchedulePanel;
 
 	private JPanel current;
 	private JPanel previous;
@@ -104,7 +107,7 @@ public class AdminDialog2 extends JDialog {
 		btnBack.setEnabled(true);
 	}
 	
-	public void back() {
+	private void back() {
 		boolean isMainPanel = previous == mainPanel;
 		launch(previous);
 		if (isMainPanel)
@@ -113,12 +116,12 @@ public class AdminDialog2 extends JDialog {
 			previous = mainPanel;
 	}
 	
-	public void launchCreateAppointment() {
+	void launchCreateAppointment() {
         createAppointmentPanel.fillComboBoxes();
         launch(createAppointmentPanel);
     }
 	
-	public void launchShowAppointments() {
+	void launchShowAppointments() {
         showAppointmentsPanel.showAppointments();
         launch(showAppointmentsPanel);
 	}
@@ -128,4 +131,9 @@ public class AdminDialog2 extends JDialog {
 		editAppointmentPanel.setAppointment(appointment);
 		launch(editAppointmentPanel);
 	}
+
+    void launchBreakDialog() {
+        manageBreakSchedulePanel.fillLists();
+        launch(manageBreakSchedulePanel);
+    }
 }

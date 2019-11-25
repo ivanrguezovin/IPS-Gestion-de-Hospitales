@@ -135,6 +135,7 @@ public class AdminMainPanel extends JPanel implements Shiftable {
     private JButton getBtnManageBreaks() {
         if (btnManageBreaks == null) {
             btnManageBreaks = new JButton("Manage breaks");
+            btnManageBreaks.addActionListener(e -> adminDialog.launchBreakDialog());
         }
         return btnManageBreaks;
     }
