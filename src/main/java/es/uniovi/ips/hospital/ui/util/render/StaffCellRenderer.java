@@ -37,6 +37,8 @@ public class StaffCellRenderer extends JLabel implements ListCellRenderer<Staff>
 					return this;
 				}
 		}
+		setBackground(PaletteFactory.getHighlighter());
+		setOpaque(isSelected);
 		return this;
 	}
 

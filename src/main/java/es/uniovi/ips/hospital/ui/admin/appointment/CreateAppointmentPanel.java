@@ -637,6 +637,7 @@ public class CreateAppointmentPanel extends JPanel implements Shiftable {
     private void setAppointmentComponentsEnabled(boolean b) {
         calendar.setEnabled(b);
         timePicker.setEnabled(b);
+		timePickerEnd.setEnabled(b);
         chckbxUrgent.setEnabled(b);
         lblRoom.setEnabled(b);
         cbRoom.setEnabled(b);

@@ -7,6 +7,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 import es.uniovi.ips.hospital.domain.Patient;
+import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 
 public class PatientCellRenderer extends JLabel implements ListCellRenderer<Patient> {
 
@@ -16,6 +17,8 @@ public class PatientCellRenderer extends JLabel implements ListCellRenderer<Pati
 	public Component getListCellRendererComponent(JList<? extends Patient> list, Patient value, int index,
 			boolean isSelected, boolean cellHasFocus) {
 		setText(value.guiToString());
+		setBackground(PaletteFactory.getHighlighter());
+		setOpaque(isSelected);
 		return this;
 	}
 

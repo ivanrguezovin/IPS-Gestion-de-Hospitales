@@ -1,42 +1,50 @@
 package es.uniovi.ips.hospital.ui.admin;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import es.uniovi.ips.hospital.ui.util.Designer;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
 import es.uniovi.ips.hospital.ui.util.components.MyBackPanel;
 import es.uniovi.ips.hospital.ui.util.components.MyFrontPanel;
-import es.uniovi.ips.hospital.ui.util.components.MySouthPanel;
 
 import java.awt.*;
+
+import javax.swing.Box;
+import javax.swing.SwingConstants;
+import javax.swing.border.CompoundBorder;
 
 @Component
 public class AdminMainPanel extends JPanel implements Shiftable {
 
     private static final long serialVersionUID = -1238718624919092329L;
     
-    @Autowired
-    private AdminDialog2 adminDialog;
+    @Autowired	private AdminDialog2 adminDialog;
 
     private final JPanel contentPanel = new MyBackPanel();
-    private JPanel pnSide;
-    private JPanel pnButtons;
     private JPanel pnAppointments;
     private JPanel pnSchedules;
+    private JPanel pnPatients;
+    private JPanel pnCreateUsers;
+	private JLabel lblAppointments;
+	private JLabel lblSchedules;
+	private JLabel lblPatients;
+	private JLabel lblDatabase;
     private JButton btnCreateAppointment;
     private JButton btnEditAppointment;
     private JButton btnManageSchedules;
     private JButton btnManageBreaks;
-    private JPanel pnPatients;
     private JButton btnShowMedicalRecords;
-    private JPanel pnCreateUsers;
-    private JButton btnCreateUsers;
+    private JButton btnCreateAdmins;
+    private JButton btnCreateDoctors;
+    private JButton btnCreateNurses;
+    private JButton btnCreatePatients;
+
 
     /**
      * Create the dialog.
@@ -44,38 +52,60 @@ public class AdminMainPanel extends JPanel implements Shiftable {
     public AdminMainPanel() {
         setBounds(100, 100, 650, 700);
         this.setLayout(new BorderLayout());
-        contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         this.add(contentPanel, BorderLayout.CENTER);
-        contentPanel.setLayout(new GridLayout(0, 2, 0, 0));
-        contentPanel.add(getPnSide());
-        contentPanel.add(getPnButtons());
-    }
-
-    private JPanel getPnSide() {
-        if (pnSide == null) {
-            pnSide = new JPanel();
-            pnSide.setLayout(new GridLayout(2, 1, 0, 0));
-            pnSide.add(getPnPatients());
-            pnSide.add(getPnCreateUsers());
-        }
-        return pnSide;
-    }
-
-    private JPanel getPnButtons() {
-        if (pnButtons == null) {
-            pnButtons = new MySouthPanel();
-            pnButtons.setLayout(new GridLayout(2, 0, 0, 0));
-            pnButtons.add(getPnAppointments());
-            pnButtons.add(getPnSchedules());
-        }
-        return pnButtons;
+        GridBagLayout gbl_pnMain = new GridBagLayout();
+        gbl_pnMain.columnWidths = new int[]{55, 290, 10, 290, 55};
+        gbl_pnMain.rowHeights = new int[]{30, 290, 10, 290, 30};
+        gbl_pnMain.columnWeights = new double[]{0.0,0.0,0.0,0.0,0.0};
+        gbl_pnMain.rowWeights = new double[]{0.0,0.0,0.0,0.0,0.0};
+		contentPanel.setLayout(gbl_pnMain);
+		GridBagConstraints gbc_pnBlank = new GridBagConstraints();
+        gbc_pnBlank.insets = new Insets(5, 5, 5, 5);
+		gbc_pnBlank.fill = GridBagConstraints.BOTH;
+		gbc_pnBlank.gridx = 0;
+		gbc_pnBlank.gridy = 0;
+		contentPanel.add(new MyBackPanel(), gbc_pnBlank);
+		GridBagConstraints gbc_pnAppointment = new GridBagConstraints();
+        gbc_pnAppointment.insets = new Insets(5, 5, 5, 5);
+		gbc_pnAppointment.fill = GridBagConstraints.BOTH;
+		gbc_pnAppointment.gridx = 1;
+		gbc_pnAppointment.gridy = 1;
+		contentPanel.add(getPnAppointments(), gbc_pnAppointment);
+		GridBagConstraints gbc_pnSchedules = new GridBagConstraints();
+		gbc_pnSchedules.insets = new Insets(5, 5, 5, 5);
+		gbc_pnSchedules.fill = GridBagConstraints.BOTH;
+		gbc_pnSchedules.gridx = 1;
+		gbc_pnSchedules.gridy = 3;
+		contentPanel.add(getPnSchedules(), gbc_pnSchedules);
+		GridBagConstraints gbc_pnPatients = new GridBagConstraints();
+		gbc_pnPatients.insets = new Insets(5, 5, 5, 5);
+		gbc_pnPatients.fill = GridBagConstraints.BOTH;
+		gbc_pnPatients.gridx = 3;
+		gbc_pnPatients.gridy = 1;
+		contentPanel.add(getPnPatients(), gbc_pnPatients);
+		GridBagConstraints gbc_pnDatabase = new GridBagConstraints();
+		gbc_pnDatabase.insets = new Insets(5, 5, 5, 5);
+		gbc_pnDatabase.fill = GridBagConstraints.BOTH;
+		gbc_pnDatabase.gridx = 3;
+		gbc_pnDatabase.gridy = 3;
+		contentPanel.add(getPnCreateUsers(), gbc_pnDatabase);
+		GridBagConstraints gbc_pnBlank2 = new GridBagConstraints();
+        gbc_pnBlank2.insets = new Insets(5, 5, 5, 5);
+		gbc_pnBlank2.fill = GridBagConstraints.BOTH;
+		gbc_pnBlank2.gridx = 4;
+		gbc_pnBlank2.gridy = 4;
+		contentPanel.add(new MyBackPanel(), gbc_pnBlank2);
     }
 
     private JPanel getPnAppointments() {
         if (pnAppointments == null) {
             pnAppointments = new MyFrontPanel();
-            pnAppointments.setBorder(new TitledBorder(null, "Appointments", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+            pnAppointments.setBorder(new CompoundBorder(Designer.getBorder(), new EmptyBorder(5, 5, 5, 5)));
+            pnAppointments.setLayout(new GridLayout(9, 1, 10, 0));
+            pnAppointments.add(getLblAppointments());
+            pnAppointments.add(Box.createRigidArea(new Dimension(0,0)));
             pnAppointments.add(getBtnCreateAppointment());
+            pnAppointments.add(Box.createRigidArea(new Dimension(0,0)));
             pnAppointments.add(getBtnEditAppointment());
         }
         return pnAppointments;
@@ -84,8 +114,12 @@ public class AdminMainPanel extends JPanel implements Shiftable {
     private JPanel getPnSchedules() {
         if (pnSchedules == null) {
             pnSchedules = new MyFrontPanel();
-            pnSchedules.setBorder(new TitledBorder(null, "Schedules", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+            pnSchedules.setBorder(new CompoundBorder(Designer.getBorder(), new EmptyBorder(5, 5, 5, 5)));
+            pnSchedules.setLayout(new GridLayout(9, 1, 10, 0));
+            pnSchedules.add(getLblSchedules());
+            pnSchedules.add(Box.createRigidArea(new Dimension(0,0)));
             pnSchedules.add(getBtnManageSchedules());
+            pnSchedules.add(Box.createRigidArea(new Dimension(0,0)));
             pnSchedules.add(getBtnManageBreaks());
         }
         return pnSchedules;
@@ -94,7 +128,10 @@ public class AdminMainPanel extends JPanel implements Shiftable {
     private JPanel getPnPatients() {
         if (pnPatients == null) {
             pnPatients = new MyFrontPanel();
-            pnPatients.setBorder(new TitledBorder(null, "Patients", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+            pnPatients.setBorder(new CompoundBorder(Designer.getBorder(), new EmptyBorder(5, 5, 5, 5)));
+            pnPatients.setLayout(new GridLayout(9, 1, 10, 0));
+            pnPatients.add(getLblPatients());
+            pnPatients.add(Box.createRigidArea(new Dimension(0,0)));
             pnPatients.add(getBtnShowMedicalRecords());
         }
         return pnPatients;
@@ -103,10 +140,51 @@ public class AdminMainPanel extends JPanel implements Shiftable {
     private JPanel getPnCreateUsers() {
         if (pnCreateUsers == null) {
             pnCreateUsers = new MyFrontPanel();
-            pnCreateUsers.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Create Users", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-            pnCreateUsers.add(getBtnCreateUsers());
+            pnCreateUsers.setBorder(new CompoundBorder(Designer.getBorder(), new EmptyBorder(5, 5, 5, 5)));
+            pnCreateUsers.setLayout(new GridLayout(9, 1, 10, 0));
+            pnCreateUsers.add(getLblDatabase());
+            pnCreateUsers.add(Box.createRigidArea(new Dimension(0,0)));
+            pnCreateUsers.add(getBtnCreateAdmins());
+            pnCreateUsers.add(Box.createRigidArea(new Dimension(0,0)));
+            pnCreateUsers.add(getBtnCreateDoctors());
+            pnCreateUsers.add(Box.createRigidArea(new Dimension(0,0)));
+            pnCreateUsers.add(getBtnCreateNurses());
+            pnCreateUsers.add(Box.createRigidArea(new Dimension(0,0)));
+            pnCreateUsers.add(getBtnCreatePatientss());
         }
         return pnCreateUsers;
+    }
+    
+    private JLabel getLblAppointments() {
+    	if (lblAppointments == null) {
+    		lblAppointments = new JLabel("Appointments");
+    		lblAppointments.setHorizontalAlignment(SwingConstants.CENTER);
+    	}
+    	return lblAppointments;
+    }
+    
+    private JLabel getLblSchedules() {
+    	if (lblSchedules == null) {
+    		lblSchedules = new JLabel("Schedules");
+    		lblSchedules.setHorizontalAlignment(SwingConstants.CENTER);
+    	}
+    	return lblSchedules;
+    }
+    
+    private JLabel getLblPatients() {
+    	if (lblPatients == null) {
+    		lblPatients = new JLabel("Patients");
+    		lblPatients.setHorizontalAlignment(SwingConstants.CENTER);
+    	}
+    	return lblPatients;
+    }
+    
+    private JLabel getLblDatabase() {
+    	if (lblDatabase == null) {
+    		lblDatabase = new JLabel("Database");
+    		lblDatabase.setHorizontalAlignment(SwingConstants.CENTER);
+    	}
+    	return lblDatabase;
     }
 
     private JButton getBtnCreateAppointment() {
@@ -128,7 +206,7 @@ public class AdminMainPanel extends JPanel implements Shiftable {
     private JButton getBtnManageSchedules() {
         if (btnManageSchedules == null) {
             btnManageSchedules = new JButton("Manage schedules");
-            btnManageSchedules.addActionListener(e -> adminDialog.launchWorkScheduleDialog());
+            btnManageSchedules.addActionListener(e -> adminDialog.launchManageWorkSchedule());
         }
         return btnManageSchedules;
     }
@@ -136,24 +214,45 @@ public class AdminMainPanel extends JPanel implements Shiftable {
     private JButton getBtnManageBreaks() {
         if (btnManageBreaks == null) {
             btnManageBreaks = new JButton("Manage breaks");
-            btnManageBreaks.addActionListener(e -> adminDialog.launchBreakDialog());
+            btnManageBreaks.addActionListener(e -> adminDialog.launchManageBreaks());
         }
         return btnManageBreaks;
     }
 
     private JButton getBtnShowMedicalRecords() {
         if (btnShowMedicalRecords == null) {
-            btnShowMedicalRecords = new JButton("Show Medical Records");
+            btnShowMedicalRecords = new JButton("Show patient info");
+            btnShowMedicalRecords.addActionListener(e -> adminDialog.launchPatientInfo());
         }
         return btnShowMedicalRecords;
     }
 
-    private JButton getBtnCreateUsers() {
-        if (btnCreateUsers == null) {
-            btnCreateUsers = new JButton("Create Users");
-            btnCreateUsers.setFont(new Font("Tahoma", Font.BOLD, 11));
+    private JButton getBtnCreateAdmins() {
+        if (btnCreateAdmins == null) {
+        	btnCreateAdmins = new JButton("Add administrator");
         }
-        return btnCreateUsers;
+        return btnCreateAdmins;
+    }
+
+    private JButton getBtnCreateDoctors() {
+        if (btnCreateDoctors == null) {
+        	btnCreateDoctors = new JButton("Add doctor");
+        }
+        return btnCreateDoctors;
+    }
+
+    private JButton getBtnCreateNurses() {
+        if (btnCreateNurses == null) {
+        	btnCreateNurses = new JButton("Add nurse");
+        }
+        return btnCreateNurses;
+    }
+
+    private JButton getBtnCreatePatientss() {
+        if (btnCreatePatients == null) {
+        	btnCreatePatients = new JButton("Add patient");
+        }
+        return btnCreatePatients;
     }
     
     ////////////////////////////////////////////////////////////////////////////////
