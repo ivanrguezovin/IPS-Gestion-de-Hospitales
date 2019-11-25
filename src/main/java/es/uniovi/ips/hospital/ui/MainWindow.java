@@ -4,10 +4,9 @@ import es.uniovi.ips.hospital.domain.AdminAssistant;
 import es.uniovi.ips.hospital.domain.Doctor;
 import es.uniovi.ips.hospital.domain.Staff;
 import es.uniovi.ips.hospital.service.LoginService;
-import es.uniovi.ips.hospital.ui.admin.AdminDialog;
+import es.uniovi.ips.hospital.ui.admin.AdminDialog2;
 import es.uniovi.ips.hospital.ui.doctor.DoctorDialog;
 import es.uniovi.ips.hospital.ui.util.Designer;
-import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.components.MyBackPanel;
 import es.uniovi.ips.hospital.ui.util.components.MyBanner;
 import es.uniovi.ips.hospital.ui.util.components.MyFrontPanel;
@@ -17,12 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.SoftBevelBorder;
 
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 
 @Component
 public class MainWindow {
@@ -31,7 +26,7 @@ public class MainWindow {
     private LoginService loginService;
 
     @Autowired
-    private AdminDialog adminDialog;
+    private AdminDialog2 adminDialog;
 
     @Autowired
     private DoctorDialog doctorDialog;
@@ -40,7 +35,7 @@ public class MainWindow {
 
     public MainWindow() {
         frame = new MainFrame();
-        frame.setVisible(true);
+        frame.setVisible( true );
     }
 
 	private void login(String email, char[] password) {
@@ -53,6 +48,7 @@ public class MainWindow {
             doctorDialog.run((Doctor) user);
 
         } else if (user instanceof AdminAssistant) {
+        	adminDialog.setFrame();
             adminDialog.setVisible(true);
         } else {
             JOptionPane.showMessageDialog(frame, "Wrong user/credentials");
@@ -83,24 +79,19 @@ public class MainWindow {
     	public MainFrame() {
         	Designer.setDesign();
     		setTitle("Hospital");
-    		//WebLookAndFeel.install();
-    		setMinimumSize(new Dimension(600, 600));
-    		setPreferredSize(new Dimension(600, 600));
+    		setMinimumSize(new Dimension(700, 700));
+    		setPreferredSize(new Dimension(700, 700));
+    		setMaximumSize(getPreferredSize());
+    		setResizable(false);
     		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     		setLocationRelativeTo(null);
-    		setBounds(100, 100, 600, 600);
+    		setBounds(100, 100, 700, 700);
     		contentPane = new JPanel();
     		contentPane.setLayout(new BorderLayout(0, 0));
     		setContentPane(contentPane);
     		contentPane.add(getBanner(), BorderLayout.NORTH);
     		contentPane.add(getPnCenter(), BorderLayout.CENTER);
     		contentPane.add(getPnSouth(), BorderLayout.SOUTH);
-        	addFocusListener(new FocusAdapter() {
-        		@Override
-        		public void focusGained(FocusEvent e) {
-        			setVisible(true);
-        		}
-        	});
     	}
 
     	private JLabel getBanner() {
@@ -131,7 +122,7 @@ public class MainWindow {
     	private JPanel getPnLogIn() {
     		if (pnLogIn == null) {
     			pnLogIn = new MyFrontPanel();
-    			pnLogIn.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, PaletteFactory.getHighlighter(), null, null));
+    			pnLogIn.setBorder(Designer.getBorder());
     			pnLogIn.setLayout(new BoxLayout(pnLogIn, BoxLayout.Y_AXIS));
     			pnLogIn.add(Box.createRigidArea(new Dimension(0,20)));
     			pnLogIn.add(getLblLogIn());

@@ -13,11 +13,12 @@ import es.uniovi.ips.hospital.service.DoctorService;
 import es.uniovi.ips.hospital.service.PatientService;
 import es.uniovi.ips.hospital.service.RoomService;
 import es.uniovi.ips.hospital.ui.common.MedicalRecordDialogWithoutPrescription;
+import es.uniovi.ips.hospital.ui.util.Designer;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
+import es.uniovi.ips.hospital.ui.util.Shiftable;
 import es.uniovi.ips.hospital.ui.util.components.MyCheckBox;
 import es.uniovi.ips.hospital.ui.util.components.MyComboBox;
 import es.uniovi.ips.hospital.ui.util.components.MyFrontPanel;
-import es.uniovi.ips.hospital.ui.util.components.MySouthPanel;
 import es.uniovi.ips.hospital.ui.util.filter.PatientTextFilterator;
 import es.uniovi.ips.hospital.ui.util.filter.RoomTextFilterator;
 import es.uniovi.ips.hospital.ui.util.filter.StaffTextFilterator;
@@ -30,7 +31,6 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,10 +42,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class CreateAppointmentDialog extends JDialog {
+public class CreateAppointmentPanel extends JPanel implements Shiftable {
 
     private static final long serialVersionUID = 8434535298528019736L;
     private final JPanel contentPanel = new JPanel();
+    
     @Autowired
     private MedicalRecordDialogWithoutPrescription medicalRecordDialogWithoutPrescription;
     @Autowired
@@ -62,6 +63,7 @@ public class CreateAppointmentDialog extends JDialog {
     private StaffFormat staffFormat;
     @Autowired
     private RoomFormat roomFormat;
+    
     private List<Doctor> selectedDoctors;
     private List<Doctor> availableDoctors;
     private LocalDateTime appointmentDateTime;
@@ -70,6 +72,8 @@ public class CreateAppointmentDialog extends JDialog {
     private JPanel pnPatient;
     private JPanel pnDoctor;
     private JPanel pnInfo;
+    private JPanel pnPatientSelect;
+    private JPanel pnPatientInfo;
     private JButton btnShowMedicalRecord;
     private JComboBox<Patient> cbPatient;
     private EventList<Patient> patientList;
@@ -88,7 +92,6 @@ public class CreateAppointmentDialog extends JDialog {
     private AutoCompleteSupport<Doctor> autoCompleteSelectedDoctor;
     private JButton btnRemove;
     private JLabel lblDoctors;
-    private JPanel pnSouth;
     private JButton btnCreate;
     private JPanel pnDateTime;
     private JPanel pnDetails;
@@ -107,50 +110,50 @@ public class CreateAppointmentDialog extends JDialog {
     private JButton btnSetDate;
     private ActionListener setDateAction;
     private ActionListener modifyDateAction;
+    private JLabel lblPatient;
+	private JPanel pnManageDoctor;
 
     /**
      * Create the dialog.
      */
-    public CreateAppointmentDialog() {
-        setTitle("Administrator: Create new appointment");
-        setModal(true);
-        setPreferredSize(new Dimension(700, 500));
-        setMinimumSize(new Dimension(700, 500));
-        setBounds(100, 100, 700, 500);
-        getContentPane().setLayout(new BorderLayout());
+    public CreateAppointmentPanel() {
+        setBounds(100, 100, 650, 700);
+        setPreferredSize(new Dimension(650, 700));
+        setMinimumSize(new Dimension(650, 700));
+        this.setLayout(new BorderLayout());
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-        getContentPane().add(contentPanel, BorderLayout.CENTER);
+        this.add(contentPanel, BorderLayout.CENTER);
         contentPanel.setLayout(new BorderLayout(0, 0));
         contentPanel.add(getPnAppointment(), BorderLayout.CENTER);
-        contentPanel.add(getPnSouth(), BorderLayout.SOUTH);
+        contentPanel.add(getBtnCreate(), BorderLayout.SOUTH);
         selectedDoctors = new ArrayList<Doctor>();
     }
 
     private JPanel getPnAppointment() {
         if (pnAppointment == null) {
-            pnAppointment = new MyFrontPanel();
+            pnAppointment = new JPanel();
             GridBagLayout gbl_pnAppointment = new GridBagLayout();
-            gbl_pnAppointment.columnWidths = new int[]{0, 0};
-            gbl_pnAppointment.rowHeights = new int[]{50, 100, 100};
-            gbl_pnAppointment.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-            gbl_pnAppointment.rowWeights = new double[]{0.0, 1.0, 1.0};
+            gbl_pnAppointment.columnWidths = new int[]{0};
+            gbl_pnAppointment.rowHeights = new int[]{10, 100, 15, 250, 15, 150, 10};
+            gbl_pnAppointment.columnWeights = new double[]{1.0};
+            gbl_pnAppointment.rowWeights = new double[]{0.0,0.0,0.0,0.0,0.0,0.0,0.0};
             pnAppointment.setLayout(gbl_pnAppointment);
             GridBagConstraints gbc_pnPatient = new GridBagConstraints();
-            gbc_pnPatient.insets = new Insets(0, 0, 5, 0);
+            gbc_pnPatient.insets = new Insets(5, 5, 5, 5);
             gbc_pnPatient.fill = GridBagConstraints.BOTH;
             gbc_pnPatient.gridx = 0;
-            gbc_pnPatient.gridy = 0;
+            gbc_pnPatient.gridy = 1;
             pnAppointment.add(getPnPatient(), gbc_pnPatient);
             GridBagConstraints gbc_pnInfo = new GridBagConstraints();
             gbc_pnInfo.fill = GridBagConstraints.BOTH;
             gbc_pnInfo.gridx = 0;
-            gbc_pnInfo.gridy = 1;
+            gbc_pnInfo.gridy = 3;
             pnAppointment.add(getPnInfo(), gbc_pnInfo);
             GridBagConstraints gbc_pnDoctor = new GridBagConstraints();
             gbc_pnDoctor.insets = new Insets(0, 0, 5, 0);
             gbc_pnDoctor.fill = GridBagConstraints.BOTH;
             gbc_pnDoctor.gridx = 0;
-            gbc_pnDoctor.gridy = 2;
+            gbc_pnDoctor.gridy = 5;
             pnAppointment.add(getPnDoctor(), gbc_pnDoctor);
         }
         return pnAppointment;
@@ -159,40 +162,124 @@ public class CreateAppointmentDialog extends JDialog {
     private JPanel getPnPatient() {
         if (pnPatient == null) {
             pnPatient = new MyFrontPanel();
-            pnPatient.setBorder(new TitledBorder(null, "Patient", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			pnPatient.setBorder(Designer.getBorder());
             FlowLayout flowLayout = (FlowLayout) pnPatient.getLayout();
             flowLayout.setAlignment(FlowLayout.LEFT);
-            pnPatient.add(getCbPatient());
-            pnPatient.add(getBtnShowMedicalRecord());
-            pnPatient.add(getLblContactInfo());
-            pnPatient.add(getTxtContactInfo());
+            pnPatient.add(getPnPatientSelect());
+            pnPatient.add(getPnPatientInfo());
         }
         return pnPatient;
+    }
+    
+    private JPanel getPnPatientSelect() {
+    	if (pnPatientSelect == null) {
+            pnPatientSelect = new MyFrontPanel();
+            FlowLayout flowLayout = (FlowLayout) pnPatientSelect.getLayout();
+            flowLayout.setAlignment(FlowLayout.LEFT);
+            pnPatientSelect.add(getLblPatient());
+            pnPatientSelect.add(getCbPatient());
+        }
+        return pnPatientSelect;
+    }
+    
+    private JPanel getPnPatientInfo() {
+    	if (pnPatientInfo == null) {
+    		pnPatientInfo = new MyFrontPanel();
+            FlowLayout flowLayout = (FlowLayout) pnPatientInfo.getLayout();
+            flowLayout.setAlignment(FlowLayout.LEFT);
+            pnPatientInfo.add(getBtnShowMedicalRecord());
+            pnPatientInfo.add(getLblContactInfo());
+            pnPatientInfo.add(getTxtContactInfo());
+        }
+        return pnPatientInfo;
+    }
+
+    private JPanel getPnInfo() {
+        if (pnInfo == null) {
+            pnInfo = new JPanel();
+            pnInfo.setLayout(new GridLayout(0, 2, 0, 0));
+            GridBagLayout gbl_pnInfo = new GridBagLayout();
+            gbl_pnInfo.columnWidths = new int[]{400, 300};
+            gbl_pnInfo.rowHeights = new int[]{0};
+            gbl_pnInfo.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+            gbl_pnInfo.rowWeights = new double[]{0.0};
+            pnInfo.setLayout(gbl_pnInfo);
+            GridBagConstraints gbc_pnDateTime = new GridBagConstraints();
+            gbc_pnDateTime.insets = new Insets(0, 5, 5, 5);
+            gbc_pnDateTime.fill = GridBagConstraints.BOTH;
+            gbc_pnDateTime.gridx = 0;
+            gbc_pnDateTime.gridy = 0;
+            pnInfo.add(getPnDateTime(), gbc_pnDateTime);
+            GridBagConstraints gbc_pnDetails = new GridBagConstraints();
+            gbc_pnDetails.insets = new Insets(0, 5, 5, 5);
+            gbc_pnDetails.fill = GridBagConstraints.BOTH;
+            gbc_pnDetails.gridx = 1;
+            gbc_pnDetails.gridy = 0;
+            pnInfo.add(getPnDetails(), gbc_pnDetails);
+        }
+        return pnInfo;
     }
 
     private JPanel getPnDoctor() {
         if (pnDoctor == null) {
             pnDoctor = new MyFrontPanel();
-            pnDoctor.setBorder(new TitledBorder(null, "Doctor", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-            pnDoctor.setLayout(new BorderLayout(0, 0));
-            pnDoctor.add(getPnSelectDoctor(), BorderLayout.NORTH);
+            pnDoctor.setBorder(Designer.getBorder());
+            pnDoctor.setLayout(new GridLayout(2, 1));
+            pnDoctor.add(getPnManageDoctor());
             pnDoctor.add(getPnShowDoctors());
-            pnDoctor.add(getPnRemoveDoctor(), BorderLayout.SOUTH);
         }
         return pnDoctor;
     }
-
-    private JPanel getPnInfo() {
-        if (pnInfo == null) {
-            pnInfo = new MyFrontPanel();
-            pnInfo.setBorder(new TitledBorder(null, "Appointment", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-            pnInfo.setLayout(new GridLayout(0, 2, 0, 0));
-            pnInfo.add(getPnDateTime());
-            pnInfo.add(getPnDetails());
+    
+    private JPanel getPnManageDoctor() {
+        if (pnManageDoctor == null) {
+        	pnManageDoctor = new MyFrontPanel();
+        	pnManageDoctor.setLayout(new GridLayout(1,2));
+        	pnManageDoctor.add(getPnSelectDoctor());
+        	pnManageDoctor.add(getPnRemoveDoctor());
         }
-        return pnInfo;
+        return pnManageDoctor;
     }
 
+    private JPanel getPnShowDoctors() {
+        if (pnShowDoctors == null) {
+            pnShowDoctors = new MyFrontPanel();
+            FlowLayout flowLayout = (FlowLayout) pnShowDoctors.getLayout();
+            flowLayout.setAlignment(FlowLayout.LEFT);
+            pnShowDoctors.add(getLblDoctors());
+        }
+        return pnShowDoctors;
+    }
+
+    private JPanel getPnSelectDoctor() {
+        if (pnSelectDoctor == null) {
+            pnSelectDoctor = new MyFrontPanel();
+            FlowLayout flowLayout = (FlowLayout) pnSelectDoctor.getLayout();
+            flowLayout.setAlignment(FlowLayout.LEFT);
+            pnSelectDoctor.add(getCbDoctor());
+            pnSelectDoctor.add(getBtnAdd());
+        }
+        return pnSelectDoctor;
+    }
+
+    private JPanel getPnRemoveDoctor() {
+        if (pnRemoveDoctor == null) {
+            pnRemoveDoctor = new MyFrontPanel();
+            FlowLayout flowLayout = (FlowLayout) pnRemoveDoctor.getLayout();
+            flowLayout.setAlignment(FlowLayout.RIGHT);
+            pnRemoveDoctor.add(getCbSelectedDoctors());
+            pnRemoveDoctor.add(getBtnRemove());
+        }
+        return pnRemoveDoctor;
+    }
+
+	private JLabel getLblPatient() {
+		if (lblPatient == null) {
+			lblPatient = new JLabel("Patient:");
+		}
+		return lblPatient;
+	}
+	
     private JComboBox<Patient> getCbPatient() {
         if (cbPatient == null) {
             cbPatient = new MyComboBox<Patient>();
@@ -226,17 +313,6 @@ public class CreateAppointmentDialog extends JDialog {
         return txtContactInfo;
     }
 
-    private JPanel getPnSelectDoctor() {
-        if (pnSelectDoctor == null) {
-            pnSelectDoctor = new MyFrontPanel();
-            FlowLayout flowLayout = (FlowLayout) pnSelectDoctor.getLayout();
-            flowLayout.setAlignment(FlowLayout.LEFT);
-            pnSelectDoctor.add(getCbDoctor());
-            pnSelectDoctor.add(getBtnAdd());
-        }
-        return pnSelectDoctor;
-    }
-
     private JComboBox<Staff> getCbDoctor() {
         if (cbDoctor == null) {
             cbDoctor = new MyComboBox<Staff>();
@@ -256,32 +332,11 @@ public class CreateAppointmentDialog extends JDialog {
         return btnAdd;
     }
 
-    private JPanel getPnShowDoctors() {
-        if (pnShowDoctors == null) {
-            pnShowDoctors = new MyFrontPanel();
-            FlowLayout flowLayout = (FlowLayout) pnShowDoctors.getLayout();
-            flowLayout.setAlignment(FlowLayout.LEFT);
-            pnShowDoctors.add(getLblDoctors());
-        }
-        return pnShowDoctors;
-    }
-
     private JLabel getLblDoctors() {
         if (lblDoctors == null) {
             lblDoctors = new JLabel("");
         }
         return lblDoctors;
-    }
-
-    private JPanel getPnRemoveDoctor() {
-        if (pnRemoveDoctor == null) {
-            pnRemoveDoctor = new MyFrontPanel();
-            FlowLayout flowLayout = (FlowLayout) pnRemoveDoctor.getLayout();
-            flowLayout.setAlignment(FlowLayout.LEFT);
-            pnRemoveDoctor.add(getCbSelectedDoctors());
-            pnRemoveDoctor.add(getBtnRemove());
-        }
-        return pnRemoveDoctor;
     }
 
     private JComboBox<Doctor> getCbSelectedDoctors() {
@@ -303,19 +358,11 @@ public class CreateAppointmentDialog extends JDialog {
         return btnRemove;
     }
 
-    private JPanel getPnSouth() {
-        if (pnSouth == null) {
-            pnSouth = new MySouthPanel();
-            FlowLayout flowLayout = (FlowLayout) pnSouth.getLayout();
-            flowLayout.setAlignment(FlowLayout.RIGHT);
-            pnSouth.add(getBtnCreate());
-        }
-        return pnSouth;
-    }
-
     private JButton getBtnCreate() {
         if (btnCreate == null) {
             btnCreate = new JButton("Create");
+            btnCreate.setBackground(PaletteFactory.getHighlighter());
+            btnCreate.setFont(new Font("Tahoma", Font.BOLD, 20));
             btnCreate.addActionListener(action -> createAppointment());
         }
         return btnCreate;
@@ -324,6 +371,7 @@ public class CreateAppointmentDialog extends JDialog {
     private JPanel getPnDateTime() {
         if (pnDateTime == null) {
             pnDateTime = new MyFrontPanel();
+            pnDateTime.setBorder(Designer.getBorder());
             pnDateTime.setLayout(new BorderLayout(0, 0));
             pnDateTime.add(getCalendar(), BorderLayout.CENTER);
         }
@@ -333,6 +381,7 @@ public class CreateAppointmentDialog extends JDialog {
     private JPanel getPnDetails() {
         if (pnDetails == null) {
             pnDetails = new MyFrontPanel();
+            pnDetails.setBorder(Designer.getBorder());
             pnDetails.setLayout(new GridLayout(4, 1, 0, 0));
             pnDetails.add(getChckbxUrgent());
             pnDetails.add(getPnRoom());
@@ -459,6 +508,10 @@ public class CreateAppointmentDialog extends JDialog {
         roomList.addAll(roomService.findAllRooms());
         if (autoCompleteRoom == null)
             autoCompleteRoom = AutoCompleteSupport.install(getCbRoom(), roomList, new RoomTextFilterator(), roomFormat);
+    }
+    
+    public void setFocus() {
+        cbPatient.requestFocus();
     }
     
     private void showMedicalRecord() {

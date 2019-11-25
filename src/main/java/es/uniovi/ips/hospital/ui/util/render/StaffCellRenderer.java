@@ -10,6 +10,7 @@ import javax.swing.ListCellRenderer;
 
 import es.uniovi.ips.hospital.domain.Doctor;
 import es.uniovi.ips.hospital.domain.Staff;
+import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 
 public class StaffCellRenderer extends JLabel implements ListCellRenderer<Staff> {
 
@@ -32,7 +33,7 @@ public class StaffCellRenderer extends JLabel implements ListCellRenderer<Staff>
 			setForeground(Color.GRAY);
 			for (Staff doc : availableDoctors)
 				if (value.equals(doc)) {
-					setForeground(Color.BLACK);
+					setForeground(PaletteFactory.getLighter());
 					return this;
 				}
 		}

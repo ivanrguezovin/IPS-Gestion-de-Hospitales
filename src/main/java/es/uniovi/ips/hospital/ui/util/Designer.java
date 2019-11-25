@@ -1,13 +1,16 @@
 package es.uniovi.ips.hospital.ui.util;
 
 import javax.swing.UIManager;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.SoftBevelBorder;
 
 public class Designer {
 
 	public static void setDesign() {
 		// Paneles
-		UIManager.put("Panel.background", PaletteFactory.getMainDark());
+		UIManager.put("Panel.background", PaletteFactory.getBaseDark());
 		
 		// Botones
         UIManager.put("Button.background", PaletteFactory.getBaseDark());
@@ -24,7 +27,7 @@ public class Designer {
         UIManager.put("CheckBox.focus", PaletteFactory.getHighlighter());
 		
 		// ComboBoxes
-        UIManager.put("ComboBox.background", PaletteFactory.getAltDark());
+        UIManager.put("ComboBox.background", PaletteFactory.getBaseDark());
         UIManager.put("ComboBox.foreground", PaletteFactory.getLighter());
         UIManager.put("ComboBox.highlight", PaletteFactory.getHighlighter());
         UIManager.put("ComboBox.select", PaletteFactory.getHighlighter());
@@ -35,8 +38,9 @@ public class Designer {
         // Labels
         UIManager.put("Label.foreground", PaletteFactory.getLighter());
         
-        
-        
+        // Spinners
+        UIManager.put("Spinner.background", PaletteFactory.getBaseDark());
+        UIManager.put("Spinner.foreground", PaletteFactory.getLighter());
         
         
         
@@ -56,6 +60,10 @@ public class Designer {
         UIManager.put("TextField.foreground", PaletteFactory.getLighter());
         UIManager.put("TextField.caretForeground", PaletteFactory.getLighter());
 		
+	}
+	
+	public static Border getBorder() {
+		return new SoftBevelBorder(BevelBorder.LOWERED, null, PaletteFactory.getHighlighter(), null, null);
 	}
 
 }
