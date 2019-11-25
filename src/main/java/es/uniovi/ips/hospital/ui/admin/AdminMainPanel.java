@@ -120,6 +120,7 @@ public class AdminMainPanel extends JPanel implements Shiftable {
     private JButton getBtnEditAppointment() {
         if (btnEditAppointment == null) {
             btnEditAppointment = new JButton("Edit appointment");
+            btnEditAppointment.addActionListener(e -> adminDialog.launchShowAppointments());
         }
         return btnEditAppointment;
     }

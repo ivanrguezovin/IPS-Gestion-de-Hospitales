@@ -16,9 +16,12 @@ import es.uniovi.ips.hospital.ui.common.MedicalRecordDialogWithoutPrescription;
 import es.uniovi.ips.hospital.ui.util.Designer;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
+import es.uniovi.ips.hospital.ui.util.components.MyBackPanel;
+import es.uniovi.ips.hospital.ui.util.components.MyCalendar;
 import es.uniovi.ips.hospital.ui.util.components.MyCheckBox;
 import es.uniovi.ips.hospital.ui.util.components.MyComboBox;
 import es.uniovi.ips.hospital.ui.util.components.MyFrontPanel;
+import es.uniovi.ips.hospital.ui.util.components.MyTimePicker;
 import es.uniovi.ips.hospital.ui.util.filter.PatientTextFilterator;
 import es.uniovi.ips.hospital.ui.util.filter.RoomTextFilterator;
 import es.uniovi.ips.hospital.ui.util.filter.StaffTextFilterator;
@@ -112,9 +115,10 @@ public class CreateAppointmentPanel extends JPanel implements Shiftable {
         setBounds(100, 100, 650, 700);
         setPreferredSize(new Dimension(650, 700));
         setMinimumSize(new Dimension(650, 700));
-        this.setLayout(new BorderLayout());
+        setLayout(new BorderLayout());
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-        this.add(contentPanel, BorderLayout.CENTER);
+        add(contentPanel, BorderLayout.CENTER);
+        contentPanel.setBackground(PaletteFactory.getBaseDark());
         contentPanel.setLayout(new BorderLayout(0, 0));
         contentPanel.add(getPnAppointment(), BorderLayout.CENTER);
         contentPanel.add(getBtnCreate(), BorderLayout.SOUTH);
@@ -123,7 +127,7 @@ public class CreateAppointmentPanel extends JPanel implements Shiftable {
 
     private JPanel getPnAppointment() {
         if (pnAppointment == null) {
-            pnAppointment = new JPanel();
+            pnAppointment = new MyBackPanel();
             GridBagLayout gbl_pnAppointment = new GridBagLayout();
             gbl_pnAppointment.columnWidths = new int[]{0};
             gbl_pnAppointment.rowHeights = new int[]{10, 100, 15, 250, 15, 150, 10};
@@ -415,13 +419,9 @@ public class CreateAppointmentPanel extends JPanel implements Shiftable {
         return cbRoom;
     }
 
-    @SuppressWarnings("rawtypes")
 	private JCalendar getCalendar() {
         if (calendar == null) {
-            calendar = new JCalendar();
-            calendar.setMinSelectableDate(new Date());
-            calendar.setForeground(PaletteFactory.getLighter());
-            ((JComboBox) calendar.getMonthChooser().getComboBox()).setUI(new MyComboBox().getUI());
+            calendar = new MyCalendar();
         }
         return calendar;
     }
@@ -446,7 +446,7 @@ public class CreateAppointmentPanel extends JPanel implements Shiftable {
 
     private TimePicker getTimePicker() {
         if (timePicker == null) {
-            timePicker = new TimePicker();
+        	timePicker = new MyTimePicker();
         }
         return timePicker;
     }
@@ -460,7 +460,7 @@ public class CreateAppointmentPanel extends JPanel implements Shiftable {
 	
 	private TimePicker getTimePickerEnd() {
 		if (timePickerEnd == null) {
-			timePickerEnd = new TimePicker();
+			timePickerEnd = new MyTimePicker();
 		}
 		return timePickerEnd;
 	}

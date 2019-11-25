@@ -10,7 +10,7 @@ public class Designer {
 
 	public static void setDesign() {
 		// Paneles
-		UIManager.put("Panel.background", PaletteFactory.getBaseDark());
+		UIManager.put("Panel.background", PaletteFactory.getMainDark());
 		
 		// Botones
         UIManager.put("Button.background", PaletteFactory.getBaseDark());
@@ -37,28 +37,39 @@ public class Designer {
         
         // Labels
         UIManager.put("Label.foreground", PaletteFactory.getLighter());
-        
-        // Spinners
-        UIManager.put("Spinner.background", PaletteFactory.getBaseDark());
-        UIManager.put("Spinner.foreground", PaletteFactory.getLighter());
-        
-        
-        
-        
-        
-        
 
+        // OptionPanes
+        UIManager.put("OptionPane.background", PaletteFactory.getMainDark());
+        UIManager.put("OptionPane.foreground", PaletteFactory.getLighter());
+        UIManager.put("OptionPane.messageForeground", PaletteFactory.getLighter());
+        
+        
         // PasswordFields
         UIManager.put("PasswordField.border", new EmptyBorder(5, 5, 5, 5));
         UIManager.put("PasswordField.background", PaletteFactory.getBaseDark());
         UIManager.put("PasswordField.foreground", PaletteFactory.getLighter());
         UIManager.put("PasswordField.caretForeground", PaletteFactory.getLighter());
         
+        // Tables
+        UIManager.put("Table.background", PaletteFactory.getMainDark());
+        UIManager.put("Table.foreground", PaletteFactory.getLighter());
+        UIManager.put("Table.focusCellBackground", PaletteFactory.getHighlighter());
+        UIManager.put("Table.focusCellForeground", PaletteFactory.getLighter());
+        UIManager.put("Table.gridColor", PaletteFactory.getHighlighter());
+        UIManager.put("TableHeader.background", PaletteFactory.getBaseDark());
+        UIManager.put("TableHeader.foreground", PaletteFactory.getLighter());
+        UIManager.put("TableHeader.border", new EmptyBorder(2, 2, 2, 2));
+        
         // TextFields
         UIManager.put("TextField.border", new EmptyBorder(5, 5, 5, 5));
         UIManager.put("TextField.background", PaletteFactory.getBaseDark());
         UIManager.put("TextField.foreground", PaletteFactory.getLighter());
         UIManager.put("TextField.caretForeground", PaletteFactory.getLighter());
+        
+        // Spinners
+        UIManager.put("Spinner.background", PaletteFactory.getBaseDark());
+        UIManager.put("Spinner.foreground", PaletteFactory.getLighter());
+
 		
 	}
 	

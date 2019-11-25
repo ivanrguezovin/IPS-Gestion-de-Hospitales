@@ -34,8 +34,11 @@ import es.uniovi.ips.hospital.ui.common.MedicalRecordDialog;
 import es.uniovi.ips.hospital.ui.util.Designer;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
+import es.uniovi.ips.hospital.ui.util.components.MyBackPanel;
+import es.uniovi.ips.hospital.ui.util.components.MyCalendar;
 import es.uniovi.ips.hospital.ui.util.components.MyComboBox;
 import es.uniovi.ips.hospital.ui.util.components.MyFrontPanel;
+import es.uniovi.ips.hospital.ui.util.components.MyTimePicker;
 import es.uniovi.ips.hospital.ui.util.filter.PatientTextFilterator;
 import es.uniovi.ips.hospital.ui.util.filter.RoomTextFilterator;
 import es.uniovi.ips.hospital.ui.util.filter.StaffTextFilterator;
@@ -147,6 +150,7 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		this.add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new BorderLayout(0, 0));
+        contentPanel.setBackground(PaletteFactory.getBaseDark());
 		contentPanel.add(getPnAppointment(), BorderLayout.CENTER);
 		contentPanel.add(getBtnUpdate(), BorderLayout.SOUTH);
 		selectedDoctors = new ArrayList<Doctor>();
@@ -154,7 +158,7 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 
 	private JPanel getPnAppointment() {
 		if (pnAppointment == null) {
-			pnAppointment = new JPanel();
+			pnAppointment = new MyBackPanel();
 			GridBagLayout gbl_pnAppointment = new GridBagLayout();
             gbl_pnAppointment.columnWidths = new int[]{0};
             gbl_pnAppointment.rowHeights = new int[]{10, 100, 15, 250, 15, 150, 10};
@@ -294,7 +298,7 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 	}
 	private JComboBox<Patient> getCbPatient() {
 		if (cbPatient == null) {
-			cbPatient = new JComboBox<Patient>();
+			cbPatient = new MyComboBox<Patient>();
 			cbPatient.addItemListener(itemEvent -> selectPatient());
 			autoCompletePatient = null;
 		}
@@ -323,7 +327,7 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 	}
 	private JComboBox<Staff> getCbDoctor() {
 		if (cbDoctor == null) {
-			cbDoctor = new JComboBox<Staff>();
+			cbDoctor = new MyComboBox<Staff>();
 			cbDoctor.addItemListener(itemEvent -> btnAdd.setEnabled(true));
 			autoCompleteDoctor = null;
 			cbDoctor.setEnabled(false);
@@ -346,7 +350,7 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 	}
 	private JComboBox<Doctor> getCbSelectedDoctors() {
 		if (cbSelectedDoctors == null) {
-			cbSelectedDoctors = new JComboBox<Doctor>();
+			cbSelectedDoctors = new MyComboBox<Doctor>();
 			cbSelectedDoctors.addItemListener(itemEvent -> getBtnRemove().setEnabled(true));
 			autoCompleteSelectedDoctor = null;
 			cbSelectedDoctors.setEnabled(false);
@@ -414,18 +418,14 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 	}
 	private JComboBox<Room> getCbRoom() {
 		if (cbRoom == null) {
-			cbRoom = new JComboBox<Room>();
+			cbRoom = new MyComboBox<Room>();
 			autoCompleteRoom = null;
 		}
 		return cbRoom;
 	}
-    @SuppressWarnings("rawtypes")
 	private JCalendar getCalendar() {
         if (calendar == null) {
-            calendar = new JCalendar();
-            calendar.setMinSelectableDate(new Date());
-            calendar.setForeground(PaletteFactory.getLighter());
-            ((JComboBox) calendar.getMonthChooser().getComboBox()).setUI(new MyComboBox().getUI());
+            calendar = new MyCalendar();
         }
         return calendar;
     }
@@ -447,7 +447,7 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 	}
     private TimePicker getTimePicker() {
         if (timePicker == null) {
-            timePicker = new TimePicker();
+            timePicker = new MyTimePicker();
         }
         return timePicker;
     }
@@ -461,7 +461,7 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 	
 	private TimePicker getTimePickerEnd() {
 		if (timePickerEnd == null) {
-			timePickerEnd = new TimePicker();
+			timePickerEnd = new MyTimePicker();
 		}
 		return timePickerEnd;
 	}

@@ -8,7 +8,10 @@ import javax.swing.JPanel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import es.uniovi.ips.hospital.domain.Appointment;
 import es.uniovi.ips.hospital.ui.admin.appointment.CreateAppointmentPanel;
+import es.uniovi.ips.hospital.ui.admin.appointment.EditAppointmentPanel;
+import es.uniovi.ips.hospital.ui.admin.appointment.ShowAppointmentsPanel;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
 import es.uniovi.ips.hospital.ui.util.components.MyBanner;
@@ -25,10 +28,10 @@ public class AdminDialog2 extends JDialog {
 
 	private static final long serialVersionUID = 4742925315288866290L;
 
-    @Autowired
-    private AdminMainPanel mainPanel;
-    @Autowired
-    private CreateAppointmentPanel createAppointmentPanel;
+    @Autowired	private AdminMainPanel mainPanel;
+    @Autowired	private CreateAppointmentPanel createAppointmentPanel;
+    @Autowired	private ShowAppointmentsPanel showAppointmentsPanel;
+    @Autowired	private EditAppointmentPanel editAppointmentPanel;
 
 	private JPanel current;
 	private JPanel previous;
@@ -102,12 +105,27 @@ public class AdminDialog2 extends JDialog {
 	}
 	
 	public void back() {
+		boolean isMainPanel = previous == mainPanel;
 		launch(previous);
-		btnBack.setEnabled(false);
+		if (isMainPanel)
+			btnBack.setEnabled(false);
+		else
+			previous = mainPanel;
 	}
 	
 	public void launchCreateAppointment() {
         createAppointmentPanel.fillComboBoxes();
         launch(createAppointmentPanel);
     }
+	
+	public void launchShowAppointments() {
+        showAppointmentsPanel.showAppointments();
+        launch(showAppointmentsPanel);
+	}
+	
+	public void launchEditAppointment(Appointment appointment) {
+		editAppointmentPanel.fillComboBoxes();
+		editAppointmentPanel.setAppointment(appointment);
+		launch(editAppointmentPanel);
+	}
 }
