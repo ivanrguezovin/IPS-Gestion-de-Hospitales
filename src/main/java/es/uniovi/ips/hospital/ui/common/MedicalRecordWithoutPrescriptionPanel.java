@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.time.format.DateTimeFormatter;
 
 @Component
 public class MedicalRecordWithoutPrescriptionPanel extends JPanel implements Shiftable {
@@ -234,7 +235,7 @@ public class MedicalRecordWithoutPrescriptionPanel extends JPanel implements Shi
         }
 
         public Object getColumnValue(Appointment appointment, int column) {
-            if (column == 0) return appointment.getStartTime().toString();
+            if (column == 0) return appointment.getStartTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
             else if (column == 1) return appointment.prettifyDoctors();
             else if (column == 2) return appointment.getRoom().getLocation();
             throw new IllegalStateException();
