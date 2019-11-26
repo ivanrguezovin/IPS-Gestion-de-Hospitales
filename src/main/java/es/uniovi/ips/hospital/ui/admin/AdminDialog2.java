@@ -9,12 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import es.uniovi.ips.hospital.domain.Appointment;
+import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.ui.admin.appointment.CreateAppointmentPanel;
 import es.uniovi.ips.hospital.ui.admin.appointment.EditAppointmentPanel;
 import es.uniovi.ips.hospital.ui.admin.appointment.ShowAppointmentsPanel;
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageBreakSchedulePanel;
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageWorkSchedulePanel;
 import es.uniovi.ips.hospital.ui.admin.showMedicalRecord.PatientInfoPanel;
+import es.uniovi.ips.hospital.ui.common.MedicalRecordWithoutPrescriptionPanel;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
 import es.uniovi.ips.hospital.ui.util.components.MyBanner;
@@ -38,6 +40,7 @@ public class AdminDialog2 extends JDialog {
     @Autowired	private ManageWorkSchedulePanel manageWorkSchedulePanel;
     @Autowired	private ManageBreakSchedulePanel manageBreakSchedulePanel;
     @Autowired	private PatientInfoPanel patientInfoPanel;
+    @Autowired	private MedicalRecordWithoutPrescriptionPanel medicalRecordWithoutPrescriptionPanel;
 
 	private JPanel current;
 	private JPanel previous;
@@ -148,5 +151,10 @@ public class AdminDialog2 extends JDialog {
     void launchPatientInfo() {
     	patientInfoPanel.fillList();
     	launch(patientInfoPanel);
+    }
+    
+    public void launchMedicalRecord(Patient patient) {
+        medicalRecordWithoutPrescriptionPanel.showHistoryOf(patient);
+        launch(medicalRecordWithoutPrescriptionPanel);
     }
 }

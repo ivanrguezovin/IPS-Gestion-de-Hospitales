@@ -9,7 +9,7 @@ import ca.odell.glazedlists.swing.GlazedListsSwing;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.service.PatientService;
-import es.uniovi.ips.hospital.ui.common.MedicalRecordDialogWithoutPrescription;
+import es.uniovi.ips.hospital.ui.admin.AdminDialog2;
 import es.uniovi.ips.hospital.ui.util.Designer;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
@@ -33,8 +33,8 @@ public class PatientInfoPanel extends JPanel implements Shiftable {
     private static final long serialVersionUID = 8434535298528019736L;
     private final JPanel contentPanel = new JPanel();
     
-    @Autowired	private MedicalRecordDialogWithoutPrescription medicalRecordDialogWithoutPrescription;
     @Autowired	private PatientService patientService;
+    @Autowired	private AdminDialog2 adminDialog;
 
     private JPanel panel;
     private JTextField textField;
@@ -91,6 +91,7 @@ public class PatientInfoPanel extends JPanel implements Shiftable {
 	private JList<Patient> getList() {
 		if (list == null) {
 			list = new JList<Patient>();
+			list.addListSelectionListener(e -> btnShowInfo.setEnabled(!list.isSelectionEmpty()));
             list.addMouseListener(new DoubleClickSelector());
             list.setCellRenderer(new PatientCellRenderer());
             list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -100,7 +101,8 @@ public class PatientInfoPanel extends JPanel implements Shiftable {
 	private JButton getBtnShowInfo() {
 		if (btnShowInfo == null) {
 			btnShowInfo = new MyButton("Show info");
-			btnShowInfo.addActionListener(e -> showMedicalRecord(list.getSelectedValue()));
+			btnShowInfo.setEnabled(false);
+			btnShowInfo.addActionListener(e -> adminDialog.launchMedicalRecord(list.getSelectedValue()));
 		}
 		return btnShowInfo;
 	}
@@ -119,11 +121,6 @@ public class PatientInfoPanel extends JPanel implements Shiftable {
 	public void setFocus() {
 		list.requestFocus();
 	}
-    
-    private void showMedicalRecord(Patient patient) {
-        System.out.println(patient);
-        medicalRecordDialogWithoutPrescription.showHistoryOf(patient);
-    }
 	
 	//////////////////////////////////////////////////////////////////////
 	
@@ -135,7 +132,7 @@ public class PatientInfoPanel extends JPanel implements Shiftable {
         	JList list = (JList) e.getSource();
             if (e.getClickCount() == 2) {
                 Patient selected = (Patient) list.getModel().getElementAt(list.locationToIndex(e.getPoint()));
-            	showMedicalRecord(selected);
+            	adminDialog.launchMedicalRecord(selected);
             }
         }
     }

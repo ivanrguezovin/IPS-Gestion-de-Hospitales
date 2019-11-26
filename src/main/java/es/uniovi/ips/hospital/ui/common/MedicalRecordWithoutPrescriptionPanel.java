@@ -31,6 +31,8 @@ public class MedicalRecordWithoutPrescriptionPanel extends JPanel implements Shi
     @Autowired	private AppointmentService appointmentService;
     
     private JPanel pnPatient;
+    private JPanel pnTop;
+    private JPanel pnTop2;
     private JPanel pnName;
     private JPanel pnId;
     private JPanel pnEmail;
@@ -52,7 +54,7 @@ public class MedicalRecordWithoutPrescriptionPanel extends JPanel implements Shi
         setLayout(new BorderLayout());
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         add(contentPanel, BorderLayout.CENTER);
-        contentPanel.setLayout(new BorderLayout(0, 0));
+        contentPanel.setLayout(new BorderLayout(5, 0));
         contentPanel.setBackground(PaletteFactory.getBaseDark());
         contentPanel.add(getPnPatient(), BorderLayout.NORTH);
         contentPanel.add(getSpMedicalRecord(), BorderLayout.CENTER);
@@ -60,13 +62,10 @@ public class MedicalRecordWithoutPrescriptionPanel extends JPanel implements Shi
 
     private JPanel getPnPatient() {
         if (pnPatient == null) {
-            pnPatient = new JPanel();
+            pnPatient = new MyBackPanel();
             pnPatient.setLayout(new GridLayout(3,2,5,5));
-            pnPatient.add(getPnName());
-            pnPatient.add(new MyBackPanel());
-            pnPatient.add(getPnId());
-            pnPatient.add(getPnEmail());
-            pnPatient.add(getPnHealthCard());
+            pnPatient.add(getPnTop());
+            pnPatient.add(getPnTop2());
             pnPatient.add(getPnAddress());
         }
         return pnPatient;
@@ -86,6 +85,26 @@ public class MedicalRecordWithoutPrescriptionPanel extends JPanel implements Shi
             tblMedicalRecord = new JTable();
         }
         return tblMedicalRecord;
+    }
+    
+    private JPanel getPnTop() {
+    	if (pnTop == null) {
+    		pnTop = new MyBackPanel();
+    		pnTop.setLayout(new GridLayout(1,2,5,5));
+    		pnTop.add(getPnName());
+    		pnTop.add(getPnHealthCard());
+    	}
+    	return pnTop;
+    }
+    
+    private JPanel getPnTop2() {
+    	if (pnTop2 == null) {
+    		pnTop2 = new MyBackPanel();
+    		pnTop2.setLayout(new GridLayout(1,2,5,5));
+    		pnTop2.add(getPnId());
+    		pnTop2.add(getPnEmail());
+    	}
+    	return pnTop2;
     }
     
     private JPanel getPnName() {
