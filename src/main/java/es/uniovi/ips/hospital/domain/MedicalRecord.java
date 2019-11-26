@@ -19,6 +19,9 @@ public class MedicalRecord {
     @Column(name = "prescription")
     private String prescription;
     
+    @Column(name = "present")
+    private boolean present;
+    
     @NotNull
     @Column(name = "date")
     private LocalDateTime date;
@@ -30,6 +33,7 @@ public class MedicalRecord {
 
     public MedicalRecord(Patient patient) {
         this.patient = patient;
+        this.present = true;
     }
 
     public Long getId() {
@@ -40,7 +44,15 @@ public class MedicalRecord {
         this.id = id;
     }
 
-    public String getDescription() {
+    public boolean isPresent() {
+		return present;
+	}
+
+	public void setPresent(boolean present) {
+		this.present = present;
+	}
+
+	public String getDescription() {
 		return description;
 	}
 
