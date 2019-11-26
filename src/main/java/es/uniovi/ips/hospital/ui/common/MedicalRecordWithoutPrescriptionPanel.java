@@ -6,16 +6,16 @@ import ca.odell.glazedlists.SortedList;
 import ca.odell.glazedlists.gui.TableFormat;
 import ca.odell.glazedlists.swing.AdvancedTableModel;
 import ca.odell.glazedlists.swing.GlazedListsSwing;
-import es.uniovi.ips.hospital.domain.Appointment;
+import ca.odell.glazedlists.swing.TableComparatorChooser;
+import es.uniovi.ips.hospital.domain.MedicalRecord;
 import es.uniovi.ips.hospital.domain.Patient;
-import es.uniovi.ips.hospital.service.AppointmentService;
 import es.uniovi.ips.hospital.ui.util.Designer;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
 import es.uniovi.ips.hospital.ui.util.components.MyBackPanel;
 import es.uniovi.ips.hospital.ui.util.components.MyFrontPanel;
-import es.uniovi.ips.hospital.util.compare.AppointmentComparator;
-import org.springframework.beans.factory.annotation.Autowired;
+import es.uniovi.ips.hospital.util.compare.MedicalRecordComparator;
+
 import org.springframework.stereotype.Component;
 
 import javax.swing.*;
@@ -28,8 +28,6 @@ public class MedicalRecordWithoutPrescriptionPanel extends JPanel implements Shi
 
     private static final long serialVersionUID = 5633142202939076631L;
     private final JPanel contentPanel = new JPanel();
-    
-    @Autowired	private AppointmentService appointmentService;
     
     private JPanel pnPatient;
     private JPanel pnTop;
@@ -206,11 +204,12 @@ public class MedicalRecordWithoutPrescriptionPanel extends JPanel implements Shi
         lblEmail.setText("Email: " + patient.getEmail());
         lblHealthCard.setText("SSN: " + patient.getHealthCardNumber());
         lblAddress.setText("Address: " + patient.getAddress().guiToString());
-        EventList<Appointment> eventList = new BasicEventList<>();
-        eventList.addAll(appointmentService.findAllByPatient(patient));
-        SortedList<Appointment> sortedList = new SortedList<>(eventList, new AppointmentComparator());
-        AdvancedTableModel<Appointment> tableModel = GlazedListsSwing.eventTableModelWithThreadProxyList(sortedList, new RecordTableFormat());
-        tblMedicalRecord.setModel(tableModel);
+        EventList<MedicalRecord> eventList = new BasicEventList<MedicalRecord>();
+		eventList.addAll(patient.getMedicalRecords());
+		SortedList<MedicalRecord> sortedList = new SortedList<MedicalRecord>(eventList, new MedicalRecordComparator());
+		AdvancedTableModel<MedicalRecord> tableModel = GlazedListsSwing.eventTableModelWithThreadProxyList(sortedList, new RecordTableFormat());
+		tblMedicalRecord.setModel(tableModel);
+		TableComparatorChooser.install(tblMedicalRecord, sortedList, TableComparatorChooser.MULTIPLE_COLUMN_MOUSE);
     }
 
 	@Override
@@ -220,25 +219,21 @@ public class MedicalRecordWithoutPrescriptionPanel extends JPanel implements Shi
 	
 	/////////////////////////////////////////////////////////////////////////////////
 
-    private class RecordTableFormat implements TableFormat<Appointment> {
+    private class RecordTableFormat implements TableFormat<MedicalRecord> {
 
-        public int getColumnCount() {
-            return 3;
-        }
+	    public int getColumnCount() {
+	        return 2;
+	    }
+	    public String getColumnName(int column) {
+	        if(column == 0)      return "Day";
+	        else if(column == 1) return "Description";
 
-        public String getColumnName(int column) {
-            if (column == 0) return "Time";
-            else if (column == 1) return "Doctor";
-            else if (column == 2) return "Room";
-
-            throw new IllegalStateException();
-        }
-
-        public Object getColumnValue(Appointment appointment, int column) {
-            if (column == 0) return appointment.getStartTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-            else if (column == 1) return appointment.prettifyDoctors();
-            else if (column == 2) return appointment.getRoom().getLocation();
-            throw new IllegalStateException();
-        }
-    }
+	        throw new IllegalStateException();
+	    }
+	    public Object getColumnValue(MedicalRecord record, int column) {
+	        if(column == 0)      return record.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+	        else if(column == 1) return record.getDescription();
+	        throw new IllegalStateException();
+	    }
+	}
 }

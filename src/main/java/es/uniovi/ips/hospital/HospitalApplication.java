@@ -235,7 +235,7 @@ public class HospitalApplication implements CommandLineRunner {
             try {
                 appointmentService.createAppointment(appointment);
             } catch (BusinessException e) {
-                e.printStackTrace();
+                System.out.println("Duplicated appointment");
             }
             nurse.addAppointment(appointment);
             nurseService.updateNurse(nurse);
