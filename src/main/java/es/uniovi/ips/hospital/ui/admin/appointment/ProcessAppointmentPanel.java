@@ -755,6 +755,8 @@ public class ProcessAppointmentPanel extends JPanel implements Shiftable {
 		cbNurse.setEnabled(b);
 		cbSelectedDoctors.setEnabled(b);
 		cbSelectedNurses.setEnabled(b);
+		btnUpdate.setEnabled(b);
+		btnReject.setEnabled(b);
 	}
 
 	// Añade el doctor a la lista de doctores de la cita y lo sustrae de los posibles doctores
