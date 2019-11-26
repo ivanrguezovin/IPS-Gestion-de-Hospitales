@@ -12,6 +12,7 @@ import es.uniovi.ips.hospital.domain.Appointment;
 import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.ui.admin.appointment.CreateAppointmentPanel;
 import es.uniovi.ips.hospital.ui.admin.appointment.EditAppointmentPanel;
+import es.uniovi.ips.hospital.ui.admin.appointment.ProcessAppointmentPanel;
 import es.uniovi.ips.hospital.ui.admin.appointment.ShowAppointmentsPanel;
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageBreakSchedulePanel;
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageWorkSchedulePanel;
@@ -39,6 +40,7 @@ public class AdminDialog extends JDialog {
     @Autowired	private CreateAppointmentPanel createAppointmentPanel;
     @Autowired	private ShowAppointmentsPanel showAppointmentsPanel;
     @Autowired	private EditAppointmentPanel editAppointmentPanel;
+    @Autowired	private ProcessAppointmentPanel processAppointmentPanel;
     @Autowired	private ManageWorkSchedulePanel manageWorkSchedulePanel;
     @Autowired	private ManageBreakSchedulePanel manageBreakSchedulePanel;
     @Autowired	private PatientInfoPanel patientInfoPanel;
@@ -142,6 +144,13 @@ public class AdminDialog extends JDialog {
 		editAppointmentPanel.fillComboBoxes();
 		editAppointmentPanel.setAppointment(appointment);
 		launch(editAppointmentPanel);
+	}
+	
+	public void launchProcessAppointment(Appointment appointment) {
+		processAppointmentPanel.fillComboBoxes();
+		processAppointmentPanel.setAppointment(appointment);
+		launch(processAppointmentPanel);
+		
 	}
 
     void launchManageWorkSchedule() {

@@ -44,4 +44,8 @@ public class AppointmentService {
 	public List<Appointment> findAllByNurse(Nurse myself) {
         return appointmentRepository.findAllByNursesAndConfirmed(myself, true);
     }
+
+	public void removeAppointment(Appointment appointment) {
+		appointmentRepository.delete(appointment);
+	}
 }

@@ -116,6 +116,7 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 		if (btnProcess == null) {
 			btnProcess = new MyButton("Process");
 			btnProcess.setEnabled(false);
+			btnProcess.addActionListener(actionEvent -> launchProcessAppointment());
 		}
 		return btnProcess;
 	}
@@ -189,6 +190,12 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 	public void launchEditAppointment() {
 		if (tblAppointments.getSelectedRow() != -1)
 			adminDialog.launchEditAppointment(((AdvancedTableModel<Appointment>) tblAppointments.getModel()).getElementAt(tblAppointments.getSelectedRow()));
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void launchProcessAppointment() {
+		if (tblAppointments.getSelectedRow() != -1)
+			adminDialog.launchProcessAppointment(((AdvancedTableModel<Appointment>) tblAppointments.getModel()).getElementAt(tblAppointments.getSelectedRow()));
 	}
 
 	@Override
