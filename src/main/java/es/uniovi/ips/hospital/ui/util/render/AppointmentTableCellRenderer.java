@@ -22,13 +22,20 @@ public class AppointmentTableCellRenderer extends DefaultTableCellRenderer {
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
 
         Appointment appointment = ((AdvancedTableModel<Appointment>) table.getModel()).getElementAt(row);
-        if (!appointment.isConfirmed()) {
-            setForeground(PaletteFactory.getHighlighter());
-        } else if (appointment.getStartTime().isBefore(LocalDateTime.now())) {
-        	setForeground(Color.GRAY);
-        } else {
-            setForeground(table.getForeground());
-        }       
+        if (isSelected)
+	        if (appointment.getStartTime().isBefore(LocalDateTime.now()))
+	        	setForeground(Color.GRAY);
+	        else if (!appointment.isConfirmed())
+	            setForeground(PaletteFactory.getBaseDark());
+	        else
+	            setForeground(PaletteFactory.getMainDark());
+        else
+	        if (appointment.getStartTime().isBefore(LocalDateTime.now()))
+	        	setForeground(Color.GRAY);
+	        else if (!appointment.isConfirmed())
+	            setForeground(PaletteFactory.getHighlighter());
+	        else
+	            setForeground(table.getForeground());
         return this;
     }  
 }

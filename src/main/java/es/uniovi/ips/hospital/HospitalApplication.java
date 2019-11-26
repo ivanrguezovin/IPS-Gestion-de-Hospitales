@@ -170,7 +170,7 @@ public class HospitalApplication implements CommandLineRunner {
         for (int i = 0; i < n; i++) {
             Room room = new Room();
             room.setLocation(faker.numerify("###"));
-            roomService.createRoom(room);
+            try { roomService.createRoom(room); } catch(IllegalStateException iae) { System.out.println("Duplicated room"); };
         }
     }
 

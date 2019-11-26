@@ -855,6 +855,7 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 	}
 	
 	private void setStaffComponentsEnabled(boolean b) {
+        btnUpdate.setEnabled(b);
         cbDoctor.setEnabled(b);
         cbNurse.setEnabled(b);
         btnAdd.setEnabled(b);

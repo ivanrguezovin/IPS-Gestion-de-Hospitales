@@ -27,6 +27,8 @@ import java.awt.Dimension;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 @Component
 public class AdminDialog extends JDialog {
@@ -53,6 +55,10 @@ public class AdminDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public AdminDialog() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) { previous = mainPanel; back();}
+		});
 		setBounds(100, 100, 800, 800);
 		setModal(true);
 		setResizable(false);

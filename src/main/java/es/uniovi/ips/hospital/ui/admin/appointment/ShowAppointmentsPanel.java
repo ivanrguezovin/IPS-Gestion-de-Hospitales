@@ -1,7 +1,7 @@
 package es.uniovi.ips.hospital.ui.admin.appointment;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import javax.swing.JButton;
@@ -91,6 +91,7 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 	private JTable getTblAppointments() {
 		if (tblAppointments == null) {
 			tblAppointments = new JTable();
+			tblAppointments.getSelectionModel().addListSelectionListener(e -> enableButtons());
 		}
 		return tblAppointments;
 	}
@@ -129,6 +130,10 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 		AdvancedTableModel<Appointment> tableModel = GlazedListsSwing.eventTableModelWithThreadProxyList(filterList, new AppointmentTableFormat());
 		tblAppointments.setModel(tableModel);
 		tblAppointments.setDefaultRenderer(Object.class, new AppointmentTableCellRenderer());
+		tblAppointments.getColumnModel().getColumn(0).setMinWidth(150);
+		tblAppointments.getColumnModel().getColumn(0).setMaxWidth(150);
+		tblAppointments.getColumnModel().getColumn(2).setMaxWidth(75);
+		tblAppointments.getColumnModel().getColumn(3).setMaxWidth(75);
 		TableComparatorChooser.install(tblAppointments, sortedList, TableComparatorChooser.MULTIPLE_COLUMN_MOUSE);
 	}
 	
@@ -152,6 +157,22 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 	        else if(column == 3) return (appointment.isUrgent()) ? "YES" : "";
 	        throw new IllegalStateException();
 	    }
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void enableButtons() {
+		btnEdit.setEnabled(false);
+		btnProcess.setEnabled(false);
+		Appointment appointment;
+		if (tblAppointments.getSelectedRow() != -1) {
+			appointment = ((AdvancedTableModel<Appointment>) tblAppointments.getModel()).getElementAt(tblAppointments.getSelectedRow());
+			if (appointment.getStartTime().isAfter(LocalDateTime.now()))
+				if (appointment.isConfirmed())
+					btnEdit.setEnabled(true);
+				else
+					btnProcess.setEnabled(true);
+		}
+		
 	}
 	
 	private class ListReloader extends FocusAdapter {
