@@ -2,7 +2,6 @@ package es.uniovi.ips.hospital;
 
 import com.github.javafaker.Faker;
 import es.uniovi.ips.hospital.domain.*;
-import es.uniovi.ips.hospital.exception.BusinessException;
 import es.uniovi.ips.hospital.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -212,11 +211,11 @@ public class HospitalApplication implements CommandLineRunner {
             appointment.setContactInfo(appointment.getPatient().getEmail());
             try {
                 appointmentService.createAppointment(appointment);
-            } catch (BusinessException e) {
+                doctor.addAppointment(appointment);
+                doctorService.updateDoctor(doctor);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            doctor.addAppointment(appointment);
-            doctorService.updateDoctor(doctor);
         }
     }
     
@@ -233,12 +232,11 @@ public class HospitalApplication implements CommandLineRunner {
             appointment.setRoom(rooms.get(i%rooms.size()));
             appointment.setContactInfo(appointment.getPatient().getEmail());
             try {
-                appointmentService.createAppointment(appointment);
-            } catch (BusinessException e) {
+                nurse.addAppointment(appointment);
+                nurseService.updateNurse(nurse);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            nurse.addAppointment(appointment);
-            nurseService.updateNurse(nurse);
         }
     }
 }

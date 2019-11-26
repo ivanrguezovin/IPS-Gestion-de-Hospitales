@@ -25,12 +25,12 @@ public class AppointmentService {
     }
 
     public List<Appointment> findAllByDoctor(Doctor myself) {
-        return appointmentRepository.findAllByDoctors(myself);
+        return appointmentRepository.findAllByDoctorsAndConfirmed(myself, true);
     }
 
 
     public List<Appointment> findAllByPatient(Patient patient) {
-        return appointmentRepository.findAllByPatient(patient);
+        return appointmentRepository.findAllByPatientAndConfirmed(patient,true);
     }
 
     public void updateAppointment(Appointment appointment) {
@@ -42,6 +42,6 @@ public class AppointmentService {
     }
 
 	public List<Appointment> findAllByNurse(Nurse myself) {
-        return appointmentRepository.findAllByNurses(myself);
+        return appointmentRepository.findAllByNursesAndConfirmed(myself, true);
     }
 }
