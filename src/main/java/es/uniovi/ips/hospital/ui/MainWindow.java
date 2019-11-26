@@ -2,10 +2,12 @@ package es.uniovi.ips.hospital.ui;
 
 import es.uniovi.ips.hospital.domain.AdminAssistant;
 import es.uniovi.ips.hospital.domain.Doctor;
+import es.uniovi.ips.hospital.domain.Nurse;
 import es.uniovi.ips.hospital.domain.Staff;
 import es.uniovi.ips.hospital.service.LoginService;
-import es.uniovi.ips.hospital.ui.admin.AdminDialog2;
+import es.uniovi.ips.hospital.ui.admin.AdminDialog;
 import es.uniovi.ips.hospital.ui.doctor.DoctorDialog;
+import es.uniovi.ips.hospital.ui.nurse.NurseDialog;
 import es.uniovi.ips.hospital.ui.util.Designer;
 import es.uniovi.ips.hospital.ui.util.components.MyBackPanel;
 import es.uniovi.ips.hospital.ui.util.components.MyBanner;
@@ -26,10 +28,13 @@ public class MainWindow {
     private LoginService loginService;
 
     @Autowired
-    private AdminDialog2 adminDialog;
+    private AdminDialog adminDialog;
 
     @Autowired
     private DoctorDialog doctorDialog;
+    
+    @Autowired
+    private NurseDialog nurseDialog;
     
     private MainFrame frame;
 
@@ -41,15 +46,13 @@ public class MainWindow {
 	private void login(String email, char[] password) {
         Staff user = loginService.login(email, password);
 
-        // TODO Remove me
-        //user = doctorService.findByEmail("doctor@ips.test");
         if (user instanceof Doctor) {
-            //frame.setVisible(false);
             doctorDialog.run((Doctor) user);
-
         } else if (user instanceof AdminAssistant) {
         	adminDialog.setFrame();
             adminDialog.setVisible(true);
+        } else if (user instanceof Nurse) {
+        	nurseDialog.run((Nurse) user);
         } else {
             JOptionPane.showMessageDialog(frame, "Wrong user/credentials");
         }

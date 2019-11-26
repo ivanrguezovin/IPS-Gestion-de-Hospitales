@@ -24,7 +24,7 @@ public class AdminMainPanel extends JPanel implements Shiftable {
 
     private static final long serialVersionUID = -1238718624919092329L;
     
-    @Autowired	private AdminDialog2 adminDialog;
+    @Autowired	private AdminDialog adminDialog;
 
     private final JPanel contentPanel = new MyBackPanel();
     private JPanel pnAppointments;

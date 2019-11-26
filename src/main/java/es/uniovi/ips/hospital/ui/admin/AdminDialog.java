@@ -1,214 +1,160 @@
 package es.uniovi.ips.hospital.ui.admin;
 
-import es.uniovi.ips.hospital.ui.admin.appointment.CreateAppointmentDialog;
-import es.uniovi.ips.hospital.ui.admin.appointment.ShowAppointmentsDialog;
-import es.uniovi.ips.hospital.ui.admin.schedule.ManageBreakScheduleDialog;
-import es.uniovi.ips.hospital.ui.admin.schedule.ManageWorkScheduleDialog;
-import es.uniovi.ips.hospital.ui.admin.showMedicalRecord.ShowMedicalRecordOfPatient;
-import es.uniovi.ips.hospital.ui.admin.users.CreateUsersDialog;
+import java.awt.BorderLayout;
+
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import es.uniovi.ips.hospital.domain.Appointment;
+import es.uniovi.ips.hospital.domain.Patient;
+import es.uniovi.ips.hospital.ui.admin.appointment.CreateAppointmentPanel;
+import es.uniovi.ips.hospital.ui.admin.appointment.EditAppointmentPanel;
+import es.uniovi.ips.hospital.ui.admin.appointment.ShowAppointmentsPanel;
+import es.uniovi.ips.hospital.ui.admin.schedule.ManageBreakSchedulePanel;
+import es.uniovi.ips.hospital.ui.admin.schedule.ManageWorkSchedulePanel;
+import es.uniovi.ips.hospital.ui.admin.showMedicalRecord.PatientInfoPanel;
+import es.uniovi.ips.hospital.ui.common.MedicalRecordWithoutPrescriptionPanel;
+import es.uniovi.ips.hospital.ui.util.PaletteFactory;
+import es.uniovi.ips.hospital.ui.util.Shiftable;
+import es.uniovi.ips.hospital.ui.util.components.MyBanner;
+import es.uniovi.ips.hospital.ui.util.components.MySouthPanel;
+
+import javax.swing.JLabel;
+import java.awt.Dimension;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 
 @Component
 public class AdminDialog extends JDialog {
 
-    private static final long serialVersionUID = -1238718624919092329L;
+	private static final long serialVersionUID = 4742925315288866290L;
 
-    private final JPanel contentPanel = new JPanel();
-    private JPanel pnSide;
-    private JPanel pnButtons;
-    private JPanel pnAppointments;
-    private JPanel pnSchedules;
-    private JButton btnCreateAppointment;
-    private JButton btnEditAppointment;
-    private JButton btnManageSchedules;
-    private JButton btnManageBreaks;
+    @Autowired	private AdminMainPanel mainPanel;
+    @Autowired	private CreateAppointmentPanel createAppointmentPanel;
+    @Autowired	private ShowAppointmentsPanel showAppointmentsPanel;
+    @Autowired	private EditAppointmentPanel editAppointmentPanel;
+    @Autowired	private ManageWorkSchedulePanel manageWorkSchedulePanel;
+    @Autowired	private ManageBreakSchedulePanel manageBreakSchedulePanel;
+    @Autowired	private PatientInfoPanel patientInfoPanel;
+    @Autowired	private MedicalRecordWithoutPrescriptionPanel medicalRecordWithoutPrescriptionPanel;
 
-    @Autowired
-    private CreateAppointmentDialog createAppointmentDialog;
-    @Autowired
-    private ManageWorkScheduleDialog manageWorkScheduleDialog;
-    @Autowired
-    private ManageBreakScheduleDialog manageBreakScheduleDialog;
-    @Autowired
-    private ShowMedicalRecordOfPatient showMedicalRecordOfPatient;
-    @Autowired
-    private CreateUsersDialog createUsersDialog;
-    @Autowired
-    private ShowAppointmentsDialog showAppointmentsDialog;
-    private JPanel pnPatients;
-    private JButton btnShowMedicalRecords;
-    private JPanel pnCreateUsers;
-    private JButton btnCreateUsers;
+	private JPanel current;
+	private JPanel previous;
+	private JLabel banner;
+	private JLabel side;
+	private JPanel pnSouth;
+	private JButton btnBack;
 
-    /**
-     * Create the dialog.
-     */
-    public AdminDialog() {
-        setTitle("Administrator");
-        setBounds(100, 100, 450, 300);
-        getContentPane().setLayout(new BorderLayout());
-        contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-        getContentPane().add(contentPanel, BorderLayout.CENTER);
-        contentPanel.setLayout(new GridLayout(0, 2, 0, 0));
-        contentPanel.add(getPnSide());
-        contentPanel.add(getPnButtons());
+	/**
+	 * Create the dialog.
+	 */
+	public AdminDialog() {
+		setBounds(100, 100, 800, 800);
+		setModal(true);
+		setResizable(false);
+		getContentPane().setLayout(new BorderLayout());
+		getContentPane().setBackground(PaletteFactory.getBaseDark());
+		getContentPane().add(getBanner(), BorderLayout.NORTH);
+		getContentPane().add(getSide(), BorderLayout.WEST);
+		getContentPane().add(getPnSouth(), BorderLayout.SOUTH);
+	}
+	private JLabel getBanner() {
+		if (banner == null) {
+			banner = new MyBanner();
+		}
+		return banner;
+	}
+	private JLabel getSide() {
+		if (side == null) {
+			side = new JLabel();
+			side.setPreferredSize(new Dimension(100, 10));
+			side.setMinimumSize(new Dimension(100, 10));
+			side.setIcon(new ImageIcon(getClass().getResource("/AdminSide.png")));
+		}
+		return side;
+	}
+	private JPanel getPnSouth() {
+		if (pnSouth == null) {
+			pnSouth = new MySouthPanel();
+			pnSouth.setPreferredSize(new Dimension(10, 50));
+			pnSouth.setMinimumSize(new Dimension(10, 50));
+			pnSouth.add(getBtnBack());
+		}
+		return pnSouth;
+	}
+	private JButton getBtnBack() {
+		if (btnBack == null) {
+			btnBack = new JButton("Back");
+			btnBack.addActionListener(e -> back());
+		}
+		return btnBack;
+	}
+	
+	// CAMBIO DE VENTANAS -------------------------------------------------------------------------
+	
+	public void setFrame() {
+		getContentPane().add(mainPanel, BorderLayout.CENTER);
+		current = mainPanel;
+		getContentPane().revalidate();
+	}
+	
+	private void launch(JPanel panel) {
+		getContentPane().remove(current);
+		getContentPane().add(panel, BorderLayout.CENTER);
+		previous = current;
+		current = panel;
+		getContentPane().revalidate();
+		getContentPane().repaint();
+		((Shiftable) panel).setFocus();
+		btnBack.setEnabled(true);
+	}
+	
+	private void back() {
+		boolean isMainPanel = previous == mainPanel;
+		launch(previous);
+		if (isMainPanel)
+			btnBack.setEnabled(false);
+		else
+			previous = mainPanel;
+	}
+	
+	void launchCreateAppointment() {
+        createAppointmentPanel.fillComboBoxes();
+        launch(createAppointmentPanel);
+    }
+	
+	void launchShowAppointments() {
+        showAppointmentsPanel.showAppointments();
+        launch(showAppointmentsPanel);
+	}
+	
+	public void launchEditAppointment(Appointment appointment) {
+		editAppointmentPanel.fillComboBoxes();
+		editAppointmentPanel.setAppointment(appointment);
+		launch(editAppointmentPanel);
+	}
+
+    void launchManageWorkSchedule() {
+        manageWorkSchedulePanel.fillLists();
+        launch(manageWorkSchedulePanel);
     }
 
-    private JPanel getPnSide() {
-        if (pnSide == null) {
-            pnSide = new JPanel();
-            pnSide.setLayout(new GridLayout(2, 1, 0, 0));
-            pnSide.add(getPnPatients());
-            pnSide.add(getPnCreateUsers());
-        }
-        return pnSide;
+    void launchManageBreaks() {
+        manageBreakSchedulePanel.fillLists();
+        launch(manageBreakSchedulePanel);
     }
-
-    private JPanel getPnButtons() {
-        if (pnButtons == null) {
-            pnButtons = new JPanel();
-            pnButtons.setLayout(new GridLayout(2, 0, 0, 0));
-            pnButtons.add(getPnAppointments());
-            pnButtons.add(getPnSchedules());
-        }
-        return pnButtons;
+    
+    void launchPatientInfo() {
+    	patientInfoPanel.fillList();
+    	launch(patientInfoPanel);
     }
-
-    private JPanel getPnAppointments() {
-        if (pnAppointments == null) {
-            pnAppointments = new JPanel();
-            pnAppointments.setBorder(new TitledBorder(null, "Appointments", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-            pnAppointments.add(getBtnCreateAppointment());
-            pnAppointments.add(getBtnEditAppointment());
-        }
-        return pnAppointments;
-    }
-
-    private JPanel getPnSchedules() {
-        if (pnSchedules == null) {
-            pnSchedules = new JPanel();
-            pnSchedules.setBorder(new TitledBorder(null, "Schedules", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-            pnSchedules.add(getBtnManageSchedules());
-            pnSchedules.add(getBtnManageBreaks());
-        }
-        return pnSchedules;
-    }
-
-    private JButton getBtnCreateAppointment() {
-        if (btnCreateAppointment == null) {
-            btnCreateAppointment = new JButton("Create appointment");
-            btnCreateAppointment.addActionListener(actionEvent -> launchCreateAppointmentDialog());
-        }
-        return btnCreateAppointment;
-    }
-
-    private JButton getBtnEditAppointment() {
-        if (btnEditAppointment == null) {
-            btnEditAppointment = new JButton("Edit appointment");
-            btnEditAppointment.addActionListener(actionEvent -> launchShowAppointmentsDialog());
-        }
-        return btnEditAppointment;
-    }
-
-    private JButton getBtnManageSchedules() {
-        if (btnManageSchedules == null) {
-            btnManageSchedules = new JButton("Manage schedules");
-            btnManageSchedules.addActionListener(actionEvent -> launchScheduleDialog());
-        }
-        return btnManageSchedules;
-    }
-
-    private JButton getBtnManageBreaks() {
-        if (btnManageBreaks == null) {
-            btnManageBreaks = new JButton("Manage breaks");
-            btnManageBreaks.addActionListener(actionEvent -> launchBreakDialog());
-        }
-        return btnManageBreaks;
-    }
-
-    private JPanel getPnPatients() {
-        if (pnPatients == null) {
-            pnPatients = new JPanel();
-            pnPatients.setBorder(new TitledBorder(null, "Patients", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-            pnPatients.add(getBtnShowMedicalRecords());
-        }
-        return pnPatients;
-    }
-
-    private JButton getBtnShowMedicalRecords() {
-        if (btnShowMedicalRecords == null) {
-            btnShowMedicalRecords = new JButton("Show Medical Records");
-            btnShowMedicalRecords.addActionListener(actionEvent -> launchShowMedialRecordDialog());
-        }
-        return btnShowMedicalRecords;
-    }
-
-    // METODOS DE LANZAMIENTO DE VENTANAS
-
-    private void launchCreateAppointmentDialog() {
-        createAppointmentDialog.fillComboBoxes();
-        createAppointmentDialog.setLocationRelativeTo(this);
-        createAppointmentDialog.setVisible(true);
-    }
-
-    private void launchShowAppointmentsDialog() {
-        showAppointmentsDialog.showAppointments();
-        showAppointmentsDialog.setLocationRelativeTo(this);
-        showAppointmentsDialog.setVisible(true);
-    }
-
-    private void launchScheduleDialog() {
-        manageWorkScheduleDialog.fillLists();
-        manageWorkScheduleDialog.setLocationRelativeTo(this);
-        manageWorkScheduleDialog.setVisible(true);
-    }
-
-    private void launchBreakDialog() {
-        manageBreakScheduleDialog.fillLists();
-        manageBreakScheduleDialog.setLocationRelativeTo(this);
-        manageBreakScheduleDialog.setVisible(true);
-    }
-
-
-    private void launchCreateUsers() {
-        createUsersDialog.setLocationRelativeTo(null);
-        createUsersDialog.setVisible(true);
-    }
-
-    private JPanel getPnCreateUsers() {
-        if (pnCreateUsers == null) {
-            pnCreateUsers = new JPanel();
-            pnCreateUsers.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Create Users", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-            pnCreateUsers.add(getBtnCreateUsers());
-        }
-        return pnCreateUsers;
-    }
-
-    private JButton getBtnCreateUsers() {
-        if (btnCreateUsers == null) {
-            btnCreateUsers = new JButton("Create Users");
-            btnCreateUsers.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    launchCreateUsers();
-                }
-            });
-            btnCreateUsers.setFont(new Font("Tahoma", Font.BOLD, 11));
-        }
-        return btnCreateUsers;
-    }
-
-    private void launchShowMedialRecordDialog() {
-        showMedicalRecordOfPatient.fillComboBoxes();
-        showMedicalRecordOfPatient.setLocationRelativeTo(this);
-        showMedicalRecordOfPatient.setVisible(true);
+    
+    public void launchMedicalRecord(Patient patient) {
+        medicalRecordWithoutPrescriptionPanel.showHistoryOf(patient);
+        launch(medicalRecordWithoutPrescriptionPanel);
     }
 }

@@ -29,6 +29,8 @@ public class StaffCellRenderer extends JLabel implements ListCellRenderer<Staff>
 	public Component getListCellRendererComponent(JList<? extends Staff> list, Staff value, int index,
 			boolean isSelected, boolean cellHasFocus) {
 		setText(value.guiToString());
+		setBackground(PaletteFactory.getHighlighter());
+		setOpaque(isSelected);
 		if (availableDoctors != null) {
 			setForeground(Color.GRAY);
 			for (Staff doc : availableDoctors)
@@ -37,8 +39,6 @@ public class StaffCellRenderer extends JLabel implements ListCellRenderer<Staff>
 					return this;
 				}
 		}
-		setBackground(PaletteFactory.getHighlighter());
-		setOpaque(isSelected);
 		return this;
 	}
 

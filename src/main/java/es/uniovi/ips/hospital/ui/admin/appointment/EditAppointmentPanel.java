@@ -21,15 +21,17 @@ import ca.odell.glazedlists.matchers.TextMatcherEditor;
 import ca.odell.glazedlists.swing.AutoCompleteSupport;
 import es.uniovi.ips.hospital.domain.Appointment;
 import es.uniovi.ips.hospital.domain.Doctor;
+import es.uniovi.ips.hospital.domain.Nurse;
 import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.domain.Room;
 import es.uniovi.ips.hospital.domain.Staff;
 import es.uniovi.ips.hospital.exception.InputException;
 import es.uniovi.ips.hospital.service.AppointmentService;
 import es.uniovi.ips.hospital.service.DoctorService;
+import es.uniovi.ips.hospital.service.NurseService;
 import es.uniovi.ips.hospital.service.PatientService;
 import es.uniovi.ips.hospital.service.RoomService;
-import es.uniovi.ips.hospital.ui.common.MedicalRecordDialog;
+import es.uniovi.ips.hospital.ui.admin.AdminDialog;
 import es.uniovi.ips.hospital.ui.util.Designer;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
@@ -78,9 +80,10 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 	private static final long serialVersionUID = 3489197994027411322L;
 	private final JPanel contentPanel = new JPanel();
 	
-	@Autowired 	private MedicalRecordDialog medicalRecordDialog;
+	@Autowired 	private AdminDialog adminDialog;
 	@Autowired	private PatientService patientService;
 	@Autowired	private DoctorService doctorService;
+	@Autowired	private NurseService nurseService;
 	@Autowired	private RoomService roomService;
 	@Autowired	private AppointmentService appointmentService;
 	@Autowired	private PatientFormat patientFormat;
@@ -89,6 +92,7 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 	
 	private List<Doctor> selectedDoctors;
 	private List<Doctor> availableDoctors;
+    private List<Nurse> selectedNurses;
 	private LocalDateTime appointmentDateTime;
     private LocalDateTime appointmentEndTime;
 	private Appointment appointment;
@@ -107,11 +111,13 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 	private JComboBox<Staff> cbDoctor;
 	private EventList<Staff> doctorList;
 	private AutoCompleteSupport<Staff> autoCompleteDoctor;
+    private AutoCompleteSupport<Staff> autoCompleteNurse;
 	private JPanel pnShowDoctors;
     private JPanel pnRemoveDoctor;
     private JComboBox<Doctor> cbSelectedDoctors;
     private EventList<Doctor> selectedDoctorsList;
     private AutoCompleteSupport<Doctor> autoCompleteSelectedDoctor;
+    private AutoCompleteSupport<Nurse> autoCompleteSelectedNurse;
     private JButton btnRemove;
 	private JLabel lblDoctors;
 	private JButton btnUpdate;
@@ -136,6 +142,18 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 	private JPanel pnPatientInfo;
 	private JPanel pnManageDoctor;
 	private JLabel lblPatient;
+	private JPanel pnNurse;
+	private JPanel pnManageNurse;
+	private JPanel pnShowNurses;
+	private JPanel pnSelectNurse;
+	private JPanel pnRemoveNurse;
+	private JComboBox<Staff> cbNurse;
+    private EventList<Staff> nurseList;
+	private JLabel lblNurses;
+	private JComboBox<Nurse> cbSelectedNurses;
+    private EventList<Nurse> selectedNursesList;
+	private JButton btnRemoveNurse;
+	private JButton btnAddNurse;
 
 	/**
 	 * Create the dpanel.
@@ -152,36 +170,43 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 		contentPanel.add(getPnAppointment(), BorderLayout.CENTER);
 		contentPanel.add(getBtnUpdate(), BorderLayout.SOUTH);
 		selectedDoctors = new ArrayList<Doctor>();
+        selectedNurses = new ArrayList<Nurse>();
 	}
 
 	private JPanel getPnAppointment() {
-		if (pnAppointment == null) {
-			pnAppointment = new MyBackPanel();
-			GridBagLayout gbl_pnAppointment = new GridBagLayout();
+        if (pnAppointment == null) {
+            pnAppointment = new MyBackPanel();
+            GridBagLayout gbl_pnAppointment = new GridBagLayout();
             gbl_pnAppointment.columnWidths = new int[]{0};
-            gbl_pnAppointment.rowHeights = new int[]{10, 100, 15, 250, 15, 150, 10};
+            gbl_pnAppointment.rowHeights = new int[]{10, 100, 15, 250, 15, 70, 10, 70, 10};
             gbl_pnAppointment.columnWeights = new double[]{1.0};
             gbl_pnAppointment.rowWeights = new double[]{0.0,0.0,0.0,0.0,0.0,0.0,0.0};
-			pnAppointment.setLayout(gbl_pnAppointment);
-			GridBagConstraints gbc_pnPatient = new GridBagConstraints();
+            pnAppointment.setLayout(gbl_pnAppointment);
+            GridBagConstraints gbc_pnPatient = new GridBagConstraints();
             gbc_pnPatient.insets = new Insets(5, 5, 5, 5);
-			gbc_pnPatient.fill = GridBagConstraints.BOTH;
-			gbc_pnPatient.gridx = 0;
-			gbc_pnPatient.gridy = 1;
-			pnAppointment.add(getPnPatient(), gbc_pnPatient);
-			GridBagConstraints gbc_pnInfo = new GridBagConstraints();
-			gbc_pnInfo.fill = GridBagConstraints.BOTH;
-			gbc_pnInfo.gridx = 0;
-			gbc_pnInfo.gridy = 3;
-			pnAppointment.add(getPnInfo(), gbc_pnInfo);
-			GridBagConstraints gbc_pnDoctor = new GridBagConstraints();
-			gbc_pnDoctor.insets = new Insets(0, 0, 5, 0);
-			gbc_pnDoctor.fill = GridBagConstraints.BOTH;
-			gbc_pnDoctor.gridx = 0;
-			gbc_pnDoctor.gridy = 5;
-			pnAppointment.add(getPnDoctor(), gbc_pnDoctor);
-		}
-		return pnAppointment;
+            gbc_pnPatient.fill = GridBagConstraints.BOTH;
+            gbc_pnPatient.gridx = 0;
+            gbc_pnPatient.gridy = 1;
+            pnAppointment.add(getPnPatient(), gbc_pnPatient);
+            GridBagConstraints gbc_pnInfo = new GridBagConstraints();
+            gbc_pnInfo.fill = GridBagConstraints.BOTH;
+            gbc_pnInfo.gridx = 0;
+            gbc_pnInfo.gridy = 3;
+            pnAppointment.add(getPnInfo(), gbc_pnInfo);
+            GridBagConstraints gbc_pnDoctor = new GridBagConstraints();
+            gbc_pnDoctor.insets = new Insets(0, 0, 5, 0);
+            gbc_pnDoctor.fill = GridBagConstraints.BOTH;
+            gbc_pnDoctor.gridx = 0;
+            gbc_pnDoctor.gridy = 5;
+            pnAppointment.add(getPnDoctor(), gbc_pnDoctor);
+            GridBagConstraints gbc_pnNurse = new GridBagConstraints();
+            gbc_pnNurse.insets = new Insets(0, 0, 5, 0);
+            gbc_pnNurse.fill = GridBagConstraints.BOTH;
+            gbc_pnNurse.gridx = 0;
+            gbc_pnNurse.gridy = 7;
+            pnAppointment.add(getPnNurse(), gbc_pnNurse);
+        }
+        return pnAppointment;
 	}
 	private JPanel getPnPatient() {
         if (pnPatient == null) {
@@ -250,6 +275,17 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
         }
         return pnDoctor;
     }    
+
+    private JPanel getPnNurse() {
+        if (pnNurse == null) {
+        	pnNurse = new MyFrontPanel();
+            pnNurse.setBorder(Designer.getBorder());
+            pnNurse.setLayout(new GridLayout(2, 1));
+            pnNurse.add(getPnManageNurse());
+            pnNurse.add(getPnShowNurses());
+        }
+        return pnNurse;
+    }
     private JPanel getPnManageDoctor() {
         if (pnManageDoctor == null) {
         	pnManageDoctor = new MyFrontPanel();
@@ -267,6 +303,26 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
             pnShowDoctors.add(getLblDoctors());
         }
         return pnShowDoctors;
+    }
+    
+    private JPanel getPnManageNurse() {
+        if (pnManageNurse == null) {
+        	pnManageNurse = new MyFrontPanel();
+        	pnManageNurse.setLayout(new GridLayout(1,2));
+        	pnManageNurse.add(getPnSelectNurse());
+        	pnManageNurse.add(getPnRemoveNurse());
+        }
+        return pnManageNurse;
+    }
+
+    private JPanel getPnShowNurses() {
+        if (pnShowNurses == null) {
+        	pnShowNurses = new MyFrontPanel();
+            FlowLayout flowLayout = (FlowLayout) pnShowNurses.getLayout();
+            flowLayout.setAlignment(FlowLayout.LEFT);
+            pnShowNurses.add(getLblNurses());
+        }
+        return pnShowNurses;
     }
     private JPanel getPnSelectDoctor() {
         if (pnSelectDoctor == null) {
@@ -288,6 +344,28 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
         }
         return pnRemoveDoctor;
     }
+
+    private JPanel getPnSelectNurse() {
+        if (pnSelectNurse == null) {
+        	pnSelectNurse = new MyFrontPanel();
+            FlowLayout flowLayout = (FlowLayout) pnSelectNurse.getLayout();
+            flowLayout.setAlignment(FlowLayout.LEFT);
+            pnSelectNurse.add(getCbNurse());
+            pnSelectNurse.add(getBtnAddNurse());
+        }
+        return pnSelectNurse;
+    }
+
+    private JPanel getPnRemoveNurse() {
+        if (pnRemoveNurse == null) {
+        	pnRemoveNurse = new MyFrontPanel();
+            FlowLayout flowLayout = (FlowLayout) pnRemoveNurse.getLayout();
+            flowLayout.setAlignment(FlowLayout.RIGHT);
+            pnRemoveNurse.add(getCbSelectedNurses());
+            pnRemoveNurse.add(getBtnRemoveNurse());
+        }
+        return pnRemoveNurse;
+    }
     private JLabel getLblPatient() {
 		if (lblPatient == null) {
 			lblPatient = new JLabel("Patient:");
@@ -306,7 +384,7 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 		if (btnShowMedicalRecord == null) {
 			btnShowMedicalRecord = new JButton("Show medical record");
 			btnShowMedicalRecord.setEnabled(false);
-			btnShowMedicalRecord.addActionListener(actionEvent -> medicalRecordDialog.showHistoryOf((Patient) cbPatient.getSelectedItem()));
+			btnShowMedicalRecord.addActionListener(actionEvent -> showMedicalRecord());
 		}
 		return btnShowMedicalRecord;
 	}
@@ -332,6 +410,16 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 		}
 		return cbDoctor;
 	}
+
+    private JComboBox<Staff> getCbNurse() {
+        if (cbNurse == null) {
+        	cbNurse = new MyComboBox<Staff>();
+            cbNurse.addItemListener(itemEvent -> btnAddNurse.setEnabled(true));
+            autoCompleteNurse = null;
+            cbNurse.setEnabled(false);
+        }
+        return cbNurse;
+    }
 	private JButton getBtnAdd() {
 		if (btnAdd == null) {
 			btnAdd = new JButton("Add");
@@ -340,12 +428,28 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 		}
 		return btnAdd;
 	}
+
+    private JButton getBtnAddNurse() {
+        if (btnAddNurse == null) {
+        	btnAddNurse = new JButton("Add");
+            btnAddNurse.addActionListener(actionEvent -> addNurse());
+            btnAddNurse.setEnabled(false);
+        }
+        return btnAddNurse;
+    }
 	private JLabel getLblDoctors() {
 		if (lblDoctors == null) {
 			lblDoctors = new JLabel("");
 		}
 		return lblDoctors;
 	}
+
+    private JLabel getLblNurses() {
+        if (lblNurses == null) {
+        	lblNurses = new JLabel("");
+        }
+        return lblNurses;
+    }
 	private JComboBox<Doctor> getCbSelectedDoctors() {
 		if (cbSelectedDoctors == null) {
 			cbSelectedDoctors = new MyComboBox<Doctor>();
@@ -355,6 +459,16 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 		}
 		return cbSelectedDoctors;
 	}
+
+    private JComboBox<Nurse> getCbSelectedNurses() {
+        if (cbSelectedNurses == null) {
+        	cbSelectedNurses = new MyComboBox<Nurse>();
+        	cbSelectedNurses.addItemListener(itemEvent -> getBtnRemoveNurse().setEnabled(true));
+            autoCompleteSelectedNurse = null;
+            cbSelectedNurses.setEnabled(false);
+        }
+        return cbSelectedNurses;
+    }
 	private JButton getBtnRemove() {
 		if (btnRemove == null) {
 			btnRemove = new JButton("Remove");
@@ -363,6 +477,15 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 		}
 		return btnRemove;
 	}
+
+    private JButton getBtnRemoveNurse() {
+        if (btnRemoveNurse == null) {
+        	btnRemoveNurse = new JButton("Remove");
+            btnRemoveNurse.addActionListener(actionEvent -> removeNurse());
+            btnRemoveNurse.setEnabled(false);
+        }
+        return btnRemoveNurse;
+    }
 	private JButton getBtnUpdate() {
 		if (btnUpdate == null) {
 			btnUpdate = new MyButton("Confirm");
@@ -491,6 +614,17 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 		if (autoCompleteSelectedDoctor == null)
 			autoCompleteSelectedDoctor = AutoCompleteSupport.install(getCbSelectedDoctors(), selectedDoctorsList, new StaffTextFilterator(), staffFormat);
         autoCompleteSelectedDoctor.setFilterMode(TextMatcherEditor.CONTAINS);
+        // Nurse List
+        nurseList = new BasicEventList<Staff>();
+        nurseList.addAll(nurseService.findAllNurses());
+        if (autoCompleteNurse == null)
+            autoCompleteNurse = AutoCompleteSupport.install(getCbNurse(), nurseList, new StaffTextFilterator(), staffFormat);
+        autoCompleteDoctor.setFilterMode(TextMatcherEditor.CONTAINS);
+        // Selected Nurses List
+        selectedNursesList = new BasicEventList<Nurse>();
+        if (autoCompleteSelectedNurse == null)
+            autoCompleteSelectedNurse = AutoCompleteSupport.install(getCbSelectedNurses(), selectedNursesList, new StaffTextFilterator(), staffFormat);
+        autoCompleteSelectedNurse.setFilterMode(TextMatcherEditor.CONTAINS);
 		// Room list
         roomList = new BasicEventList<Room>();
         roomList.addAll(roomService.findAllRooms());
@@ -500,6 +634,11 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
     
     public void setFocus() {
         cbPatient.requestFocus();
+    }
+    
+    private void showMedicalRecord() {
+        Patient patient = (Patient) cbPatient.getSelectedItem();
+        adminDialog.launchMedicalRecord(patient);
     }
     
     
@@ -517,6 +656,12 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
     	doctorList.removeAll(selectedDoctors);
 		lblDoctors.setText("<html><p style=\"width:500px\">"
 				+ selectedDoctors.stream().map(d -> d.guiToString()).collect(Collectors.joining(", "))
+				+ "<p></html>");
+    	selectedNurses = new ArrayList<Nurse>(appointment.getNurses());
+    	selectedNursesList.addAll(selectedNurses);
+    	nurseList.removeAll(selectedNurses);
+		lblNurses.setText("<html><p style=\"width:500px\">"
+				+ selectedNurses.stream().map(n -> n.guiToString()).collect(Collectors.joining(", "))
 				+ "<p></html>");
 		setDate();
     }
@@ -554,6 +699,7 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 	    			return;
     		// Creación de la cita
     		Set<Doctor> doctorsSet = new HashSet<Doctor>(selectedDoctors);
+    		Set<Nurse> nursesSet = new HashSet<Nurse>(selectedNurses);
     		appointment.setPatient((Patient) cbPatient.getSelectedItem());
     		appointment.setStartTime(appointmentDateTime);
     		appointment.setEndTime(appointmentEndTime);
@@ -561,6 +707,7 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
     		appointment.setContactInfo(txtContactInfo.getText());
     		appointment.setRoom((Room) cbRoom.getSelectedItem());
     		appointment.setDoctors(doctorsSet);
+    		appointment.setNurses(nursesSet);
     		appointmentService.updateAppointment(appointment);
     		// Envío del email si es urgente y se ha seleccionado algún doctor
     		if (chckbxUrgent.isSelected() && !selectedDoctors.isEmpty())
@@ -588,6 +735,21 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 		}
     }
 
+    // Añade el enfermero a la lista de enfermeros de la cita y lo sustrae de los posibles
+    private void addNurse() {
+        if (getCbNurse().getSelectedItem() != null) {
+            Staff nurse = (Staff) getCbNurse().getSelectedItem();
+            selectedNurses.add((Nurse) nurse);
+            selectedNursesList.add((Nurse) nurse);
+            nurseList.remove(nurse);
+            cbNurse.setSelectedItem(null);
+            lblNurses.setText("<html><p style=\"width:500px\">"
+                    + selectedNurses.stream().map(n -> n.guiToString()).collect(Collectors.joining(", "))
+                    + "<p></html>");
+            cbSelectedNurses.setEnabled(true);
+        }
+    }
+
 	// Elimina el doctor de la lista de doctores de la cita y lo añade a la de los posibles doctores
     private void removeDoctor() {
     	if (getCbSelectedDoctors().getSelectedItem() != null) {
@@ -604,6 +766,23 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 				btnRemove.setEnabled(false);
 			}
 		}
+    }
+    
+    private void removeNurse() {
+        if (getCbSelectedNurses().getSelectedItem() != null) {
+            Nurse nurse = (Nurse) getCbSelectedNurses().getSelectedItem();
+            selectedNurses.remove(nurse);
+            selectedNursesList.remove((Nurse) nurse);
+            nurseList.add(nurse);
+            cbSelectedNurses.setSelectedItem(null);
+            lblNurses.setText("<html><p style=\"width:500px\">"
+                    + selectedNurses.stream().map(n -> n.guiToString()).collect(Collectors.joining(", "))
+                    + "<p></html>");
+            if (selectedNurses.isEmpty()) {
+                cbSelectedNurses.setEnabled(false);
+                btnRemoveNurse.setEnabled(false);
+            }
+        }
     }
     
     // Selecciona el paciente y carga sus datos
@@ -625,6 +804,7 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 			// Generamos la fecha de la cita si es posible
 			checkDate();
 			checkTime();
+            checkRoom();
 			LocalDate date = calendar.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 			appointmentDateTime = LocalDateTime.of(date, timePicker.getTime());
             if (timePicker.getTime().isBefore(timePickerEnd.getTime()))
@@ -635,9 +815,16 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 			setAppointmentComponentsEnabled(false);
 			swapButton();
 			// Obtenemos la lista de doctores disponibles para esa cita y activamos su panel
-			availableDoctors = doctorService.findAvailableDoctors(appointmentDateTime);
-			cbDoctor.setRenderer(new StaffCellRenderer(availableDoctors));
-			setDoctorComponentsEnabled(true);
+            availableDoctors = doctorService.findAvailableDoctors(appointmentDateTime);
+            List<Doctor> allDoctors = doctorService.findAllDoctors();
+            List<Nurse>	availableNurses = nurseService.findAvailableNurses(appointmentDateTime);
+            doctorList.clear();
+            nurseList.clear();
+            doctorList.addAll(allDoctors);
+            nurseList.addAll(availableNurses);
+            cbDoctor.setRenderer(new StaffCellRenderer(availableDoctors));
+            cbNurse.setRenderer(new StaffCellRenderer());
+            setStaffComponentsEnabled(true);
 		} catch (InputException ie) {
 			JOptionPane.showMessageDialog(this, ie.getMessage());
 		}		
@@ -649,11 +836,13 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 		// Reiniciamos los doctores seleccionados, en otra hora pueden no trabajar
 		selectedDoctors.clear();
 		lblDoctors.setText("");
+        selectedNurses.clear();
+        lblNurses.setText("");
 		// Reactivamos los elementos de selección de cita y cambiamos el botón
 		setAppointmentComponentsEnabled(true);
 		swapButton();
 		// Desactivamos el panel de doctores
-		setDoctorComponentsEnabled(false);
+		setStaffComponentsEnabled(false);
 	} 
 	
 	private void setAppointmentComponentsEnabled(boolean b) {
@@ -665,14 +854,20 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 		cbRoom.setEnabled(b);
 	}
 	
-	private void setDoctorComponentsEnabled(boolean b) {
-		cbDoctor.setEnabled(b);
-		btnAdd.setEnabled(b);
-		if (!selectedDoctors.isEmpty()) {
-			cbSelectedDoctors.setEnabled(b);
-			btnRemove.setEnabled(b);
-		}
-	}
+	private void setStaffComponentsEnabled(boolean b) {
+        cbDoctor.setEnabled(b);
+        cbNurse.setEnabled(b);
+        btnAdd.setEnabled(b);
+        btnAddNurse.setEnabled(b);
+        if (!selectedDoctors.isEmpty()) {
+            cbSelectedDoctors.setEnabled(b);
+            btnRemove.setEnabled(b);
+        }
+        if (!selectedNurses.isEmpty()) {
+            cbSelectedNurses.setEnabled(b);
+            btnRemoveNurse.setEnabled(b);
+        }
+    }
 	
 	private void swapButton() {
 		if (btnSetDate.getActionListeners()[0] == setDateAction) {

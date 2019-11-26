@@ -52,6 +52,7 @@ public class HospitalApplication implements CommandLineRunner {
         generateFakeRooms(10);
         generateFakeDoctors(10);
         generateTestDoctor();
+        generateTestNurse();
         icd10Service.load();
     }
 
@@ -113,7 +114,7 @@ public class HospitalApplication implements CommandLineRunner {
                 faker.address().zipCode(), "Especialidad de prueba", 11L);
         doctor = doctorService.createDoctor(doctor);
         generateSchedule(doctor);
-        generateAppointments(doctor, 10);
+        generateAppointments(doctor);
     }
 
     private void generateFakeNurses(int n) {
@@ -131,6 +132,21 @@ public class HospitalApplication implements CommandLineRunner {
             l++;
             nurseService.createNurse(nurse);
         }
+    }
+    
+    private void generateTestNurse() {
+        Nurse nurse = new Nurse(
+                faker.bothify("########?").toUpperCase(),
+                faker.name().firstName(),
+                faker.name().lastName(),
+                "nurse@ips.test",
+                "password",
+                faker.address().streetAddress(),
+                faker.address().city(),
+                faker.address().zipCode(), "Especialidad de prueba", 11L);
+        nurse =nurseService.createNurse(nurse);
+        generateSchedule(nurse);
+        generateAppointmentsNurse(nurse, 10);
     }
 
     private void generateFakePatients(int n) {
@@ -182,25 +198,47 @@ public class HospitalApplication implements CommandLineRunner {
     }
 
 
-    private void generateAppointments(Doctor doctor, int n) {
+    private void generateAppointments(Doctor doctor) {
         List<Patient> patients = patientService.findAllPatient();
         List<Room> rooms = roomService.findAllRooms();
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < 31; i++) {
             Appointment appointment = new Appointment();
-            appointment.setStartTime(LocalDateTime.now());
-            appointment.setEndTime(LocalDateTime.now().plusMinutes(45));
-            appointment.setPatient(patients.get(0));
+            LocalDateTime start = LocalDateTime.of(2019, 12, i + 1, faker.number().numberBetween(0, 11), 0);
+            appointment.setStartTime(start);
+            appointment.setEndTime(start.plusMinutes(45));
+            appointment.setPatient(patients.get(i%patients.size()));
             appointment.addDoctor(doctor);
-            appointment.setRoom(rooms.get(0));
+            appointment.setRoom(rooms.get(i%rooms.size()));
             appointment.setContactInfo(appointment.getPatient().getEmail());
             try {
-
                 appointmentService.createAppointment(appointment);
             } catch (BusinessException e) {
                 e.printStackTrace();
             }
             doctor.addAppointment(appointment);
             doctorService.updateDoctor(doctor);
+        }
+    }
+    
+    private void generateAppointmentsNurse(Nurse nurse, int n) {
+        List<Patient> patients = patientService.findAllPatient();
+        List<Room> rooms = roomService.findAllRooms();
+        for (int i = 0; i < n; i++) {
+            Appointment appointment = new Appointment();
+            LocalDateTime start = LocalDateTime.of(2019, 12, i + 1, faker.number().numberBetween(0, 11), 0);
+            appointment.setStartTime(start);
+            appointment.setEndTime(start.plusMinutes(45));
+            appointment.setPatient(patients.get(i%patients.size()));
+            appointment.addNurse(nurse);
+            appointment.setRoom(rooms.get(i%rooms.size()));
+            appointment.setContactInfo(appointment.getPatient().getEmail());
+            try {
+                appointmentService.createAppointment(appointment);
+            } catch (BusinessException e) {
+                e.printStackTrace();
+            }
+            nurse.addAppointment(appointment);
+            nurseService.updateNurse(nurse);
         }
     }
 }

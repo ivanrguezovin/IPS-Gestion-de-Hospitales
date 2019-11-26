@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "appointments")
@@ -40,6 +41,9 @@ public class Appointment {
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Doctor> doctors;
+    
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Nurse> nurses;
 
     @ManyToOne
     private Patient patient;
@@ -52,6 +56,7 @@ public class Appointment {
 
     public Appointment() {
         doctors = new HashSet<>();
+        nurses = new HashSet<>();
         diagnostics = new HashSet<>();
         this.urgent = false;
         this.confirmed = true;
@@ -59,6 +64,7 @@ public class Appointment {
 
     public Appointment(@NotNull LocalDateTime startTime,
                        Set<Doctor> doctors,
+                       Set<Nurse> nurses,
                        Patient patient,
                        Room room) {
         super();
@@ -66,6 +72,7 @@ public class Appointment {
         this.urgent = false;
         this.contactInfo = patient.getEmail();
         this.doctors = doctors;
+        this.nurses = nurses;
         this.patient = patient;
         this.room = room;
     }
@@ -73,9 +80,10 @@ public class Appointment {
     public Appointment(@NotNull LocalDateTime startTime,
                        boolean urgent,
                        Set<Doctor> doctors,
+                       Set<Nurse> nurses,
                        Patient patient,
                        Room room) {
-        this(startTime, doctors, patient, room);
+        this(startTime, doctors, nurses, patient, room);
         this.urgent = urgent;
     }
 
@@ -83,9 +91,10 @@ public class Appointment {
                        boolean urgent,
                        String contactInfo,
                        Set<Doctor> doctors,
+                       Set<Nurse> nurses,
                        Patient patient,
                        Room room) {
-        this(startTime, doctors, patient, room);
+        this(startTime, doctors, nurses, patient, room);
         this.contactInfo = contactInfo;
     }
 
@@ -144,17 +153,29 @@ public class Appointment {
     public void setDoctors(Set<Doctor> doctors) {
         this.doctors = doctors;
     }
+    
+    public Set<Nurse> getNurses() {
+        return nurses;
+    }
+
+    public void setNurses(Set<Nurse> nurses) {
+        this.nurses = nurses;
+    }
 
     public String prettifyDoctors() {
-        StringBuilder aux = new StringBuilder();
-        for (Doctor doctor : this.getDoctors()) {
-            aux.append(doctor.getName()).append(", ");
-        }
-        return aux.toString();
+        return doctors.stream().map(d -> d.getSurname()).collect(Collectors.joining(", "));
+    }
+    
+    public String prettifyNurses() {
+        return nurses.stream().map(d -> d.getSurname()).collect(Collectors.joining(", "));
     }
 
     public void addDoctor(Doctor doctor) {
         this.getDoctors().add(doctor);
+    }
+    
+    public void addNurse(Nurse nurse) {
+        this.getNurses().add(nurse);
     }
 
     public Patient getPatient() {

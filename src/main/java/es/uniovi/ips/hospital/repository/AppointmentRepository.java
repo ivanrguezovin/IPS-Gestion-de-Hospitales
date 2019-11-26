@@ -2,6 +2,7 @@ package es.uniovi.ips.hospital.repository;
 
 import es.uniovi.ips.hospital.domain.Appointment;
 import es.uniovi.ips.hospital.domain.Doctor;
+import es.uniovi.ips.hospital.domain.Nurse;
 import es.uniovi.ips.hospital.domain.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -15,4 +16,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findAllByDoctors(Doctor doctor);
 
     List<Appointment> findAllByPatient(Patient patient);
+
+	List<Appointment> findAllByNurses(Nurse myself);
 }

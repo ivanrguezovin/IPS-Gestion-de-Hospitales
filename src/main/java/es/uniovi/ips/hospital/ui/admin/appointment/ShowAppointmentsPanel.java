@@ -23,7 +23,7 @@ import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import es.uniovi.ips.hospital.domain.Appointment;
 import es.uniovi.ips.hospital.service.AppointmentService;
-import es.uniovi.ips.hospital.ui.admin.AdminDialog2;
+import es.uniovi.ips.hospital.ui.admin.AdminDialog;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
 import es.uniovi.ips.hospital.ui.util.filter.AppointmentTextFilterator;
@@ -41,7 +41,7 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 	private static final long serialVersionUID = 8580603940209784804L;
 	
 	@Autowired	private AppointmentService appointmentService;
-	@Autowired	private AdminDialog2 adminDialog;
+	@Autowired	private AdminDialog adminDialog;
 	
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtSearch;
