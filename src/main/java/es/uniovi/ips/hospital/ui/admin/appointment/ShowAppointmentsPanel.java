@@ -5,7 +5,6 @@ import java.awt.FlowLayout;
 import java.time.format.DateTimeFormatter;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -24,24 +23,25 @@ import ca.odell.glazedlists.swing.TableComparatorChooser;
 import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import es.uniovi.ips.hospital.domain.Appointment;
 import es.uniovi.ips.hospital.service.AppointmentService;
+import es.uniovi.ips.hospital.ui.admin.AdminDialog;
+import es.uniovi.ips.hospital.ui.util.PaletteFactory;
+import es.uniovi.ips.hospital.ui.util.Shiftable;
 import es.uniovi.ips.hospital.ui.util.filter.AppointmentTextFilterator;
 import es.uniovi.ips.hospital.util.compare.AppointmentComparator;
 
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import java.awt.event.WindowFocusListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 @Component
-public class ShowAppointmentsDialog extends JDialog {
+public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 
 	private static final long serialVersionUID = 8580603940209784804L;
 	
 	@Autowired	private AppointmentService appointmentService;
-	
-	@Autowired	private EditAppointmentDialog editAppointmentDialog;
+	@Autowired	private AdminDialog adminDialog;
 	
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtSearch;
@@ -55,14 +55,14 @@ public class ShowAppointmentsDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public ShowAppointmentsDialog() {
-		addWindowFocusListener(new ListReloader());
-		setTitle("Administrator: choose an appointment to edit");
-		setBounds(100, 100, 450, 700);
-		getContentPane().setLayout(new BorderLayout());
+	public ShowAppointmentsPanel() {
+		addFocusListener(new ListReloader());
+		setBounds(100, 100, 650, 700);
+		setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(new BorderLayout(0, 0));
+        contentPanel.setBackground(PaletteFactory.getBaseDark());
 		contentPanel.add(getTxtSearch(), BorderLayout.NORTH);
 		contentPanel.add(getSpTable());
 		contentPanel.add(getPnBottom(), BorderLayout.SOUTH);
@@ -71,7 +71,7 @@ public class ShowAppointmentsDialog extends JDialog {
 	private JTextField getTxtSearch() {
 		if (txtSearch == null) {
 			txtSearch = new JTextField();
-			txtSearch.setColumns(10);
+			txtSearch.setColumns(20);
             textMatcherEditor = new TextComponentMatcherEditor<Appointment>(txtSearch, new AppointmentTextFilterator());
 		}
 		return txtSearch;
@@ -79,6 +79,7 @@ public class ShowAppointmentsDialog extends JDialog {
 	private JScrollPane getSpTable() {
 		if (spTable == null) {
 			spTable = new JScrollPane();
+			spTable.getViewport().setBackground(PaletteFactory.getBaseDark());
 			spTable.setViewportView(getTblAppointments());
 		}
 		return spTable;
@@ -116,7 +117,6 @@ public class ShowAppointmentsDialog extends JDialog {
 		AdvancedTableModel<Appointment> tableModel = GlazedListsSwing.eventTableModelWithThreadProxyList(filterList, new AppointmentTableFormat());
 		tblAppointments.setModel(tableModel);
 		TableComparatorChooser.install(tblAppointments, sortedList, TableComparatorChooser.MULTIPLE_COLUMN_MOUSE);
-		this.setModal(true);
 	}
 	
 	private class AppointmentTableFormat implements TableFormat<Appointment> {
@@ -141,9 +141,9 @@ public class ShowAppointmentsDialog extends JDialog {
 	    }
 	}
 	
-	private class ListReloader extends WindowAdapter {
+	private class ListReloader extends FocusAdapter {
 		
-		public void windowGainedFocus(WindowEvent arg0) {
+		public void focusGained(FocusEvent arg0) {
 			filterList.clear();
 			filterList.addAll(appointmentService.findAllAppointments());
 		}
@@ -153,9 +153,12 @@ public class ShowAppointmentsDialog extends JDialog {
 	
 	@SuppressWarnings("unchecked")
 	public void launchEditAppointment() {
-		editAppointmentDialog.fillComboBoxes();
-		editAppointmentDialog.setAppointment(((AdvancedTableModel<Appointment>) tblAppointments.getModel()).getElementAt(tblAppointments.getSelectedRow()));
-		editAppointmentDialog.setLocationRelativeTo(this);
-		editAppointmentDialog.setVisible(true);
+		if (tblAppointments.getSelectedRow() != -1)
+			adminDialog.launchEditAppointment(((AdvancedTableModel<Appointment>) tblAppointments.getModel()).getElementAt(tblAppointments.getSelectedRow()));
+	}
+
+	@Override
+	public void setFocus() {
+		btnEdit.requestFocus();
 	}
 }

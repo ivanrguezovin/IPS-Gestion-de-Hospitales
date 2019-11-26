@@ -18,6 +18,14 @@ import es.uniovi.ips.hospital.exception.InputException;
 import es.uniovi.ips.hospital.service.DoctorService;
 import es.uniovi.ips.hospital.service.NurseService;
 import es.uniovi.ips.hospital.service.ScheduleService;
+import es.uniovi.ips.hospital.ui.util.Designer;
+import es.uniovi.ips.hospital.ui.util.PaletteFactory;
+import es.uniovi.ips.hospital.ui.util.Shiftable;
+import es.uniovi.ips.hospital.ui.util.components.MyBackPanel;
+import es.uniovi.ips.hospital.ui.util.components.MyButton;
+import es.uniovi.ips.hospital.ui.util.components.MyCalendar;
+import es.uniovi.ips.hospital.ui.util.components.MyFrontPanel;
+import es.uniovi.ips.hospital.ui.util.components.MyTimePicker;
 import es.uniovi.ips.hospital.ui.util.filter.StaffTextFilterator;
 import es.uniovi.ips.hospital.ui.util.render.StaffCellRenderer;
 import es.uniovi.ips.hospital.util.compare.StaffComparator;
@@ -27,7 +35,6 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -45,22 +52,21 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Ventana prototipo de la gestion de descansos
+ * Ventana prototipo de la gesti�n de horarios
  *
  * @author Ricardo Soto (uo265710)
  */
 @Component
-public class ManageBreakScheduleDialog extends JDialog {
+public class ManageWorkSchedulePanel extends JPanel implements Shiftable {
 
     private static final long serialVersionUID = 1490803176753932725L;
+    private final JPanel contentPanel = new JPanel();
     
     @Autowired	private DoctorService doctorService;
-    @Autowired	private NurseService nurseService;
-    @Autowired	private ScheduleService scheduleService;
+    @Autowired  private NurseService nurseService;
+    @Autowired  private ScheduleService scheduleService;
     
-    private final JPanel contentPanel = new JPanel();
     private JPanel pnCenter;
-    private JPanel pnSouth;
     private JButton btnAdd;
     private JPanel pnDays;
     private JPanel pnCalendars;
@@ -99,30 +105,30 @@ public class ManageBreakScheduleDialog extends JDialog {
     private EntriesSelector selector;
     private EntriesRemover remover;
     private JCheckBox checkBoxAll;
+	private JLabel lblStart;
+	private JLabel lblEnd;
 
     /**
      * Create the dialog.
      */
-    public ManageBreakScheduleDialog() {
-    	setTitle("Administrator: create a new break");
-    	setModal(true);
-        setBounds(100, 100, 800, 500);
-        getContentPane().setLayout(new BorderLayout());
+    public ManageWorkSchedulePanel() {
+        setBounds(100, 100, 650, 700);
+        setLayout(new BorderLayout());
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-        getContentPane().add(contentPanel, BorderLayout.CENTER);
-        contentPanel.setLayout(new BorderLayout(0, 0));
+        add(contentPanel, BorderLayout.CENTER);
+        contentPanel.setLayout(new BorderLayout(5, 5));
+        contentPanel.setBackground(PaletteFactory.getBaseDark());
         contentPanel.add(getPnCenter(), BorderLayout.CENTER);
-        contentPanel.add(getPnSouth(), BorderLayout.SOUTH);
         contentPanel.add(getPnWest(), BorderLayout.WEST);
+        contentPanel.add(getBtnAdd(), BorderLayout.SOUTH);
     }
 
     // METODOS DE CREACION DE LA INTERFAZ ------------------------------------------------------------
 
     private JPanel getPnCenter() {
         if (pnCenter == null) {
-            pnCenter = new JPanel();
-            pnCenter.setBorder(new TitledBorder(null, "Schedule", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-            pnCenter.setLayout(new BorderLayout(0, 0));
+            pnCenter = new MyBackPanel();
+            pnCenter.setLayout(new BorderLayout(5, 5));
             pnCenter.add(getPnDays(), BorderLayout.NORTH);
             pnCenter.add(getPnCalendars(), BorderLayout.CENTER);
             pnCenter.add(getPnTimeSelectors(), BorderLayout.SOUTH);
@@ -130,28 +136,18 @@ public class ManageBreakScheduleDialog extends JDialog {
         return pnCenter;
     }
 
-    private JPanel getPnSouth() {
-        if (pnSouth == null) {
-            pnSouth = new JPanel();
-            FlowLayout flowLayout = (FlowLayout) pnSouth.getLayout();
-            flowLayout.setAlignment(FlowLayout.RIGHT);
-            pnSouth.add(getBtnAdd());
-        }
-        return pnSouth;
-    }
-
     private JButton getBtnAdd() {
         if (btnAdd == null) {
-            btnAdd = new JButton("Add");
+            btnAdd = new MyButton("Add");
             btnAdd.addActionListener(new DataSaver());
-            btnAdd.setHorizontalAlignment(SwingConstants.RIGHT);
         }
         return btnAdd;
     }
 
     private JPanel getPnDays() {
         if (pnDays == null) {
-            pnDays = new JPanel();
+            pnDays = new MyFrontPanel();
+            pnDays.setBorder(Designer.getBorder());
             pnDays.setLayout(new GridLayout(0, 7, 0, 0));
             pnDays.add(getCheckBoxL());
             pnDays.add(getCheckBoxM());
@@ -170,8 +166,8 @@ public class ManageBreakScheduleDialog extends JDialog {
 
     private JPanel getPnCalendars() {
         if (pnCalendars == null) {
-            pnCalendars = new JPanel();
-            pnCalendars.setLayout(new GridLayout(0, 2, 0, 0));
+            pnCalendars = new MyBackPanel();
+            pnCalendars.setLayout(new GridLayout(2, 0, 0, 5));
             pnCalendars.add(getPnStartDate());
             pnCalendars.add(getPnEndDate());
         }
@@ -180,8 +176,8 @@ public class ManageBreakScheduleDialog extends JDialog {
 
     private JPanel getPnTimeSelectors() {
         if (pnTimeSelectors == null) {
-            pnTimeSelectors = new JPanel();
-            pnTimeSelectors.setLayout(new GridLayout(0, 2, 0, 0));
+            pnTimeSelectors = new MyBackPanel();
+            pnTimeSelectors.setLayout(new GridLayout(0, 2, 5, 0));
             pnTimeSelectors.add(getPnStartTime());
             pnTimeSelectors.add(getPnEndTime());
         }
@@ -247,7 +243,8 @@ public class ManageBreakScheduleDialog extends JDialog {
 
     private JPanel getPnStartTime() {
         if (pnStartTime == null) {
-            pnStartTime = new JPanel();
+            pnStartTime = new MyFrontPanel();
+            pnStartTime.setBorder(Designer.getBorder());
             pnStartTime.add(getLblStartTime());
             pnStartTime.add(getTpStart());
         }
@@ -256,7 +253,8 @@ public class ManageBreakScheduleDialog extends JDialog {
 
     private JPanel getPnEndTime() {
         if (pnEndTime == null) {
-            pnEndTime = new JPanel();
+            pnEndTime = new MyFrontPanel();
+            pnEndTime.setBorder(Designer.getBorder());
             pnEndTime.add(getLblEndTime());
             pnEndTime.add(getTpEnd());
         }
@@ -279,9 +277,10 @@ public class ManageBreakScheduleDialog extends JDialog {
 
     private JPanel getPnStartDate() {
         if (pnStartDate == null) {
-            pnStartDate = new JPanel();
-            pnStartDate.setBorder(new TitledBorder(null, "Start date", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-            pnStartDate.setLayout(new BoxLayout(pnStartDate, BoxLayout.X_AXIS));
+            pnStartDate = new MyFrontPanel();
+            pnStartDate.setBorder(Designer.getBorder());
+            pnStartDate.setLayout(new BoxLayout(pnStartDate, BoxLayout.Y_AXIS));
+            pnStartDate.add(getLblStart());
             pnStartDate.add(getCalStartDate());
         }
         return pnStartDate;
@@ -289,54 +288,70 @@ public class ManageBreakScheduleDialog extends JDialog {
 
     private JPanel getPnEndDate() {
         if (pnEndDate == null) {
-            pnEndDate = new JPanel();
-            pnEndDate.setBorder(new TitledBorder(null, "End date:", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+            pnEndDate = new MyFrontPanel();
+            pnEndDate.setBorder(Designer.getBorder());
             pnEndDate.setLayout(new BoxLayout(pnEndDate, BoxLayout.Y_AXIS));
+            pnEndDate.add(getLblEnd());
             pnEndDate.add(getCalEndDate());
         }
         return pnEndDate;
     }
+    
+    private JLabel getLblStart() {
+    	if (lblStart == null) {
+    		lblStart = new JLabel("Start date:");
+    	}
+    	return lblStart;
+    }
+    
+    private JLabel getLblEnd() {
+    	if (lblEnd == null) {
+    		lblEnd = new JLabel("End date:");
+    	}
+    	return lblEnd;
+    }
 
     private JCalendar getCalStartDate() {
         if (calStartDate == null) {
-            calStartDate = new JCalendar();
+            calStartDate = new MyCalendar();
         }
         return calStartDate;
     }
 
     private JCalendar getCalEndDate() {
         if (calEndDate == null) {
-            calEndDate = new JCalendar();
+            calEndDate = new MyCalendar();
         }
         return calEndDate;
     }
 
     private TimePicker getTpStart() {
         if (tpStart == null) {
-            tpStart = new TimePicker();
+            tpStart = new MyTimePicker();
         }
         return tpStart;
     }
 
     private TimePicker getTpEnd() {
         if (tpEnd == null) {
-            tpEnd = new TimePicker();
+            tpEnd = new MyTimePicker();
         }
         return tpEnd;
     }
 
     private JPanel getPnWest() {
         if (pnWest == null) {
-            pnWest = new JPanel();
+            pnWest = new MyFrontPanel();
             pnWest.setMinimumSize(new Dimension(200, 10));
+            pnWest.setBorder(Designer.getBorder());
             pnWest.setLayout(new BoxLayout(pnWest, BoxLayout.Y_AXIS));
-            pnWest.add(Box.createRigidArea(new Dimension(0, 10)));
+            pnWest.add(Box.createRigidArea(new Dimension(0, 5)));
             pnWest.add(getTxtFilter());
-            pnWest.add(Box.createRigidArea(new Dimension(0, 10)));
+            pnWest.add(Box.createRigidArea(new Dimension(0, 5)));
             pnWest.add(getTbPnStaffList());
-            pnWest.add(Box.createRigidArea(new Dimension(0, 10)));
+            pnWest.add(Box.createRigidArea(new Dimension(0, 5)));
             pnWest.add(getBtnSelect());
-            pnWest.add(Box.createRigidArea(new Dimension(0, 10)));
+            pnWest.add(Box.createRigidArea(new Dimension(0, 5)));
         }
         return pnWest;
     }
@@ -420,7 +435,7 @@ public class ManageBreakScheduleDialog extends JDialog {
 
     private JButton getBtnSelect() {
         if (btnSelect == null) {
-            btnSelect = new JButton("Select");
+            btnSelect = new MyButton("Select");
             selector = new EntriesSelector();
             remover = new EntriesRemover();
             btnSelect.addActionListener(selector);
@@ -458,6 +473,11 @@ public class ManageBreakScheduleDialog extends JDialog {
         lstNurse.setModel(GlazedListsSwing.eventListModelWithThreadProxyList(nurseList));
     }
 
+	@Override
+	public void setFocus() {
+		txtFilter.requestFocus();
+	}
+
     /**
      * Almacena la informaci�n introducida en un grupo de dto para su introducci�n en la base de datos
      */
@@ -471,13 +491,13 @@ public class ManageBreakScheduleDialog extends JDialog {
             // Comprueba que se ha seleccionado alguno
             if (selectedStaff.isEmpty())
                 throw new InputException("You must select at least one employee");
-            // Rellena una lista de horarios de descansos a añadir
+            // Rellena una lista de horarios a añadir
             Map<LocalDateTime, LocalDateTime> daySchedules = generateDaySchedules();
             for (LocalDateTime startTime : daySchedules.keySet())
                 selectedStaff.forEach(x -> schedules.add(new Schedule(startTime, daySchedules.get(startTime), x)));
             // Guarda los horarios
-            scheduleService.updateBreakSchedules(schedules);
-            JOptionPane.showMessageDialog(this, "All the breaks were updated successfully");
+            scheduleService.updateSchedules(schedules);
+            JOptionPane.showMessageDialog(this, "All the schedules were updated successfully");
         } catch (InputException e) {
             JOptionPane.showMessageDialog(this, e.getMessage());
         }

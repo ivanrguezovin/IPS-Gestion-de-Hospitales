@@ -2,6 +2,7 @@ package es.uniovi.ips.hospital.service;
 
 import es.uniovi.ips.hospital.domain.Appointment;
 import es.uniovi.ips.hospital.domain.Doctor;
+import es.uniovi.ips.hospital.domain.Nurse;
 import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.exception.BusinessException;
 import es.uniovi.ips.hospital.repository.AppointmentRepository;
@@ -38,5 +39,9 @@ public class AppointmentService {
 
     public List<Appointment> findAllAppointments() {
         return appointmentRepository.findAll();
+    }
+
+	public List<Appointment> findAllByNurse(Nurse myself) {
+        return appointmentRepository.findAllByNurses(myself);
     }
 }

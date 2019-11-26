@@ -1,7 +1,12 @@
 package es.uniovi.ips.hospital.domain;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -17,6 +22,9 @@ public class Nurse extends Staff {
     @Column(unique = true, name = "collegeNumber")
     @NotNull
     private Long collegeNumber;
+    
+    @ManyToMany(mappedBy = "nurses", fetch = FetchType.EAGER)
+    private Set<Appointment> appointments = new HashSet<>();
 
     public Nurse() {
         super();
@@ -43,5 +51,17 @@ public class Nurse extends Staff {
 
     public void setCollegeNumber(Long collegeNumber) {
         this.collegeNumber = collegeNumber;
+    }
+    
+    public Set<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public void setAppointments(Set<Appointment> appointments) {
+        this.appointments = appointments;
+    }
+    
+    public void addAppointment(Appointment appointment) {
+        appointments.add(appointment);
     }
 }
