@@ -171,7 +171,6 @@ public class HospitalApplication implements CommandLineRunner {
             Room room = new Room();
             room.setLocation(faker.numerify("###"));
             roomService.createRoom(room);
-            roomService.createRoom(room);
         }
     }
 

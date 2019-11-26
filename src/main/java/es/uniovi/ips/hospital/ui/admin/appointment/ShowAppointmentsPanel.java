@@ -26,7 +26,9 @@ import es.uniovi.ips.hospital.service.AppointmentService;
 import es.uniovi.ips.hospital.ui.admin.AdminDialog;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
+import es.uniovi.ips.hospital.ui.util.components.MyButton;
 import es.uniovi.ips.hospital.ui.util.filter.AppointmentTextFilterator;
+import es.uniovi.ips.hospital.ui.util.render.AppointmentTableCellRenderer;
 import es.uniovi.ips.hospital.util.compare.AppointmentComparator;
 
 import javax.swing.JTextField;
@@ -34,6 +36,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.GridLayout;
 
 @Component
 public class ShowAppointmentsPanel extends JPanel implements Shiftable {
@@ -51,6 +54,7 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 	private JTable tblAppointments;
 	private JPanel pnBottom;
 	private JButton btnEdit;
+	private JButton btnProcess;
 
 	/**
 	 * Create the dialog.
@@ -93,18 +97,26 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 	private JPanel getPnBottom() {
 		if (pnBottom == null) {
 			pnBottom = new JPanel();
-			FlowLayout flowLayout = (FlowLayout) pnBottom.getLayout();
-			flowLayout.setAlignment(FlowLayout.RIGHT);
+			pnBottom.setLayout(new GridLayout(0, 2, 0, 0));
+			pnBottom.add(getBtnProcess());
 			pnBottom.add(getBtnEdit());
 		}
 		return pnBottom;
 	}
 	private JButton getBtnEdit() {
 		if (btnEdit == null) {
-			btnEdit = new JButton("Edit");
+			btnEdit = new MyButton("Edit");
+			btnEdit.setEnabled(false);
 			btnEdit.addActionListener(actionEvent -> launchEditAppointment());
 		}
 		return btnEdit;
+	}
+	private JButton getBtnProcess() {
+		if (btnProcess == null) {
+			btnProcess = new MyButton("Process");
+			btnProcess.setEnabled(false);
+		}
+		return btnProcess;
 	}
 	
 	// FORMAT Y DATOS DE LA TABLA ---------------------------------------------------------------------------------
@@ -116,6 +128,7 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
         filterList = new FilterList<Appointment>(sortedList, textMatcherEditor);
 		AdvancedTableModel<Appointment> tableModel = GlazedListsSwing.eventTableModelWithThreadProxyList(filterList, new AppointmentTableFormat());
 		tblAppointments.setModel(tableModel);
+		tblAppointments.setDefaultRenderer(Object.class, new AppointmentTableCellRenderer());
 		TableComparatorChooser.install(tblAppointments, sortedList, TableComparatorChooser.MULTIPLE_COLUMN_MOUSE);
 	}
 	
