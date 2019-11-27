@@ -16,6 +16,7 @@ import es.uniovi.ips.hospital.ui.admin.appointment.ShowAppointmentsPanel;
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageBreakSchedulePanel;
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageWorkSchedulePanel;
 import es.uniovi.ips.hospital.ui.admin.showMedicalRecord.PatientInfoPanel;
+import es.uniovi.ips.hospital.ui.admin.users.CreateAdminsPanel;
 import es.uniovi.ips.hospital.ui.common.MedicalRecordWithoutPrescriptionPanel;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
@@ -41,6 +42,7 @@ public class AdminDialog extends JDialog {
     @Autowired	private ManageBreakSchedulePanel manageBreakSchedulePanel;
     @Autowired	private PatientInfoPanel patientInfoPanel;
     @Autowired	private MedicalRecordWithoutPrescriptionPanel medicalRecordWithoutPrescriptionPanel;
+    @Autowired	private CreateAdminsPanel createAdminsPanel;
 
 	private JPanel current;
 	private JPanel previous;
@@ -157,4 +159,8 @@ public class AdminDialog extends JDialog {
         medicalRecordWithoutPrescriptionPanel.showHistoryOf(patient);
         launch(medicalRecordWithoutPrescriptionPanel);
     }
+    
+	public void launchCreateAdmins() {
+		launch(createAdminsPanel);
+	}
 }

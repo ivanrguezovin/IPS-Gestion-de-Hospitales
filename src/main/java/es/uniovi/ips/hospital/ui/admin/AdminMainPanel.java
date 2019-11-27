@@ -230,6 +230,7 @@ public class AdminMainPanel extends JPanel implements Shiftable {
     private JButton getBtnCreateAdmins() {
         if (btnCreateAdmins == null) {
         	btnCreateAdmins = new JButton("Add administrator");
+        	btnCreateAdmins.addActionListener(e -> adminDialog.launchCreateAdmins());
         }
         return btnCreateAdmins;
     }
