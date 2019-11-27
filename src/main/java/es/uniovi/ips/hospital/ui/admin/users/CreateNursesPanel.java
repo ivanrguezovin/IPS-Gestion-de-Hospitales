@@ -38,9 +38,9 @@ import javax.swing.JButton;
 import java.util.List;
 
 @Component
-public class CreateDoctorsPanel extends JPanel implements Shiftable {
+public class CreateNursesPanel extends JPanel implements Shiftable {
 
-	private static final long serialVersionUID = -3229507852145590251L;
+	private static final long serialVersionUID = 8408845391529085978L;
 	private final JPanel contentPanel = new JPanel();
 
 	@Autowired
@@ -94,7 +94,7 @@ public class CreateDoctorsPanel extends JPanel implements Shiftable {
 	/**
 	 * Create the dialog.
 	 */
-	public CreateDoctorsPanel() {
+	public CreateNursesPanel() {
 		setBounds(100, 100, 650, 700);
 		setPreferredSize(new Dimension(650, 700));
 		setMinimumSize(new Dimension(650, 700));
@@ -506,25 +506,25 @@ public class CreateDoctorsPanel extends JPanel implements Shiftable {
 	private JButton getBtAdd() {
 		if (btAdd == null) {
 			btAdd = new MyButton("Add");
-			btAdd.addActionListener(e -> addDoctor());
+			btAdd.addActionListener(e -> addNurse());
 		}
 		return btAdd;
 	}
 
 ///////////////////////////////////////////////////////////////////////////////
 
-	private void addDoctor() {
+	private void addNurse() {
 		List<Doctor> doctors = doctorService.findAllDoctors();
 		List<AdminAssistant> assistants = adminService.findAllAdminAssistant();
 		List<Nurse> nurses = nurseService.findAllNurses();
 		try {
 			checkInput();
 			checkDuplicates(doctors, assistants, nurses);
-			Doctor as = new Doctor(txDni.getText(),txName.getText(),txSurname.getText(),
+			Nurse as = new Nurse(txDni.getText(),txName.getText(),txSurname.getText(),
 					txEmail.getText(), txPass.getText(),txStreet.getText(),txCity.getText(),txZip.getText()
 					, txSpeciality.getText(), Long.parseLong(txCollege.getText()));
-			doctorService.createDoctor(as);
-			JOptionPane.showMessageDialog(this, "Doctor created");
+			nurseService.createNurse(as);
+			JOptionPane.showMessageDialog(this, "Nurse created");
 			txCity.setText("");
 			txZip.setText("");
 			txSurname.setText("");
@@ -557,7 +557,7 @@ public class CreateDoctorsPanel extends JPanel implements Shiftable {
 			throw new InputException("Wrong dni format");
 		if (!isNumeric(txCollege.getText()))
 			throw new InputException("Wrong college number format");
-		if(Long.parseLong(txCollege.getText()) < 1)
+		if (Long.parseLong(txCollege.getText()) < 1)
 			throw new InputException("College number must be a positive value (>0)");
 	}
 
@@ -568,10 +568,10 @@ public class CreateDoctorsPanel extends JPanel implements Shiftable {
 				throw new BusinessException("Staff member already exists");
 		for (Nurse n : nurses)
 			if (txDni.getText().equals(n.getDni()))
-				throw new BusinessException("Doctor already exists");
+				throw new BusinessException("Staff member already exists");
 		for (Doctor d : doctors)
 			if (txDni.getText().equals(d.getDni()))
-				throw new BusinessException("Staff member already exists");
+				throw new BusinessException("Nurse already exists");
 	}
 
 	public static boolean isNumeric(String cadena) {

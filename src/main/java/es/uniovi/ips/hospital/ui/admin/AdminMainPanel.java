@@ -238,6 +238,7 @@ public class AdminMainPanel extends JPanel implements Shiftable {
     private JButton getBtnCreateDoctors() {
         if (btnCreateDoctors == null) {
         	btnCreateDoctors = new JButton("Add doctor");
+        	btnCreateDoctors.addActionListener(e -> adminDialog.launchCreateDoctors());
         }
         return btnCreateDoctors;
     }
@@ -245,6 +246,7 @@ public class AdminMainPanel extends JPanel implements Shiftable {
     private JButton getBtnCreateNurses() {
         if (btnCreateNurses == null) {
         	btnCreateNurses = new JButton("Add nurse");
+        	btnCreateNurses.addActionListener(e -> adminDialog.launchCreateNurses());
         }
         return btnCreateNurses;
     }
