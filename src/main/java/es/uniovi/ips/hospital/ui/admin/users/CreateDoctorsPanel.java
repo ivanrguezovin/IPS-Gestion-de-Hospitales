@@ -3,6 +3,9 @@ package es.uniovi.ips.hospital.ui.admin.users;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 
 import javax.swing.border.EmptyBorder;
 
@@ -30,17 +33,14 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import java.util.List;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import javax.swing.BoxLayout;
 
 @Component
-public class CreateAdminsPanel extends JPanel implements Shiftable {
+public class CreateDoctorsPanel extends JPanel implements Shiftable {
 
-	private static final long serialVersionUID = 649590320703859836L;
+	private static final long serialVersionUID = -3229507852145590251L;
 	private final JPanel contentPanel = new JPanel();
 
 	@Autowired
@@ -75,18 +75,26 @@ public class CreateAdminsPanel extends JPanel implements Shiftable {
 	private JPanel pnAddressStreet;
 	private JLabel lblAddressStreet;
 	private JTextField txStreet;
+	private JPanel pnAddressCity;
 	private JLabel lblAddressCity;
 	private JTextField txCity;
 	private JPanel pnZipCode;
 	private JLabel lblZipCode;
 	private JTextField txZip;
+	private JPanel pnCareer;
+	private JLabel lblCareer;
+	private JLabel lblSpecialty;
+	private JTextField txSpeciality;
+	private JLabel lblCollege;
+	private JTextField txCollege;
 	private JButton btAdd;
-	private JPanel pnAddressCity;
+	private JPanel pnSpecialty;
+	private JPanel pnCollege;
 
 	/**
 	 * Create the dialog.
 	 */
-	public CreateAdminsPanel() {
+	public CreateDoctorsPanel() {
 		setBounds(100, 100, 650, 700);
 		setPreferredSize(new Dimension(650, 700));
 		setMinimumSize(new Dimension(650, 700));
@@ -102,33 +110,39 @@ public class CreateAdminsPanel extends JPanel implements Shiftable {
 	private JPanel getPanel() {
 		if (panel == null) {
 			panel = new MyBackPanel();
-            GridBagLayout gbl_pn = new GridBagLayout();
-            gbl_pn.columnWeights = new double[]{0.0};
-            gbl_pn.columnWidths = new int[]{100,450,100};
-            gbl_pn.rowHeights = new int[]{75,150,50,100,50,150,75};
-            panel.setLayout(gbl_pn);
-            GridBagConstraints gbc_pnPersonalData = new GridBagConstraints();
-            gbc_pnPersonalData.insets = new Insets(5, 5, 5, 5);
-            gbc_pnPersonalData.fill = GridBagConstraints.BOTH;
-            gbc_pnPersonalData.gridx = 1;
-            gbc_pnPersonalData.gridy = 1;
-            panel.add(getPnPersonalData(), gbc_pnPersonalData);
-            GridBagConstraints gbc_pnLogin = new GridBagConstraints();
-            gbc_pnLogin.insets = new Insets(0, 0, 5, 0);
-            gbc_pnLogin.fill = GridBagConstraints.BOTH;
-            gbc_pnLogin.gridx = 1;
-            gbc_pnLogin.gridy = 3;
-            panel.add(getPnLogin(), gbc_pnLogin);
-            GridBagConstraints gbc_pnAddress = new GridBagConstraints();
-            gbc_pnAddress.insets = new Insets(0, 0, 5, 0);
-            gbc_pnAddress.fill = GridBagConstraints.BOTH;
-            gbc_pnAddress.gridx = 1;
-            gbc_pnAddress.gridy = 5;
-            panel.add(getPnAddress(), gbc_pnAddress);
+			GridBagLayout gbl_pn = new GridBagLayout();
+			gbl_pn.columnWeights = new double[] { 0.0 };
+			gbl_pn.columnWidths = new int[] { 100, 450, 100 };
+			gbl_pn.rowHeights = new int[] { 150, 50, 100, 50, 150, 50, 100, 10 };
+			panel.setLayout(gbl_pn);
+			GridBagConstraints gbc_pnPersonalData = new GridBagConstraints();
+			gbc_pnPersonalData.insets = new Insets(5, 5, 5, 5);
+			gbc_pnPersonalData.fill = GridBagConstraints.BOTH;
+			gbc_pnPersonalData.gridx = 1;
+			gbc_pnPersonalData.gridy = 0;
+			panel.add(getPnPersonalData(), gbc_pnPersonalData);
+			GridBagConstraints gbc_pnLogin = new GridBagConstraints();
+			gbc_pnLogin.insets = new Insets(0, 0, 5, 0);
+			gbc_pnLogin.fill = GridBagConstraints.BOTH;
+			gbc_pnLogin.gridx = 1;
+			gbc_pnLogin.gridy = 2;
+			panel.add(getPnLogin(), gbc_pnLogin);
+			GridBagConstraints gbc_pnAddress = new GridBagConstraints();
+			gbc_pnAddress.insets = new Insets(0, 0, 5, 0);
+			gbc_pnAddress.fill = GridBagConstraints.BOTH;
+			gbc_pnAddress.gridx = 1;
+			gbc_pnAddress.gridy = 4;
+			panel.add(getPnAddress(), gbc_pnAddress);
+			GridBagConstraints gbc_pnCareer = new GridBagConstraints();
+			gbc_pnCareer.insets = new Insets(0, 0, 5, 0);
+			gbc_pnCareer.fill = GridBagConstraints.BOTH;
+			gbc_pnCareer.gridx = 1;
+			gbc_pnCareer.gridy = 6;
+			panel.add(getPnCareer(), gbc_pnCareer);
 		}
 		return panel;
 	}
-	
+
 	private JPanel getPnPersonalData() {
 		if (pnPersonalData == null) {
 			pnPersonalData = new MyFrontPanel();
@@ -141,7 +155,7 @@ public class CreateAdminsPanel extends JPanel implements Shiftable {
 		}
 		return pnPersonalData;
 	}
-	
+
 	private JLabel getLblPersonalData() {
 		if (lblPersonalData == null) {
 			lblPersonalData = new JLabel("Personal data");
@@ -151,7 +165,7 @@ public class CreateAdminsPanel extends JPanel implements Shiftable {
 		}
 		return lblPersonalData;
 	}
-	
+
 	private JPanel getPnDni() {
 		if (pnDni == null) {
 			pnDni = new MyFrontPanel();
@@ -178,7 +192,7 @@ public class CreateAdminsPanel extends JPanel implements Shiftable {
 		}
 		return txDni;
 	}
-	
+
 	private JPanel getPnName() {
 		if (pnName == null) {
 			pnName = new MyFrontPanel();
@@ -205,7 +219,7 @@ public class CreateAdminsPanel extends JPanel implements Shiftable {
 		}
 		return txName;
 	}
-	
+
 	private JPanel getPnSurname() {
 		if (pnSurname == null) {
 			pnSurname = new MyFrontPanel();
@@ -232,7 +246,7 @@ public class CreateAdminsPanel extends JPanel implements Shiftable {
 		}
 		return txSurname;
 	}
-	
+
 	private JPanel getPnLogin() {
 		if (pnLogin == null) {
 			pnLogin = new MyFrontPanel();
@@ -244,7 +258,7 @@ public class CreateAdminsPanel extends JPanel implements Shiftable {
 		}
 		return pnLogin;
 	}
-	
+
 	private JLabel getLblLogin() {
 		if (lblLogin == null) {
 			lblLogin = new JLabel("Log-in data");
@@ -254,7 +268,7 @@ public class CreateAdminsPanel extends JPanel implements Shiftable {
 		}
 		return lblLogin;
 	}
-	
+
 	private JPanel getPnEmail() {
 		if (pnEmail == null) {
 			pnEmail = new MyFrontPanel();
@@ -281,7 +295,7 @@ public class CreateAdminsPanel extends JPanel implements Shiftable {
 		}
 		return txEmail;
 	}
-	
+
 	private JPanel getPnPassword() {
 		if (pnPassword == null) {
 			pnPassword = new MyFrontPanel();
@@ -308,7 +322,7 @@ public class CreateAdminsPanel extends JPanel implements Shiftable {
 		}
 		return txPass;
 	}
-	
+
 	private JPanel getPnAddress() {
 		if (pnAddress == null) {
 			pnAddress = new MyFrontPanel();
@@ -321,7 +335,7 @@ public class CreateAdminsPanel extends JPanel implements Shiftable {
 		}
 		return pnAddress;
 	}
-	
+
 	private JLabel getLblAddress() {
 		if (lblAddress == null) {
 			lblAddress = new JLabel("Address data");
@@ -331,7 +345,7 @@ public class CreateAdminsPanel extends JPanel implements Shiftable {
 		}
 		return lblAddress;
 	}
-	
+
 	private JPanel getPnAddressStreet() {
 		if (pnAddressStreet == null) {
 			pnAddressStreet = new MyFrontPanel();
@@ -358,7 +372,7 @@ public class CreateAdminsPanel extends JPanel implements Shiftable {
 		}
 		return txStreet;
 	}
-	
+
 	private JPanel getPnAddressCity() {
 		if (pnAddressCity == null) {
 			pnAddressCity = new MyFrontPanel();
@@ -385,7 +399,7 @@ public class CreateAdminsPanel extends JPanel implements Shiftable {
 		}
 		return txCity;
 	}
-	
+
 	private JPanel getPnZipCode() {
 		if (pnZipCode == null) {
 			pnZipCode = new MyFrontPanel();
@@ -412,27 +426,105 @@ public class CreateAdminsPanel extends JPanel implements Shiftable {
 		return txZip;
 	}
 
+	private JPanel getPnCareer() {
+		if (pnCareer == null) {
+			pnCareer = new MyFrontPanel();
+			pnCareer.setBorder(Designer.getBorder());
+			pnCareer.setLayout(new BoxLayout(pnCareer, BoxLayout.Y_AXIS));
+			pnCareer.add(getLblCareer());
+			pnCareer.add(getPnSpecialty());
+			pnCareer.add(getPnCollege());
+		}
+		return pnCareer;
+	}
+
+	private JLabel getLblCareer() {
+		if (lblCareer == null) {
+			lblCareer = new JLabel("Career data");
+			lblCareer.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+			lblCareer.setHorizontalAlignment(SwingConstants.CENTER);
+			lblCareer.setHorizontalTextPosition(SwingConstants.RIGHT);
+		}
+		return lblCareer;
+	}
+
+	private JPanel getPnSpecialty() {
+		if (pnSpecialty == null) {
+			pnSpecialty = new MyFrontPanel();
+			FlowLayout flowLayout = (FlowLayout) pnSpecialty.getLayout();
+			flowLayout.setAlignment(FlowLayout.LEFT);
+			pnSpecialty.add(getLblSpecialty());
+			pnSpecialty.add(getTxSpeciality());
+		}
+		return pnSpecialty;
+	}
+
+	private JLabel getLblSpecialty() {
+		if (lblSpecialty == null) {
+			lblSpecialty = new JLabel("Speciality");
+			lblSpecialty.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		return lblSpecialty;
+	}
+
+	private JTextField getTxSpeciality() {
+		if (txSpeciality == null) {
+			txSpeciality = new JTextField();
+			txSpeciality.setText("");
+			txSpeciality.setColumns(10);
+		}
+		return txSpeciality;
+	}
+
+	private JPanel getPnCollege() {
+		if (pnCollege == null) {
+			pnCollege = new MyFrontPanel();
+			FlowLayout flowLayout = (FlowLayout) pnCollege.getLayout();
+			flowLayout.setAlignment(FlowLayout.LEFT);
+			pnCollege.add(getLblCollege());
+			pnCollege.add(getTxCollege());
+		}
+		return pnCollege;
+	}
+
+	private JLabel getLblCollege() {
+		if (lblCollege == null) {
+			lblCollege = new JLabel("College Nº");
+			lblCollege.setHorizontalAlignment(SwingConstants.CENTER);
+		}
+		return lblCollege;
+	}
+
+	private JTextField getTxCollege() {
+		if (txCollege == null) {
+			txCollege = new JTextField();
+			txCollege.setColumns(10);
+		}
+		return txCollege;
+	}
+
 	private JButton getBtAdd() {
 		if (btAdd == null) {
 			btAdd = new MyButton("Add");
-			btAdd.addActionListener(e -> addAdmin());
+			btAdd.addActionListener(e -> addDoctor());
 		}
 		return btAdd;
 	}
 
-	///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
-	private void addAdmin() {
+	private void addDoctor() {
 		List<Doctor> doctors = doctorService.findAllDoctors();
 		List<AdminAssistant> assistants = adminService.findAllAdminAssistant();
 		List<Nurse> nurses = nurseService.findAllNurses();
 		try {
 			checkInput();
 			checkDuplicates(doctors, assistants, nurses);
-			AdminAssistant as = new AdminAssistant(txDni.getText(), txName.getText(), txSurname.getText(),
-					txEmail.getText(), txPass.getText(), txStreet.getText(), txCity.getText(), txZip.getText());
-			adminService.createAdminAssistant(as);
-			JOptionPane.showMessageDialog(this, "Admin created");
+			Doctor as = new Doctor(txDni.getText(),txName.getText(),txSurname.getText(),
+					txEmail.getText(), txPass.getText(),txStreet.getText(),txCity.getText(),txZip.getText()
+					, txSpeciality.getText(), Long.parseLong(txCollege.getText()));
+			doctorService.createDoctor(as);
+			JOptionPane.showMessageDialog(this, "Doctor created");
 			txCity.setText("");
 			txZip.setText("");
 			txSurname.setText("");
@@ -441,6 +533,8 @@ public class CreateAdminsPanel extends JPanel implements Shiftable {
 			txName.setText("");
 			txEmail.setText("");
 			txDni.setText("");
+			txSpeciality.setText("");
+			txCollege.setText("");
 		} catch (InputException ie) {
 			JOptionPane.showMessageDialog(this, ie.getMessage());
 		} catch (BusinessException be) {
@@ -452,7 +546,8 @@ public class CreateAdminsPanel extends JPanel implements Shiftable {
 		String a = String.valueOf(txPass.getText().length());
 		if (txCity.getText().equals("") || txDni.getText().equals("") || txZip.getText().equals("")
 				|| txName.getText().equals("") || txPass.getText().equals("") || txSurname.getText().equals("")
-				|| txStreet.getText().equals("") || txEmail.getText().equals(""))
+				|| txStreet.getText().equals("") || txEmail.getText().equals("") || txSpeciality.getText().equals("")
+				|| txCollege.getText().equals(""))
 			throw new InputException("Fill the fields");
 		if (!txEmail.getText().matches("[a-zA-Z1-9]+@[a-zA-Z1-9]+.[a-zA-Z1-9]+"))
 			throw new InputException("Wrong email format");
@@ -460,19 +555,35 @@ public class CreateAdminsPanel extends JPanel implements Shiftable {
 			throw new InputException("Wrong password lenght");
 		if (!txDni.getText().matches("[0-9]+[A-Z]") || !String.valueOf(txDni.getText().length()).equals("9"))
 			throw new InputException("Wrong dni format");
+		if (!isNumeric(txCollege.getText()))
+			throw new InputException("Wrong college number format");
+		if(Long.parseLong(txCollege.getText()) < 1)
+			throw new InputException("College number must be a positive value (>0)");
 	}
 
 	private void checkDuplicates(List<Doctor> doctors, List<AdminAssistant> assistants, List<Nurse> nurses)
 			throws BusinessException {
 		for (AdminAssistant aa : assistants)
 			if (txDni.getText().equals(aa.getDni()))
-				throw new BusinessException("Admin already exists");
+				throw new BusinessException("Staff member already exists");
 		for (Nurse n : nurses)
 			if (txDni.getText().equals(n.getDni()))
-				throw new BusinessException("Staff member already exists");
+				throw new BusinessException("Doctor already exists");
 		for (Doctor d : doctors)
 			if (txDni.getText().equals(d.getDni()))
 				throw new BusinessException("Staff member already exists");
+	}
+
+	public static boolean isNumeric(String cadena) {
+
+		boolean resultado;
+		try {
+			Integer.parseInt(cadena);
+			resultado = true;
+		} catch (NumberFormatException excepcion) {
+			resultado = false;
+		}
+		return resultado;
 	}
 
 	@Override

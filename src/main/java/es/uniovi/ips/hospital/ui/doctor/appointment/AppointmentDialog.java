@@ -20,7 +20,10 @@ import java.io.IOException;
 
 @Component
 public class AppointmentDialog extends JDialog {
-    private Appointment appointment;
+
+	private static final long serialVersionUID = -2608429797740890553L;
+	
+	private Appointment appointment;
     private Patient patient;
     private Doctor doctor;
 

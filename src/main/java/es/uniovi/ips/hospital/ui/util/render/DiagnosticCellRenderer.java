@@ -6,7 +6,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class DiagnosticCellRenderer extends JLabel implements ListCellRenderer<Diagnostic> {
-    @Override
+
+	private static final long serialVersionUID = 2373663818212096439L;
+
+	@Override
     public Component getListCellRendererComponent(JList<? extends Diagnostic> jList,
                                                   Diagnostic diagnostic,
                                                   int index,
