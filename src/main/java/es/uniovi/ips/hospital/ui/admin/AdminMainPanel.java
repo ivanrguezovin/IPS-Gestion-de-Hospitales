@@ -254,6 +254,7 @@ public class AdminMainPanel extends JPanel implements Shiftable {
     private JButton getBtnCreatePatientss() {
         if (btnCreatePatients == null) {
         	btnCreatePatients = new JButton("Add patient");
+        	btnCreatePatients.addActionListener(e -> adminDialog.launchCreatePatients());
         }
         return btnCreatePatients;
     }
