@@ -1,6 +1,8 @@
 package es.uniovi.ips.hospital.ui.admin.appointment;
 
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -24,9 +26,11 @@ import ca.odell.glazedlists.swing.TextComponentMatcherEditor;
 import es.uniovi.ips.hospital.domain.Appointment;
 import es.uniovi.ips.hospital.service.AppointmentService;
 import es.uniovi.ips.hospital.ui.admin.AdminDialog;
+import es.uniovi.ips.hospital.ui.util.Designer;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
 import es.uniovi.ips.hospital.ui.util.components.MyButton;
+import es.uniovi.ips.hospital.ui.util.components.MyFrontPanel;
 import es.uniovi.ips.hospital.ui.util.filter.AppointmentTextFilterator;
 import es.uniovi.ips.hospital.ui.util.render.AppointmentTableCellRenderer;
 import es.uniovi.ips.hospital.util.compare.AppointmentComparator;
@@ -37,16 +41,22 @@ import javax.swing.JTable;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.GridLayout;
+import java.awt.Insets;
 
 @Component
 public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 
 	private static final long serialVersionUID = 8580603940209784804L;
-	
-	@Autowired	private AppointmentService appointmentService;
-	@Autowired	private AdminDialog adminDialog;
-	
+
+	@Autowired
+	private AppointmentService appointmentService;
+	@Autowired
+	private AdminDialog adminDialog;
+
 	private final JPanel contentPanel = new JPanel();
+	private JPanel pnFilters;
+
+	private JPanel pnTable;
 	private JTextField txtSearch;
 	private TextMatcherEditor<Appointment> textMatcherEditor;
 	private FilterList<Appointment> filterList;
@@ -65,21 +75,55 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 		setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new BorderLayout(0, 0));
-        contentPanel.setBackground(PaletteFactory.getBaseDark());
-		contentPanel.add(getTxtSearch(), BorderLayout.NORTH);
-		contentPanel.add(getSpTable());
-		contentPanel.add(getPnBottom(), BorderLayout.SOUTH);
+		contentPanel.setBackground(PaletteFactory.getBaseDark());
+		GridBagLayout gbl_pn = new GridBagLayout();
+		gbl_pn.columnWidths = new int[] { 200, 450 };
+		gbl_pn.rowHeights = new int[] { 700 };
+		gbl_pn.columnWeights = new double[] { 0.0, 0.0 };
+		gbl_pn.rowWeights = new double[] { 1.0 };
+		contentPanel.setLayout(gbl_pn);
+		GridBagConstraints gbc_pnFilters = new GridBagConstraints();
+		gbc_pnFilters.insets = new Insets(5, 5, 5, 5);
+		gbc_pnFilters.fill = GridBagConstraints.BOTH;
+		gbc_pnFilters.gridx = 0;
+		gbc_pnFilters.gridy = 0;
+		contentPanel.add(getPnFilters(), gbc_pnFilters);
+		GridBagConstraints gbc_pnTable = new GridBagConstraints();
+		gbc_pnTable.fill = GridBagConstraints.BOTH;
+		gbc_pnTable.gridx = 1;
+		gbc_pnTable.gridy = 0;
+		contentPanel.add(getPnTable(), gbc_pnTable);
+	}
+
+	private JPanel getPnFilters() {
+		if (pnFilters == null) {
+			pnFilters = new MyFrontPanel();
+			pnFilters.setBorder(Designer.getBorder());
+		}
+		return pnFilters;
+	}
+
+	private JPanel getPnTable() {
+		if (pnTable == null) {
+			pnTable = new MyFrontPanel();
+			pnTable.setLayout(new BorderLayout(0, 0));
+			pnTable.setBorder(Designer.getBorder());
+			pnTable.add(getTxtSearch(), BorderLayout.NORTH);
+			pnTable.add(getSpTable());
+			pnTable.add(getPnBottom(), BorderLayout.SOUTH);
+		}
+		return pnTable;
 	}
 
 	private JTextField getTxtSearch() {
 		if (txtSearch == null) {
 			txtSearch = new JTextField();
 			txtSearch.setColumns(20);
-            textMatcherEditor = new TextComponentMatcherEditor<Appointment>(txtSearch, new AppointmentTextFilterator());
+			textMatcherEditor = new TextComponentMatcherEditor<Appointment>(txtSearch, new AppointmentTextFilterator());
 		}
 		return txtSearch;
 	}
+
 	private JScrollPane getSpTable() {
 		if (spTable == null) {
 			spTable = new JScrollPane();
@@ -88,6 +132,7 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 		}
 		return spTable;
 	}
+
 	private JTable getTblAppointments() {
 		if (tblAppointments == null) {
 			tblAppointments = new JTable();
@@ -95,6 +140,7 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 		}
 		return tblAppointments;
 	}
+
 	private JPanel getPnBottom() {
 		if (pnBottom == null) {
 			pnBottom = new JPanel();
@@ -104,6 +150,7 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 		}
 		return pnBottom;
 	}
+
 	private JButton getBtnEdit() {
 		if (btnEdit == null) {
 			btnEdit = new MyButton("Edit");
@@ -112,6 +159,7 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 		}
 		return btnEdit;
 	}
+
 	private JButton getBtnProcess() {
 		if (btnProcess == null) {
 			btnProcess = new MyButton("Process");
@@ -120,82 +168,98 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 		}
 		return btnProcess;
 	}
-	
-	// FORMAT Y DATOS DE LA TABLA ---------------------------------------------------------------------------------
-	
+
+	// FORMAT Y DATOS DE LA TABLA
+	// ---------------------------------------------------------------------------------
+
 	public void showAppointments() {
 		EventList<Appointment> eventList = new BasicEventList<Appointment>();
 		eventList.addAll(appointmentService.findAllAppointments());
 		SortedList<Appointment> sortedList = new SortedList<Appointment>(eventList, new AppointmentComparator());
-        filterList = new FilterList<Appointment>(sortedList, textMatcherEditor);
-		AdvancedTableModel<Appointment> tableModel = GlazedListsSwing.eventTableModelWithThreadProxyList(filterList, new AppointmentTableFormat());
+		filterList = new FilterList<Appointment>(sortedList, textMatcherEditor);
+		AdvancedTableModel<Appointment> tableModel = GlazedListsSwing.eventTableModelWithThreadProxyList(filterList,
+				new AppointmentTableFormat());
 		tblAppointments.setModel(tableModel);
 		tblAppointments.setDefaultRenderer(Object.class, new AppointmentTableCellRenderer());
-		tblAppointments.getColumnModel().getColumn(0).setMinWidth(150);
-		tblAppointments.getColumnModel().getColumn(0).setMaxWidth(150);
-		tblAppointments.getColumnModel().getColumn(2).setMaxWidth(75);
-		tblAppointments.getColumnModel().getColumn(3).setMaxWidth(75);
+		tblAppointments.getColumnModel().getColumn(0).setMinWidth(125);
+		tblAppointments.getColumnModel().getColumn(0).setMaxWidth(125);
+		tblAppointments.getColumnModel().getColumn(2).setMaxWidth(50);
+		tblAppointments.getColumnModel().getColumn(3).setMaxWidth(50);
 		TableComparatorChooser.install(tblAppointments, sortedList, TableComparatorChooser.MULTIPLE_COLUMN_MOUSE);
 	}
-	
+
 	private class AppointmentTableFormat implements TableFormat<Appointment> {
 
-	    public int getColumnCount() {
-	        return 4;
-	    }
-	    public String getColumnName(int column) {
-	        if(column == 0)      return "Date";
-	        else if(column == 1) return "Patient";
-	        else if(column == 2) return "Room";
-	        else if(column == 3) return "Urgent";
+		public int getColumnCount() {
+			return 4;
+		}
 
-	        throw new IllegalStateException();
-	    }
-	    public Object getColumnValue(Appointment appointment, int column) {
-	        if(column == 0)      return appointment.getStartTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-	        else if(column == 1) return appointment.getPatient().guiToString();
-	        else if(column == 2) return appointment.getRoom().guiToString();
-	        else if(column == 3) return (appointment.isUrgent()) ? "YES" : "";
-	        throw new IllegalStateException();
-	    }
+		public String getColumnName(int column) {
+			if (column == 0)
+				return "Date";
+			else if (column == 1)
+				return "Patient";
+			else if (column == 2)
+				return "Room";
+			else if (column == 3)
+				return "Urgent";
+
+			throw new IllegalStateException();
+		}
+
+		public Object getColumnValue(Appointment appointment, int column) {
+			if (column == 0)
+				return appointment.getStartTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+			else if (column == 1)
+				return appointment.getPatient().guiToString();
+			else if (column == 2)
+				return appointment.getRoom().guiToString();
+			else if (column == 3)
+				return (appointment.isUrgent()) ? "YES" : "";
+			throw new IllegalStateException();
+		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void enableButtons() {
 		btnEdit.setEnabled(false);
 		btnProcess.setEnabled(false);
 		Appointment appointment;
 		if (tblAppointments.getSelectedRow() != -1) {
-			appointment = ((AdvancedTableModel<Appointment>) tblAppointments.getModel()).getElementAt(tblAppointments.getSelectedRow());
+			appointment = ((AdvancedTableModel<Appointment>) tblAppointments.getModel())
+					.getElementAt(tblAppointments.getSelectedRow());
 			if (appointment.getStartTime().isAfter(LocalDateTime.now()))
 				if (appointment.isConfirmed())
 					btnEdit.setEnabled(true);
 				else
 					btnProcess.setEnabled(true);
 		}
-		
+
 	}
-	
+
 	private class ListReloader extends FocusAdapter {
-		
+
 		public void focusGained(FocusEvent arg0) {
 			filterList.clear();
 			filterList.addAll(appointmentService.findAllAppointments());
 		}
 	}
-	
-	// LANZAMIENTO DE LA EDICION DE LA CITA ----------------------------------------------------------------------------
-	
+
+	// LANZAMIENTO DE LA EDICION DE LA CITA
+	// ----------------------------------------------------------------------------
+
 	@SuppressWarnings("unchecked")
 	public void launchEditAppointment() {
 		if (tblAppointments.getSelectedRow() != -1)
-			adminDialog.launchEditAppointment(((AdvancedTableModel<Appointment>) tblAppointments.getModel()).getElementAt(tblAppointments.getSelectedRow()));
+			adminDialog.launchEditAppointment(((AdvancedTableModel<Appointment>) tblAppointments.getModel())
+					.getElementAt(tblAppointments.getSelectedRow()));
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void launchProcessAppointment() {
 		if (tblAppointments.getSelectedRow() != -1)
-			adminDialog.launchProcessAppointment(((AdvancedTableModel<Appointment>) tblAppointments.getModel()).getElementAt(tblAppointments.getSelectedRow()));
+			adminDialog.launchProcessAppointment(((AdvancedTableModel<Appointment>) tblAppointments.getModel())
+					.getElementAt(tblAppointments.getSelectedRow()));
 	}
 
 	@Override

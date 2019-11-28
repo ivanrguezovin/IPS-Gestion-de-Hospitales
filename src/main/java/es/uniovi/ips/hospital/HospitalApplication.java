@@ -146,7 +146,7 @@ public class HospitalApplication implements CommandLineRunner {
                 faker.address().zipCode(), "Especialidad de prueba", 11L);
         nurse =nurseService.createNurse(nurse);
         generateSchedule(nurse);
-        generateAppointmentsNurse(nurse, 10);
+        generateAppointmentsNurse(nurse);
     }
 
     private void generateFakePatients(int n) {
@@ -200,7 +200,7 @@ public class HospitalApplication implements CommandLineRunner {
     private void generateAppointments(Doctor doctor) {
         List<Patient> patients = patientService.findAllPatient();
         List<Room> rooms = roomService.findAllRooms();
-        for (int i = 0; i < 31; i++) {
+        for (int i = 10; i < 31; i++) {
             Appointment appointment = new Appointment();
             LocalDateTime start = LocalDateTime.of(2019, 12, i + 1, faker.number().numberBetween(0, 11), 0);
             appointment.setStartTime(start);
@@ -211,18 +211,16 @@ public class HospitalApplication implements CommandLineRunner {
             appointment.setContactInfo(appointment.getPatient().getEmail());
             try {
                 appointmentService.createAppointment(appointment);
-                doctor.addAppointment(appointment);
-                doctorService.updateDoctor(doctor);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
     
-    private void generateAppointmentsNurse(Nurse nurse, int n) {
+    private void generateAppointmentsNurse(Nurse nurse) {
         List<Patient> patients = patientService.findAllPatient();
         List<Room> rooms = roomService.findAllRooms();
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < 10; i++) {
             Appointment appointment = new Appointment();
             LocalDateTime start = LocalDateTime.of(2019, 12, i + 1, faker.number().numberBetween(0, 11), 0);
             appointment.setStartTime(start);
