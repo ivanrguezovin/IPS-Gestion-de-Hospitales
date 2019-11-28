@@ -145,6 +145,7 @@ public class AdminDialog extends JDialog {
 	
 	void launchShowAppointments() {
         showAppointmentsPanel.showAppointments();
+        showAppointmentsPanel.fillComboBoxes();
         launch(showAppointmentsPanel);
 	}
 	
