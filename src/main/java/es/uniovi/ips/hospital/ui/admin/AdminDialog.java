@@ -12,6 +12,7 @@ import es.uniovi.ips.hospital.domain.Appointment;
 import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.ui.admin.appointment.CreateAppointmentPanel;
 import es.uniovi.ips.hospital.ui.admin.appointment.EditAppointmentPanel;
+import es.uniovi.ips.hospital.ui.admin.appointment.ProcessAppointmentPanel;
 import es.uniovi.ips.hospital.ui.admin.appointment.ShowAppointmentsPanel;
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageBreakSchedulePanel;
 import es.uniovi.ips.hospital.ui.admin.schedule.ManageWorkSchedulePanel;
@@ -31,6 +32,8 @@ import java.awt.Dimension;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 @Component
 public class AdminDialog extends JDialog {
@@ -41,6 +44,7 @@ public class AdminDialog extends JDialog {
     @Autowired	private CreateAppointmentPanel createAppointmentPanel;
     @Autowired	private ShowAppointmentsPanel showAppointmentsPanel;
     @Autowired	private EditAppointmentPanel editAppointmentPanel;
+    @Autowired	private ProcessAppointmentPanel processAppointmentPanel;
     @Autowired	private ManageWorkSchedulePanel manageWorkSchedulePanel;
     @Autowired	private ManageBreakSchedulePanel manageBreakSchedulePanel;
     @Autowired	private PatientInfoPanel patientInfoPanel;
@@ -61,6 +65,10 @@ public class AdminDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public AdminDialog() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) { previous = mainPanel; back();}
+		});
 		setBounds(100, 100, 800, 800);
 		setModal(true);
 		setResizable(false);
@@ -144,6 +152,13 @@ public class AdminDialog extends JDialog {
 		editAppointmentPanel.fillComboBoxes();
 		editAppointmentPanel.setAppointment(appointment);
 		launch(editAppointmentPanel);
+	}
+	
+	public void launchProcessAppointment(Appointment appointment) {
+		processAppointmentPanel.fillComboBoxes();
+		processAppointmentPanel.setAppointment(appointment);
+		launch(processAppointmentPanel);
+		
 	}
 
     void launchManageWorkSchedule() {

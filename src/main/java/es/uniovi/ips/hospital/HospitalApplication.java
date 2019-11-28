@@ -171,8 +171,7 @@ public class HospitalApplication implements CommandLineRunner {
         for (int i = 0; i < n; i++) {
             Room room = new Room();
             room.setLocation(faker.numerify("###"));
-            roomService.createRoom(room);
-            roomService.createRoom(room);
+            try { roomService.createRoom(room); } catch(IllegalStateException iae) { System.out.println("Duplicated room"); };
         }
     }
 
@@ -212,11 +211,11 @@ public class HospitalApplication implements CommandLineRunner {
             appointment.setContactInfo(appointment.getPatient().getEmail());
             try {
                 appointmentService.createAppointment(appointment);
-            } catch (BusinessException e) {
+                doctor.addAppointment(appointment);
+                doctorService.updateDoctor(doctor);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            doctor.addAppointment(appointment);
-            doctorService.updateDoctor(doctor);
         }
     }
     
@@ -237,8 +236,6 @@ public class HospitalApplication implements CommandLineRunner {
             } catch (BusinessException e) {
                 System.out.println("Duplicated appointment");
             }
-            nurse.addAppointment(appointment);
-            nurseService.updateNurse(nurse);
         }
     }
 }

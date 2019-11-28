@@ -13,9 +13,9 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     Appointment findByPatientAndStartTime(Patient patient, LocalDateTime startTime);
 
-    List<Appointment> findAllByDoctors(Doctor doctor);
+    List<Appointment> findAllByDoctorsAndConfirmed(Doctor doctor, boolean confirmed);
 
-    List<Appointment> findAllByPatient(Patient patient);
+    List<Appointment> findAllByPatientAndConfirmed(Patient patient, boolean confirmed);
 
-	List<Appointment> findAllByNurses(Nurse myself);
+	List<Appointment> findAllByNursesAndConfirmed(Nurse myself, boolean confirmed);
 }

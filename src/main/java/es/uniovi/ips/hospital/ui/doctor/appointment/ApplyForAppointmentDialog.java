@@ -318,6 +318,7 @@ public class ApplyForAppointmentDialog extends JDialog {
     private JButton getBtnCreate() {
         if (btnCreate == null) {
             btnCreate = new JButton("Create");
+            btnCreate.setEnabled(false);
             btnCreate.addActionListener(action -> createAppointment());
         }
         return btnCreate;
@@ -599,6 +600,7 @@ public class ApplyForAppointmentDialog extends JDialog {
     }
 
     private void setDoctorComponentsEnabled(boolean b) {
+        btnCreate.setEnabled(b);
         cbDoctor.setEnabled(b);
         btnAdd.setEnabled(b);
         if (!selectedDoctors.isEmpty()) {
