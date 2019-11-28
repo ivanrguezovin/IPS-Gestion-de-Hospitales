@@ -72,6 +72,7 @@ public class AdminDialog extends JDialog {
 		setBounds(100, 100, 800, 800);
 		setModal(true);
 		setResizable(false);
+		setTitle("Administration");
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().setBackground(PaletteFactory.getBaseDark());
 		getContentPane().add(getBanner(), BorderLayout.NORTH);
@@ -112,10 +113,11 @@ public class AdminDialog extends JDialog {
 	
 	// CAMBIO DE VENTANAS -------------------------------------------------------------------------
 	
-	public void setFrame() {
+	public void run() {
 		getContentPane().add(mainPanel, BorderLayout.CENTER);
 		current = mainPanel;
 		getContentPane().revalidate();
+		setVisible(true);
 	}
 	
 	private void launch(JPanel panel) {

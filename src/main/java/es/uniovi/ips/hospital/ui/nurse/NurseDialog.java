@@ -1,92 +1,81 @@
 package es.uniovi.ips.hospital.ui.nurse;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
 
-import javax.swing.Box;
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import es.uniovi.ips.hospital.domain.Nurse;
+import es.uniovi.ips.hospital.ui.util.PaletteFactory;
+import es.uniovi.ips.hospital.ui.util.components.MyBanner;
+import es.uniovi.ips.hospital.ui.util.components.MySouthPanel;
+
+import javax.swing.JLabel;
+import java.awt.Dimension;
+
+import javax.swing.ImageIcon;
 
 @Component
 public class NurseDialog extends JDialog {
 
-	private static final long serialVersionUID = 224987595461753740L;
+	private static final long serialVersionUID = 259159641592524677L;
+	
+	@Autowired private NurseMainPanel nurseMainPanel;
 
-	private final JPanel contentPanel = new JPanel();
+	private JLabel banner;
+	private JLabel side;
+	private JPanel pnSouth;
 
-    private Nurse nurse;
+	/**
+	 * Create the dialog.
+	 */
+	public NurseDialog() {
+		setBounds(100, 100, 800, 800);
+		setModal(true);
+		setResizable(false);
+		setTitle("My appointments");
+		getContentPane().setLayout(new BorderLayout());
+		getContentPane().setBackground(PaletteFactory.getBaseDark());
+		getContentPane().add(getBanner(), BorderLayout.NORTH);
+		getContentPane().add(getSide(), BorderLayout.WEST);
+		getContentPane().add(getPnSouth(), BorderLayout.SOUTH);
+	}
 
-    @Autowired
-    private MyAppointmentsDialogNurse myAppointmentsDialog;
+	private JLabel getBanner() {
+		if (banner == null) {
+			banner = new MyBanner();
+		}
+		return banner;
+	}
 
+	private JLabel getSide() {
+		if (side == null) {
+			side = new JLabel();
+			side.setPreferredSize(new Dimension(100, 10));
+			side.setMinimumSize(new Dimension(100, 10));
+			side.setIcon(new ImageIcon(getClass().getResource("/NurseSide.png")));
+		}
+		return side;
+	}
 
-    public NurseDialog() {
-        setResizable(false);
-        setTitle("Nurse Menu");
-        setBounds(100, 100, 660, 246);
-        setLocationRelativeTo(null);
-        getContentPane().setLayout(new BorderLayout());
-        contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-        getContentPane().add(contentPanel, BorderLayout.CENTER);
-        contentPanel.setLayout(new GridLayout(1, 0, 0, 0));
-        {
-            JPanel panel = new JPanel();
-            contentPanel.add(panel);
-            panel.setLayout(new GridLayout(2, 3, 0, 0));
-            {
-                JButton btnSeeAppointments = new JButton("Show Appointments");
-                btnSeeAppointments.addActionListener(actionEvent -> myAppointmentsDialog.run(nurse));
-                btnSeeAppointments.setMnemonic('a');
-                panel.add(btnSeeAppointments);
-            }
-            {
-                java.awt.Component horizontalStrut = Box.createHorizontalStrut(20);
-                panel.add(horizontalStrut);
-            }
-            
-        }
-        {
-            JPanel buttonPane = new JPanel();
-            buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-            getContentPane().add(buttonPane, BorderLayout.SOUTH);
-            {
-                JButton okButton = new JButton("Back");
-                okButton.addActionListener(e -> dispose());
-                okButton.setMnemonic('b');
-                okButton.setActionCommand("OK");
-                buttonPane.add(okButton);
-                getRootPane().setDefaultButton(okButton);
-            }
-            {
-                JButton cancelButton = new JButton("Exit");
-                cancelButton.setMnemonic('s');
-                cancelButton.addActionListener(e -> System.exit(-1));
-                cancelButton.setActionCommand("Cancel");
-                buttonPane.add(cancelButton);
-            }
-        }
-        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    }
-
-    public Nurse getNurse() {
-        return nurse;
-    }
-
-    public void setNurse(Nurse nurse) {
-        this.nurse = nurse;
-    }
-
-    public void run(Nurse nurse) {
-        this.setNurse(nurse);
-        this.setVisible(true);
-    }
-
+	private JPanel getPnSouth() {
+		if (pnSouth == null) {
+			pnSouth = new MySouthPanel();
+			pnSouth.setPreferredSize(new Dimension(10, 50));
+			pnSouth.setMinimumSize(new Dimension(10, 50));
+		}
+		return pnSouth;
+	}
+	
+	/////////////////////////////////////////////////////////////////////////////////
+	
+	public void run(Nurse myself) {
+		nurseMainPanel.showAppointments(myself);
+		nurseMainPanel.fillComboBoxes();
+		getContentPane().add(nurseMainPanel, BorderLayout.CENTER);
+		this.setVisible(true);
+	}
 }

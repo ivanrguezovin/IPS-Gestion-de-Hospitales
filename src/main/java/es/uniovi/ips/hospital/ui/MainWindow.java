@@ -8,6 +8,7 @@ import es.uniovi.ips.hospital.service.LoginService;
 import es.uniovi.ips.hospital.ui.admin.AdminDialog;
 import es.uniovi.ips.hospital.ui.doctor.DoctorDialog;
 import es.uniovi.ips.hospital.ui.nurse.NurseDialog;
+import es.uniovi.ips.hospital.ui.nurse.NurseDialog;
 import es.uniovi.ips.hospital.ui.util.Designer;
 import es.uniovi.ips.hospital.ui.util.components.MyBackPanel;
 import es.uniovi.ips.hospital.ui.util.components.MyBanner;
@@ -49,8 +50,7 @@ public class MainWindow {
         if (user instanceof Doctor) {
             doctorDialog.run((Doctor) user);
         } else if (user instanceof AdminAssistant) {
-        	adminDialog.setFrame();
-            adminDialog.setVisible(true);
+        	adminDialog.run();
         } else if (user instanceof Nurse) {
         	nurseDialog.run((Nurse) user);
         } else {
