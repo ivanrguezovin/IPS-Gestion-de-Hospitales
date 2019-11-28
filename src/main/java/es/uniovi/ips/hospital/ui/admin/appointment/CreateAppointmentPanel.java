@@ -125,6 +125,8 @@ public class CreateAppointmentPanel extends JPanel implements Shiftable {
     private EventList<Nurse> selectedNursesList;
 	private JButton btnRemoveNurse;
 	private JButton btnAddNurse;
+	private JLabel lblDoctors_1;
+	private JLabel lblNurses_1;
 
     /**
      * Create the panel.
@@ -217,7 +219,7 @@ public class CreateAppointmentPanel extends JPanel implements Shiftable {
 
     private JPanel getPnInfo() {
         if (pnInfo == null) {
-            pnInfo = new JPanel();
+            pnInfo = new MyBackPanel();
             pnInfo.setLayout(new GridLayout(0, 2, 0, 0));
             GridBagLayout gbl_pnInfo = new GridBagLayout();
             gbl_pnInfo.columnWidths = new int[]{400, 300};
@@ -308,11 +310,19 @@ public class CreateAppointmentPanel extends JPanel implements Shiftable {
             pnSelectDoctor = new MyFrontPanel();
             FlowLayout flowLayout = (FlowLayout) pnSelectDoctor.getLayout();
             flowLayout.setAlignment(FlowLayout.LEFT);
+            pnSelectDoctor.add(getLblDoctors_1());
             pnSelectDoctor.add(getCbDoctor());
             pnSelectDoctor.add(getBtnAdd());
         }
         return pnSelectDoctor;
     }
+    
+	private JLabel getLblDoctors_1() {
+		if (lblDoctors_1 == null) {
+			lblDoctors_1 = new JLabel("Doctors:");
+		}
+		return lblDoctors_1;
+	}
 
     private JPanel getPnRemoveDoctor() {
         if (pnRemoveDoctor == null) {
@@ -330,11 +340,19 @@ public class CreateAppointmentPanel extends JPanel implements Shiftable {
         	pnSelectNurse = new MyFrontPanel();
             FlowLayout flowLayout = (FlowLayout) pnSelectNurse.getLayout();
             flowLayout.setAlignment(FlowLayout.LEFT);
+            pnSelectNurse.add(getLblNurses_1());
             pnSelectNurse.add(getCbNurse());
             pnSelectNurse.add(getBtnAddNurse());
         }
         return pnSelectNurse;
     }
+    
+	private JLabel getLblNurses_1() {
+		if (lblNurses_1 == null) {
+			lblNurses_1 = new JLabel("Nurses:");
+		}
+		return lblNurses_1;
+	}
 
     private JPanel getPnRemoveNurse() {
         if (pnRemoveNurse == null) {
@@ -858,6 +876,8 @@ public class CreateAppointmentPanel extends JPanel implements Shiftable {
     private void checkDate() throws InputException {
         if (calendar.getDate() == null)
             throw new InputException("You must select a date for the appointment");
+        if (calendar.getDate().before(new Date()))
+            throw new InputException("You can't create an appointment for this day");
     }
 
     private void checkTime() throws InputException {
