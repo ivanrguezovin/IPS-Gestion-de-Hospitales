@@ -4,8 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -44,6 +47,7 @@ import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
 import es.uniovi.ips.hospital.ui.util.components.MyButton;
 import es.uniovi.ips.hospital.ui.util.components.MyComboBox;
+import es.uniovi.ips.hospital.ui.util.components.MyDateChooser;
 import es.uniovi.ips.hospital.ui.util.components.MyFrontPanel;
 import es.uniovi.ips.hospital.ui.util.filter.AppointmentTextFilterator;
 import es.uniovi.ips.hospital.ui.util.filter.PatientTextFilterator;
@@ -77,15 +81,24 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 
 	private static final long serialVersionUID = 8580603940209784804L;
 
-	@Autowired private AppointmentService appointmentService;
-	@Autowired private AdminDialog adminDialog;
-    @Autowired private PatientService patientService;
-    @Autowired private DoctorService doctorService;
-    @Autowired private NurseService nurseService;
-    @Autowired private RoomService roomService;
-    @Autowired private PatientFormat patientFormat;
-    @Autowired private StaffFormat staffFormat;
-    @Autowired private RoomFormat roomFormat;
+	@Autowired
+	private AppointmentService appointmentService;
+	@Autowired
+	private AdminDialog adminDialog;
+	@Autowired
+	private PatientService patientService;
+	@Autowired
+	private DoctorService doctorService;
+	@Autowired
+	private NurseService nurseService;
+	@Autowired
+	private RoomService roomService;
+	@Autowired
+	private PatientFormat patientFormat;
+	@Autowired
+	private StaffFormat staffFormat;
+	@Autowired
+	private RoomFormat roomFormat;
 
 	private final JPanel contentPanel = new JPanel();
 	private JPanel pnFilters;
@@ -126,13 +139,15 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 	private JCheckBox chckbxHidePast;
 	private JCheckBox chckbxHideUnconfirmed;
 	private AutoCompleteSupport<Patient> autoCompletePatient;
-    private AutoCompleteSupport<Staff> autoCompleteDoctor;
-    private AutoCompleteSupport<Staff> autoCompleteNurse;
-    private AutoCompleteSupport<Room> autoCompleteRoom;
-    private EventList<Patient> patientList;
-    private EventList<Staff> doctorList;
-    private EventList<Staff> nurseList;
-    private EventList<Room> roomList;
+	private AutoCompleteSupport<Staff> autoCompleteDoctor;
+	private AutoCompleteSupport<Staff> autoCompleteNurse;
+	private AutoCompleteSupport<Room> autoCompleteRoom;
+	private EventList<Appointment> appointmentList;
+	private EventList<Appointment> allAppointmentList;
+	private EventList<Patient> patientList;
+	private EventList<Staff> doctorList;
+	private EventList<Staff> nurseList;
+	private EventList<Room> roomList;
 
 	/**
 	 * Create the dialog.
@@ -172,7 +187,7 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 			pnFilters.add(getLblFilter());
 			pnFilters.add(getPnFrom());
 			pnFilters.add(getPnTo());
-			pnFilters.add(Box.createRigidArea(new Dimension(10,10)));
+			pnFilters.add(Box.createRigidArea(new Dimension(10, 10)));
 			pnFilters.add(getSeparatorDatePatient());
 			pnFilters.add(getPnPatient());
 			pnFilters.add(getSeparatorPatientDoctor());
@@ -215,7 +230,8 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 
 	private JDateChooser getFromChooser() {
 		if (fromChooser == null) {
-			fromChooser = new JDateChooser();
+			fromChooser = new MyDateChooser();
+			fromChooser.addPropertyChangeListener(e -> filter());
 		}
 		return fromChooser;
 	}
@@ -240,7 +256,8 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 
 	private JDateChooser getToChooser() {
 		if (toChooser == null) {
-			toChooser = new JDateChooser();
+			toChooser = new MyDateChooser();
+			toChooser.addPropertyChangeListener(e -> filter());
 		}
 		return toChooser;
 	}
@@ -256,10 +273,10 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 		if (pnPatient == null) {
 			pnPatient = new JPanel();
 			pnPatient.setLayout(new BoxLayout(pnPatient, BoxLayout.Y_AXIS));
-			pnPatient.add(Box.createRigidArea(new Dimension(10,10)));
+			pnPatient.add(Box.createRigidArea(new Dimension(10, 10)));
 			pnPatient.add(getLblPatient());
 			pnPatient.add(getCbPatient());
-			pnPatient.add(Box.createRigidArea(new Dimension(10,10)));
+			pnPatient.add(Box.createRigidArea(new Dimension(10, 10)));
 		}
 		return pnPatient;
 	}
@@ -275,10 +292,10 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 		if (pnDoctor == null) {
 			pnDoctor = new JPanel();
 			pnDoctor.setLayout(new BoxLayout(pnDoctor, BoxLayout.Y_AXIS));
-			pnDoctor.add(Box.createRigidArea(new Dimension(10,10)));
+			pnDoctor.add(Box.createRigidArea(new Dimension(10, 10)));
 			pnDoctor.add(getLblDoctor());
 			pnDoctor.add(getCbDoctor());
-			pnDoctor.add(Box.createRigidArea(new Dimension(10,10)));
+			pnDoctor.add(Box.createRigidArea(new Dimension(10, 10)));
 		}
 		return pnDoctor;
 	}
@@ -289,7 +306,7 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 			pnNurse.setLayout(new BoxLayout(pnNurse, BoxLayout.Y_AXIS));
 			pnNurse.add(getLblNurse());
 			pnNurse.add(getCbNurse());
-			pnNurse.add(Box.createRigidArea(new Dimension(10,10)));
+			pnNurse.add(Box.createRigidArea(new Dimension(10, 10)));
 		}
 		return pnNurse;
 	}
@@ -305,10 +322,10 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 		if (pnRoom == null) {
 			pnRoom = new JPanel();
 			pnRoom.setLayout(new BoxLayout(pnRoom, BoxLayout.Y_AXIS));
-			pnRoom.add(Box.createRigidArea(new Dimension(10,10)));
+			pnRoom.add(Box.createRigidArea(new Dimension(10, 10)));
 			pnRoom.add(getLblRoom());
 			pnRoom.add(getCbRoom());
-			pnRoom.add(Box.createRigidArea(new Dimension(10,10)));
+			pnRoom.add(Box.createRigidArea(new Dimension(10, 10)));
 		}
 		return pnRoom;
 	}
@@ -325,7 +342,7 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 			pnCheckList = new JPanel();
 			pnCheckList.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
 			pnCheckList.setLayout(new BoxLayout(pnCheckList, BoxLayout.Y_AXIS));
-			pnCheckList.add(Box.createRigidArea(new Dimension(10,10)));
+			pnCheckList.add(Box.createRigidArea(new Dimension(10, 10)));
 			pnCheckList.add(getChckbxJustUrgents());
 			pnCheckList.add(getChckbxHidePast());
 			pnCheckList.add(getChckbxHideUnconfirmed());
@@ -356,14 +373,14 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 		return lblDoctor;
 	}
 
-    private JComboBox<Staff> getCbDoctor() {
-        if (cbDoctor == null) {
-            cbDoctor = new MyComboBox<Staff>();
-            cbDoctor.addItemListener(itemEvent -> filter());
-            autoCompleteDoctor = null;
-        }
-        return cbDoctor;
-    }
+	private JComboBox<Staff> getCbDoctor() {
+		if (cbDoctor == null) {
+			cbDoctor = new MyComboBox<Staff>();
+			cbDoctor.addItemListener(itemEvent -> filter());
+			autoCompleteDoctor = null;
+		}
+		return cbDoctor;
+	}
 
 	private JLabel getLblNurse() {
 		if (lblNurse == null) {
@@ -372,14 +389,14 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 		return lblNurse;
 	}
 
-    private JComboBox<Staff> getCbNurse() {
-        if (cbNurse == null) {
-        	cbNurse = new MyComboBox<Staff>();
-            cbNurse.addItemListener(itemEvent -> filter());
-            autoCompleteNurse = null;
-        }
-        return cbNurse;
-    }
+	private JComboBox<Staff> getCbNurse() {
+		if (cbNurse == null) {
+			cbNurse = new MyComboBox<Staff>();
+			cbNurse.addItemListener(itemEvent -> filter());
+			autoCompleteNurse = null;
+		}
+		return cbNurse;
+	}
 
 	private JLabel getLblRoom() {
 		if (lblRoom == null) {
@@ -388,17 +405,19 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 		return lblRoom;
 	}
 
-    private JComboBox<Room> getCbRoom() {
-        if (cbRoom == null) {
-            cbRoom = new MyComboBox<Room>();
-            autoCompleteRoom = null;
-        }
-        return cbRoom;
-    }
+	private JComboBox<Room> getCbRoom() {
+		if (cbRoom == null) {
+			cbRoom = new MyComboBox<Room>();
+			cbRoom.addItemListener(itemEvent -> filter());
+			autoCompleteRoom = null;
+		}
+		return cbRoom;
+	}
 
 	private JCheckBox getChckbxJustUrgents() {
 		if (chckbxJustUrgents == null) {
 			chckbxJustUrgents = new JCheckBox("Just urgents");
+			chckbxJustUrgents.addItemListener(e -> filter());
 		}
 		return chckbxJustUrgents;
 	}
@@ -406,6 +425,7 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 	private JCheckBox getChckbxHidePast() {
 		if (chckbxHidePast == null) {
 			chckbxHidePast = new JCheckBox("Hide past");
+			chckbxHidePast.addItemListener(e -> filter());
 		}
 		return chckbxHidePast;
 	}
@@ -413,6 +433,7 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 	private JCheckBox getChckbxHideUnconfirmed() {
 		if (chckbxHideUnconfirmed == null) {
 			chckbxHideUnconfirmed = new JCheckBox("Hide unconfirmed");
+			chckbxHideUnconfirmed.addItemListener(e -> filter());
 		}
 		return chckbxHideUnconfirmed;
 	}
@@ -488,9 +509,11 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 	// ---------------------------------------------------------------------------------
 
 	public void showAppointments() {
-		EventList<Appointment> eventList = new BasicEventList<Appointment>();
-		eventList.addAll(appointmentService.findAllAppointments());
-		SortedList<Appointment> sortedList = new SortedList<Appointment>(eventList, new AppointmentComparator());
+		allAppointmentList = new BasicEventList<Appointment>();
+		allAppointmentList.addAll(appointmentService.findAllAppointments());
+		appointmentList = new BasicEventList<Appointment>();
+		appointmentList.addAll(allAppointmentList);
+		SortedList<Appointment> sortedList = new SortedList<Appointment>(appointmentList, new AppointmentComparator());
 		filterList = new FilterList<Appointment>(sortedList, textMatcherEditor);
 		AdvancedTableModel<Appointment> tableModel = GlazedListsSwing.eventTableModelWithThreadProxyList(filterList,
 				new AppointmentTableFormat());
@@ -565,6 +588,8 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 
 	@SuppressWarnings("unchecked")
 	public void launchEditAppointment() {
+		Appointment a = ((AdvancedTableModel<Appointment>) tblAppointments.getModel())
+				.getElementAt(tblAppointments.getSelectedRow());
 		if (tblAppointments.getSelectedRow() != -1)
 			adminDialog.launchEditAppointment(((AdvancedTableModel<Appointment>) tblAppointments.getModel())
 					.getElementAt(tblAppointments.getSelectedRow()));
@@ -576,46 +601,170 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 			adminDialog.launchProcessAppointment(((AdvancedTableModel<Appointment>) tblAppointments.getModel())
 					.getElementAt(tblAppointments.getSelectedRow()));
 	}
-	
-	// LANZAMIENTO DEL PANEL ----------------------------------------------------------
+
+	// LANZAMIENTO DEL PANEL
+	// ----------------------------------------------------------
 
 	@Override
 	public void setFocus() {
 		btnEdit.requestFocus();
 	}
-	
+
 	public void fillComboBoxes() {
-        // Patient list
-        patientList = new BasicEventList<Patient>();
-        patientList.addAll(patientService.findAllPatient());
-        if (autoCompletePatient == null)
-            autoCompletePatient = AutoCompleteSupport.install(getCbPatient(), patientList, new PatientTextFilterator(), patientFormat);
-        autoCompletePatient.setFilterMode(TextMatcherEditor.CONTAINS);
-        // Doctor List
-        doctorList = new BasicEventList<Staff>();
-        doctorList.addAll(doctorService.findAllDoctors());
-        if (autoCompleteDoctor == null)
-            autoCompleteDoctor = AutoCompleteSupport.install(getCbDoctor(), doctorList, new StaffTextFilterator(), staffFormat);
-        autoCompleteDoctor.setFilterMode(TextMatcherEditor.CONTAINS);
-        // Nurse List
-        nurseList = new BasicEventList<Staff>();
-        nurseList.addAll(nurseService.findAllNurses());
-        if (autoCompleteNurse == null)
-            autoCompleteNurse = AutoCompleteSupport.install(getCbNurse(), nurseList, new StaffTextFilterator(), staffFormat);
-        autoCompleteDoctor.setFilterMode(TextMatcherEditor.CONTAINS);
-        // Room list
-        roomList = new BasicEventList<Room>();
-        roomList.addAll(roomService.findAllRooms());
-        if (autoCompleteRoom == null)
-            autoCompleteRoom = AutoCompleteSupport.install(getCbRoom(), roomList, new RoomTextFilterator(), roomFormat);
-    }
-	
-	// FILTRADO
-	
-	private void filter() {
-		
+		// Patient list
+		patientList = new BasicEventList<Patient>();
+		patientList.addAll(patientService.findAllPatient());
+		if (autoCompletePatient == null)
+			autoCompletePatient = AutoCompleteSupport.install(getCbPatient(), patientList, new PatientTextFilterator(),
+					patientFormat);
+		autoCompletePatient.setFilterMode(TextMatcherEditor.CONTAINS);
+		// Doctor List
+		doctorList = new BasicEventList<Staff>();
+		doctorList.addAll(doctorService.findAllDoctors());
+		if (autoCompleteDoctor == null)
+			autoCompleteDoctor = AutoCompleteSupport.install(getCbDoctor(), doctorList, new StaffTextFilterator(),
+					staffFormat);
+		autoCompleteDoctor.setFilterMode(TextMatcherEditor.CONTAINS);
+		// Nurse List
+		nurseList = new BasicEventList<Staff>();
+		nurseList.addAll(nurseService.findAllNurses());
+		if (autoCompleteNurse == null)
+			autoCompleteNurse = AutoCompleteSupport.install(getCbNurse(), nurseList, new StaffTextFilterator(),
+					staffFormat);
+		autoCompleteDoctor.setFilterMode(TextMatcherEditor.CONTAINS);
+		// Room list
+		roomList = new BasicEventList<Room>();
+		roomList.addAll(roomService.findAllRooms());
+		if (autoCompleteRoom == null)
+			autoCompleteRoom = AutoCompleteSupport.install(getCbRoom(), roomList, new RoomTextFilterator(), roomFormat);
 	}
-	
-	
+
+	// FILTRADO
+
+	private void filter() {
+		tblAppointments.clearSelection();
+		appointmentList.clear();
+		appointmentList.addAll(allAppointmentList);
+		if (fromChooser.getDate() != null)
+			filterFrom();
+		if (toChooser.getDate() != null)
+			filterTo();
+		if (cbPatient.getSelectedItem() != null)
+			filterPatient();
+		if (cbDoctor.getSelectedItem() != null)
+			filterDoctor();
+		if (cbNurse.getSelectedItem() != null)
+			filterNurse();
+		if (cbRoom.getSelectedItem() != null)
+			filterRoom();
+		if (chckbxJustUrgents.isSelected())
+			filterNotUrgent();
+		if (chckbxHidePast.isSelected())
+			filterPast();
+		if (chckbxHideUnconfirmed.isSelected())
+			filterUnconfirmed();
+	}
+
+	private void filterFrom() {
+		EventList<Appointment> filteredAppointmentList = new BasicEventList<Appointment>();
+		filteredAppointmentList.addAll(appointmentList);
+		appointmentList.clear();
+		appointmentList.addAll(filteredAppointmentList.stream().filter(x -> checkFrom(x)).collect(Collectors.toList()));
+	}
+
+	private void filterTo() {
+		EventList<Appointment> filteredAppointmentList = new BasicEventList<Appointment>();
+		filteredAppointmentList.addAll(appointmentList);
+		appointmentList.clear();
+		appointmentList.addAll(filteredAppointmentList.stream().filter(x -> checkTo(x)).collect(Collectors.toList()));
+	}
+
+	private void filterPatient() {
+		EventList<Appointment> filteredAppointmentList = new BasicEventList<Appointment>();
+		filteredAppointmentList.addAll(appointmentList);
+		appointmentList.clear();
+		appointmentList
+				.addAll(filteredAppointmentList.stream().filter(x -> checkPatient(x)).collect(Collectors.toList()));
+	}
+
+	private void filterDoctor() {
+		EventList<Appointment> filteredAppointmentList = new BasicEventList<Appointment>();
+		filteredAppointmentList.addAll(appointmentList);
+		appointmentList.clear();
+		appointmentList
+				.addAll(filteredAppointmentList.stream().filter(x -> checkDoctor(x)).collect(Collectors.toList()));
+	}
+
+	private void filterNurse() {
+		EventList<Appointment> filteredAppointmentList = new BasicEventList<Appointment>();
+		filteredAppointmentList.addAll(appointmentList);
+		appointmentList.clear();
+		appointmentList
+				.addAll(filteredAppointmentList.stream().filter(x -> checkNurse(x)).collect(Collectors.toList()));
+	}
+
+	private void filterRoom() {
+		EventList<Appointment> filteredAppointmentList = new BasicEventList<Appointment>();
+		filteredAppointmentList.addAll(appointmentList);
+		appointmentList.clear();
+		appointmentList.addAll(filteredAppointmentList.stream().filter(x -> checkRoom(x)).collect(Collectors.toList()));
+	}
+
+	private void filterNotUrgent() {
+		EventList<Appointment> filteredAppointmentList = new BasicEventList<Appointment>();
+		filteredAppointmentList.addAll(appointmentList);
+		appointmentList.clear();
+		appointmentList.addAll(filteredAppointmentList.stream().filter(x -> x.isUrgent()).collect(Collectors.toList()));
+	}
+
+	private void filterPast() {
+		EventList<Appointment> filteredAppointmentList = new BasicEventList<Appointment>();
+		filteredAppointmentList.addAll(appointmentList);
+		appointmentList.clear();
+		appointmentList.addAll(filteredAppointmentList.stream()
+				.filter(x -> x.getStartTime().isAfter(LocalDateTime.now())).collect(Collectors.toList()));
+	}
+
+	private void filterUnconfirmed() {
+		EventList<Appointment> filteredAppointmentList = new BasicEventList<Appointment>();
+		filteredAppointmentList.addAll(appointmentList);
+		appointmentList.clear();
+		appointmentList
+				.addAll(filteredAppointmentList.stream().filter(x -> x.isConfirmed()).collect(Collectors.toList()));
+	}
+
+	private boolean checkFrom(Appointment x) {
+		LocalDate from = fromChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate date = x.getStartTime().toLocalDate();
+		return from.isBefore(date);
+	}
+
+	private boolean checkTo(Appointment x) {
+		LocalDate to = toChooser.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate date = x.getStartTime().toLocalDate();
+		return to.isAfter(date);
+	}
+
+	private boolean checkPatient(Appointment x) {
+		return x.getPatient().equals(cbPatient.getSelectedItem());
+	}
+
+	private boolean checkDoctor(Appointment x) {
+		for (Doctor d : x.getDoctors())
+			if (d.equals(cbDoctor.getSelectedItem()))
+				return true;
+		return false;
+	}
+
+	private boolean checkNurse(Appointment x) {
+		for (Nurse n : x.getNurses())
+			if (n.equals(cbNurse.getSelectedItem()))
+				return true;
+		return false;
+	}
+
+	private boolean checkRoom(Appointment x) {
+		return x.getRoom().equals(cbRoom.getSelectedItem());
+	}
 
 }
