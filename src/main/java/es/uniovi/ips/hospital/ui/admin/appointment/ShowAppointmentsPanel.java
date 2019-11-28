@@ -588,8 +588,6 @@ public class ShowAppointmentsPanel extends JPanel implements Shiftable {
 
 	@SuppressWarnings("unchecked")
 	public void launchEditAppointment() {
-		Appointment a = ((AdvancedTableModel<Appointment>) tblAppointments.getModel())
-				.getElementAt(tblAppointments.getSelectedRow());
 		if (tblAppointments.getSelectedRow() != -1)
 			adminDialog.launchEditAppointment(((AdvancedTableModel<Appointment>) tblAppointments.getModel())
 					.getElementAt(tblAppointments.getSelectedRow()));
