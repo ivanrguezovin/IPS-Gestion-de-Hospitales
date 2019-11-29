@@ -249,6 +249,11 @@ public class EditVaccineDialog extends JDialog {
 	private JButton getBtnBack() {
 		if (btnBack == null) {
 			btnBack = new JButton("Back");
+			btnBack.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					setVisible(false);
+				}
+			});
 		}
 		return btnBack;
 	}

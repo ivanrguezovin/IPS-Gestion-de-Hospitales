@@ -82,7 +82,6 @@ public class VaccineDoctorDialog extends JDialog {
 	private JButton btnSearch;
 	private JPanel panel_9;
 	private JButton btnMarkAsApplied;
-	private JSpinner spinner_1;
 	private JButton btnEdit;
 	@Autowired private EditVaccineDialog evd;
 	private JButton btnRefresh;
@@ -495,7 +494,6 @@ public class VaccineDoctorDialog extends JDialog {
 		if (panel_9 == null) {
 			panel_9 = new JPanel();
 			panel_9.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
-			panel_9.add(getSpinner_1());
 			panel_9.add(getBtnEdit());
 			panel_9.add(getBtnRefresh());
 			panel_9.add(getBtnMarkAsApplied());
@@ -550,14 +548,6 @@ public class VaccineDoctorDialog extends JDialog {
 			});
 		}
 		return btnMarkAsApplied;
-	}
-	private JSpinner getSpinner_1() {
-		if (spinner_1 == null) {
-			spinner_1 = new JSpinner();
-			spinner_1.setModel(new SpinnerDateModel(now(), null, null, Calendar.DAY_OF_YEAR));
-			spinner_1.setEditor(new javax.swing.JSpinner.DateEditor(spinner_1, "dd/MM/yyyy"));
-		}
-		return spinner_1;
 	}
 	private JButton getBtnEdit() {
 		if (btnEdit == null) {
