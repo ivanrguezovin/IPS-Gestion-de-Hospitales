@@ -40,6 +40,9 @@ public class AppointmentDialog extends JDialog {
     
     @Autowired
     private MedicalRecordDialog medicalRecordDialog;
+    
+    @Autowired
+    private CreateDiagnosticDialog createDiagnosticDialog;
 
     public AppointmentDialog() {
         appointment = new Appointment();
@@ -125,7 +128,7 @@ public class AppointmentDialog extends JDialog {
             JButton deleteButton = new JButton("Delete diagnostic");
             JButton refreshButton = new JButton("Refresh");
 
-            createButton.addActionListener(actionEvent -> {});
+            createButton.addActionListener(actionEvent -> {setVisible(false);createDiagnosticDialog.run(this.appointment, this.doctor);});
             deleteButton.addActionListener(actionEvent -> this.deleteDiagnostic());
             refreshButton.addActionListener(actionEvent -> this.loadDiagnostics());
 
