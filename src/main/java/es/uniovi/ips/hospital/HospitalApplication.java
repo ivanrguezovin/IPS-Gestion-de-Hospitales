@@ -179,8 +179,9 @@ public class HospitalApplication implements CommandLineRunner {
     private void generateMedicalRecord(Patient patient) {
         for (int i = 0; i < 3; i++) {
             MedicalRecord mr = new MedicalRecord(patient);
-            mr.setDate(LocalDateTime.of(2018, faker.number().numberBetween(1, 12), faker.number().numberBetween(1, 31),
-                    faker.number().numberBetween(0, 23), faker.number().numberBetween(1, 59)));
+            LocalDateTime h = LocalDateTime.of(2018, faker.number().numberBetween(1, 12), faker.number().numberBetween(1, 31),
+                    faker.number().numberBetween(0, 23), faker.number().numberBetween(1, 59));
+            mr.setDate(h);
             mr.setDescription(faker.medical().diseaseName());
             mr.setPrescription(faker.medical().medicineName());
             medicalRecordService.createMedicalRecord(mr);

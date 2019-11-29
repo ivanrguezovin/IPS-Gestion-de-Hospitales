@@ -1,6 +1,8 @@
 package es.uniovi.ips.hospital.domain;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -19,9 +21,6 @@ public class MedicalRecord {
     @Column(name = "prescription")
     private String prescription;
     
-    @Column(name = "present")
-    private boolean present;
-    
     @NotNull
     @Column(name = "date")
     private LocalDateTime date;
@@ -29,11 +28,13 @@ public class MedicalRecord {
     @ManyToOne
     private Patient patient;
     
+    @OneToMany(mappedBy = "medicalRecord", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Diagnostic> diagnostics = new HashSet<>();
+    
     public MedicalRecord() {}
 
     public MedicalRecord(Patient patient) {
         this.patient = patient;
-        this.present = true;
     }
 
     public Long getId() {
@@ -43,14 +44,6 @@ public class MedicalRecord {
     public void setId(Long id) {
         this.id = id;
     }
-
-    public boolean isPresent() {
-		return present;
-	}
-
-	public void setPresent(boolean present) {
-		this.present = present;
-	}
 
 	public String getDescription() {
 		return description;
@@ -89,5 +82,12 @@ public class MedicalRecord {
 		return "MedicalRecord [id=" + id + ", description=" + description + ", date=" + date + "]";
 	}
     
+	public Set<Diagnostic> getDiagnostics() {
+        return diagnostics;
+    }
+
+    public void setDiagnostics(Set<Diagnostic> diagnostics) {
+        this.diagnostics = diagnostics;
+    }
     
 }

@@ -2,6 +2,8 @@ package es.uniovi.ips.hospital.repository;
 
 import es.uniovi.ips.hospital.domain.Appointment;
 import es.uniovi.ips.hospital.domain.Diagnostic;
+import es.uniovi.ips.hospital.domain.Patient;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

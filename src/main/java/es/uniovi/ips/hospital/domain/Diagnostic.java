@@ -22,6 +22,10 @@ public class Diagnostic {
     @NotNull
     @ManyToOne
     private Doctor doctor;
+    
+    @NotNull
+    @ManyToOne
+    private MedicalRecord medicalRecord;
 
     @ManyToMany(mappedBy = "diagnostics", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ICD10> codes;
@@ -33,10 +37,12 @@ public class Diagnostic {
     @NotNull
     @Column(name = "when")
     private LocalDateTime created;
+    
+    @NotNull
+    @Column(name = "active")
+    private boolean active = true;
 
-    public Diagnostic() {
-        // Nothing here.
-    }
+    public Diagnostic() {}
 
     public Diagnostic(@NotNull String comment,
                       @NotNull Doctor doctor,
@@ -49,6 +55,20 @@ public class Diagnostic {
         this.codes = codes;
         this.appointment = appointment;
         this.created = created;
+    }
+    
+    public Diagnostic(@NotNull String comment,
+            @NotNull Doctor doctor,
+            @NotNull List<ICD10> codes,
+            @NotNull Appointment appointment,
+            @NotNull LocalDateTime created, @NotNull MedicalRecord medicalRecord) {
+    			super();
+    			this.comment = comment;
+    			this.doctor = doctor;
+    			this.codes = codes;
+    			this.appointment = appointment;
+    			this.created = created;
+    			this.medicalRecord = medicalRecord;
     }
 
     public Long getId() {
@@ -99,7 +119,23 @@ public class Diagnostic {
         this.created = created;
     }
 
-    @Override
+    public MedicalRecord getMedicalRecord() {
+		return medicalRecord;
+	}
+
+	public void setMedicalRecord(MedicalRecord medicalRecord) {
+		this.medicalRecord = medicalRecord;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	@Override
     public String toString() {
         return "Diagnostic{" +
                 "id=" + id +

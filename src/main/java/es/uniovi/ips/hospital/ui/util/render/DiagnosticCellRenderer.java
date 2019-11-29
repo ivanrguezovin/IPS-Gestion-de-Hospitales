@@ -17,7 +17,17 @@ public class DiagnosticCellRenderer extends JLabel implements ListCellRenderer<D
         this.setBackground(isSelected ? Color.blue : Color.white);
         this.setForeground(isSelected ? Color.white : Color.black);
 
-        this.setText("Created by Dr." + diagnostic.getDoctor().getSurname() + " at " + diagnostic.getCreated().toString());
+        if(!diagnostic.isActive()) {
+        	this.setBackground(!isSelected ? Color.black : Color.black);
+            this.setForeground(!isSelected ? Color.white : Color.red);
+            this.setText("--ELIMINATED-- || Created by Dr." + diagnostic.getDoctor().getSurname() + " at " + diagnostic.getCreated().toString()
+            		+ ". - " + diagnostic.getComment());
+        }else {
+        	this.setText("Created by Dr." + diagnostic.getDoctor().getSurname() + " at " + diagnostic.getCreated().toString()
+            		+ ". - " + diagnostic.getComment());
+        }
+        
+        
         return this;
     }
 }

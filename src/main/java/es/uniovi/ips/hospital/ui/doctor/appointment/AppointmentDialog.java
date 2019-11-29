@@ -5,6 +5,7 @@ import es.uniovi.ips.hospital.domain.Diagnostic;
 import es.uniovi.ips.hospital.domain.Doctor;
 import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.service.DiagnosticService;
+import es.uniovi.ips.hospital.ui.common.MedicalRecordDialog;
 import es.uniovi.ips.hospital.ui.util.render.DiagnosticCellRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,7 +29,6 @@ public class AppointmentDialog extends JDialog {
 
     private JPanel patientInfoPanel;
     private JPanel diagnosticPanel;
-    private JPanel medicalHistoryPanel;
 
     private JLabel nameField;
     private JLabel surnameField;
@@ -37,10 +37,14 @@ public class AppointmentDialog extends JDialog {
 
     @Autowired
     private DiagnosticService diagnosticService;
+    
+    @Autowired
+    private MedicalRecordDialog medicalRecordDialog;
 
     public AppointmentDialog() {
         appointment = new Appointment();
         patient = new Patient();
+        doctor = new Doctor();
         this.setModal(true);
         this.setSize(1000, 800);
 
@@ -122,12 +126,17 @@ public class AppointmentDialog extends JDialog {
             JButton refreshButton = new JButton("Refresh");
 
             createButton.addActionListener(actionEvent -> {});
-            deleteButton.addActionListener(actionEvent -> System.out.println("Delete"));
+            deleteButton.addActionListener(actionEvent -> this.deleteDiagnostic());
             refreshButton.addActionListener(actionEvent -> this.loadDiagnostics());
 
             buttonPanel.add(BorderLayout.WEST, createButton);
             buttonPanel.add(BorderLayout.WEST, editButton);
             buttonPanel.add(BorderLayout.EAST, deleteButton);
+            buttonPanel.add(BorderLayout.EAST, refreshButton);
+
+            JButton btnShowMedicalRecord = new JButton("Show Medical Record");
+            btnShowMedicalRecord.addActionListener(actionEvent -> showMedicalRecord());
+            buttonPanel.add(btnShowMedicalRecord);
             buttonPanel.add(BorderLayout.EAST, refreshButton);
 
             diagnosticPanel.add(BorderLayout.NORTH, jScrollPane);
@@ -136,21 +145,27 @@ public class AppointmentDialog extends JDialog {
         return diagnosticPanel;
     }
 
-    private JList<Diagnostic> getDiagnosticList() {
+    private void showMedicalRecord() {
+        System.out.println(patient);
+        medicalRecordDialog.showHistoryOf(patient);
+    }
+
+	private void deleteDiagnostic() {
+		if(diagnosticList.getSelectedIndex()==-1) {
+			JOptionPane.showMessageDialog(null, "Select an item from the list");
+		}else {
+			Diagnostic d = diagnosticList.getSelectedValue();
+			d.setActive(false);
+			diagnosticService.createDiagnostic(d);
+		}
+	}
+
+	private JList<Diagnostic> getDiagnosticList() {
         if (diagnosticList == null) {
-            diagnosticList = new JList<>();
+            diagnosticList = new JList<Diagnostic>();
             diagnosticList.setCellRenderer(new DiagnosticCellRenderer());
         }
         return diagnosticList;
-    }
-
-    private JPanel getMedicalHistoryPanel() {
-        if (medicalHistoryPanel == null) {
-            medicalHistoryPanel = new JPanel();
-            TitledBorder titledBorder = new TitledBorder("Medical history");
-            medicalHistoryPanel.setBorder(titledBorder);
-        }
-        return medicalHistoryPanel;
     }
 
     void run(Appointment appointment, Doctor doctor) {

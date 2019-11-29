@@ -28,7 +28,9 @@ import java.time.format.DateTimeFormatter;
 @Component
 public class MyAppointmentsDialog extends JDialog {
 
-    private final JPanel contentPanel;
+	private static final long serialVersionUID = 5360558334829143236L;
+
+	private final JPanel contentPanel;
 
     private JTextField searchField;
     private TextMatcherEditor<Appointment> textMatcherEditor;
