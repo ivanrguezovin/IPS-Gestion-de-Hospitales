@@ -10,21 +10,8 @@ import org.springframework.stereotype.Component;
 
 import es.uniovi.ips.hospital.domain.Appointment;
 import es.uniovi.ips.hospital.domain.Doctor;
-import es.uniovi.ips.hospital.domain.Patient;
-import es.uniovi.ips.hospital.ui.admin.appointment.CreateAppointmentPanel;
-import es.uniovi.ips.hospital.ui.admin.appointment.EditAppointmentPanel;
-import es.uniovi.ips.hospital.ui.admin.appointment.ProcessAppointmentPanel;
-import es.uniovi.ips.hospital.ui.admin.appointment.ShowAppointmentsPanel;
-import es.uniovi.ips.hospital.ui.admin.schedule.ManageBreakSchedulePanel;
-import es.uniovi.ips.hospital.ui.admin.schedule.ManageWorkSchedulePanel;
-import es.uniovi.ips.hospital.ui.admin.showMedicalRecord.PatientInfoPanel;
-import es.uniovi.ips.hospital.ui.admin.users.CreateAdminsPanel;
-import es.uniovi.ips.hospital.ui.admin.users.CreateDoctorsPanel;
-import es.uniovi.ips.hospital.ui.admin.users.CreateNursesPanel;
-import es.uniovi.ips.hospital.ui.admin.users.CreatePatientsPanel;
-import es.uniovi.ips.hospital.ui.common.MedicalRecordWithoutPrescriptionPanel;
-import es.uniovi.ips.hospital.ui.doctor.appointment.ApplyForAppointmentDialog;
 import es.uniovi.ips.hospital.ui.doctor.appointment.ApplyForAppointmentPanel;
+import es.uniovi.ips.hospital.ui.doctor.appointment.ShowMyAppointmentsPanel;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
 import es.uniovi.ips.hospital.ui.util.components.MyBanner;
@@ -47,6 +34,7 @@ public class DoctorDialog2 extends JDialog {
 
     @Autowired	private DoctorMainPanel mainPanel;
     @Autowired	private ApplyForAppointmentPanel applyForAppointmentPanel;
+    @Autowired	private ShowMyAppointmentsPanel showMyAppointmentsPanel;
 
 	private JPanel current;
 	private JPanel previous;
@@ -141,11 +129,18 @@ public class DoctorDialog2 extends JDialog {
         launch(applyForAppointmentPanel);
     }
 	
-//	void launchShowAppointments() {
-//        showAppointmentsPanel.showAppointments();
-//        showAppointmentsPanel.fillComboBoxes();
-//        launch(showAppointmentsPanel);
-//	}
+	void launchShowMyAppointments() {
+        showMyAppointmentsPanel.showAppointments(user);
+        showMyAppointmentsPanel.fillComboBoxes();
+        launch(showMyAppointmentsPanel);
+	}
+	
+	public void launchProcessAppointment(Appointment appointment) {
+//		processAppointmentPanel.fillComboBoxes();
+//		processAppointmentPanel.setAppointment(appointment);
+//		launch(processAppointmentPanel);
+//		
+	}
 //	
 //	public void launchEditAppointment(Appointment appointment) {
 //		editAppointmentPanel.fillComboBoxes();
@@ -153,12 +148,6 @@ public class DoctorDialog2 extends JDialog {
 //		launch(editAppointmentPanel);
 //	}
 //	
-//	public void launchProcessAppointment(Appointment appointment) {
-//		processAppointmentPanel.fillComboBoxes();
-//		processAppointmentPanel.setAppointment(appointment);
-//		launch(processAppointmentPanel);
-//		
-//	}
 //
 //    void launchManageWorkSchedule() {
 //        manageWorkSchedulePanel.fillLists();

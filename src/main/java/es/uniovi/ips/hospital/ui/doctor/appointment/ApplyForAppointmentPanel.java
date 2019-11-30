@@ -49,8 +49,8 @@ import java.util.stream.Collectors;
 @Component
 public class ApplyForAppointmentPanel extends JPanel implements Shiftable {
 
-    private static final long serialVersionUID = 8434535298528019736L;
-    private final JPanel contentPanel = new JPanel();
+	private static final long serialVersionUID = 6856227014539878151L;
+	private final JPanel contentPanel = new JPanel();
     
     @Autowired private AdminDialog adminDialog;
     @Autowired private PatientService patientService;

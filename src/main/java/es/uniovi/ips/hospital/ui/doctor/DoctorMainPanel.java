@@ -198,7 +198,7 @@ public class DoctorMainPanel extends JPanel implements Shiftable {
     private JButton getBtnEditAppointment() {
         if (btnEditAppointment == null) {
             btnEditAppointment = new JButton("Manage appointments");
-//            btnEditAppointment.addActionListener(e -> doctorDialog.launchShowAppointments());
+            btnEditAppointment.addActionListener(e -> doctorDialog.launchShowMyAppointments());
         }
         return btnEditAppointment;
     }
