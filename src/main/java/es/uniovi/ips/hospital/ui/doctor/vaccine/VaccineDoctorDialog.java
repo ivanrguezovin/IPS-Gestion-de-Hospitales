@@ -54,7 +54,7 @@ public class VaccineDoctorDialog extends JDialog {
 	private JLabel label;
 	private JPanel panel_4;
 	private JLabel label_1;
-	private JComboBox<VaccineType> comboBox;
+	private JComboBox<VaccineType> cbType;
 	private JLabel label_2;
 	private JScrollPane scrollPane;
 	private java.awt.Component verticalStrut;
@@ -62,23 +62,23 @@ public class VaccineDoctorDialog extends JDialog {
 	private java.awt.Component verticalStrut_2;
 	private java.awt.Component verticalStrut_3;
 	private JLabel label_3;
-	private JTextField textField;
+	private JTextField tFHealthCard;
 	private JLabel label_4;
 	private JPanel panel_5;
-	private JSpinner spinner;
+	private JSpinner spinnerDate;
 	private JPanel panel_6;
-	private JButton button;
+	private JButton buttonCreate;
 	private Doctor doctor;
-	private JTextArea textArea;
+	private JTextArea tADescription;
 	@Autowired private VaccineService vs;
 	@Autowired private PatientService ps;
 	private JLabel lblListVaccines;
 	private JPanel panel_7;
 	private JPanel panel_8;
 	private JLabel label_5;
-	private JTextField textField_1;
+	private JTextField tfSearchHealthCard;
 	private JScrollPane scrollPane_1;
-	private JList<Vaccine> list;
+	private JList<Vaccine> listVaccines;
 	private JButton btnSearch;
 	private JPanel panel_9;
 	private JButton btnMarkAsApplied;
@@ -165,7 +165,7 @@ public class VaccineDoctorDialog extends JDialog {
 			panel_4 = new JPanel();
 			panel_4.setLayout(new GridLayout(0, 4, 0, 0));
 			panel_4.add(getLabel_1());
-			panel_4.add(getComboBox());
+			panel_4.add(getCbType());
 			panel_4.add(getLabel_2());
 			panel_4.add(getScrollPane());
 			panel_4.add(getVerticalStrut());
@@ -173,7 +173,7 @@ public class VaccineDoctorDialog extends JDialog {
 			panel_4.add(getVerticalStrut_2());
 			panel_4.add(getVerticalStrut_3());
 			panel_4.add(getLabel_3());
-			panel_4.add(getTextField());
+			panel_4.add(getTFHealthCard());
 			panel_4.add(getLabel_4());
 			panel_4.add(getPanel_5());
 		}
@@ -186,15 +186,15 @@ public class VaccineDoctorDialog extends JDialog {
 		}
 		return label_1;
 	}
-	private JComboBox<VaccineType> getComboBox() {
-		if (comboBox == null) {
-			comboBox = new JComboBox<VaccineType>();
-			comboBox.addItem(VaccineType.VIVAS_ATENUADAS);
-			comboBox.addItem(VaccineType.INACTIVADAS);
-			comboBox.addItem(VaccineType.CON_TOXOIDES);
-			comboBox.addItem(VaccineType.SUBUNIDADES_RECOMBINANTES_POLISACÁRIDAS_Y_COMBINADAS);
+	private JComboBox<VaccineType> getCbType() {
+		if (cbType == null) {
+			cbType = new JComboBox<VaccineType>();
+			cbType.addItem(VaccineType.VIVAS_ATENUADAS);
+			cbType.addItem(VaccineType.INACTIVADAS);
+			cbType.addItem(VaccineType.CON_TOXOIDES);
+			cbType.addItem(VaccineType.SUBUNIDADES_RECOMBINANTES_POLISACÁRIDAS_Y_COMBINADAS);
 		}
-		return comboBox;
+		return cbType;
 	}
 	private JLabel getLabel_2() {
 		if (label_2 == null) {
@@ -206,7 +206,7 @@ public class VaccineDoctorDialog extends JDialog {
 	private JScrollPane getScrollPane() {
 		if (scrollPane == null) {
 			scrollPane = new JScrollPane();
-			scrollPane.setViewportView(getTextArea());
+			scrollPane.setViewportView(getTADescription());
 		}
 		return scrollPane;
 	}
@@ -241,12 +241,12 @@ public class VaccineDoctorDialog extends JDialog {
 		}
 		return label_3;
 	}
-	private JTextField getTextField() {
-		if (textField == null) {
-			textField = new JTextField();
-			textField.setColumns(10);
+	private JTextField getTFHealthCard() {
+		if (tFHealthCard == null) {
+			tFHealthCard = new JTextField();
+			tFHealthCard.setColumns(10);
 		}
-		return textField;
+		return tFHealthCard;
 	}
 	private JLabel getLabel_4() {
 		if (label_4 == null) {
@@ -259,48 +259,48 @@ public class VaccineDoctorDialog extends JDialog {
 		if (panel_5 == null) {
 			panel_5 = new JPanel();
 			panel_5.setLayout(new GridLayout(0, 1, 0, 0));
-			panel_5.add(getSpinner());
+			panel_5.add(getSpinnerDate());
 		}
 		return panel_5;
 	}
-	private JSpinner getSpinner() {
-		if (spinner == null) {
-			spinner = new JSpinner();
-			spinner.setModel(new SpinnerDateModel(now(), null, null, Calendar.DAY_OF_YEAR));
-			spinner.setEditor(new javax.swing.JSpinner.DateEditor(spinner, "dd/MM/yyyy"));
+	private JSpinner getSpinnerDate() {
+		if (spinnerDate == null) {
+			spinnerDate = new JSpinner();
+			spinnerDate.setModel(new SpinnerDateModel(now(), null, null, Calendar.DAY_OF_YEAR));
+			spinnerDate.setEditor(new javax.swing.JSpinner.DateEditor(spinnerDate, "dd/MM/yyyy"));
 		}
-		return spinner;
+		return spinnerDate;
 	}
 	private JPanel getPanel_6() {
 		if (panel_6 == null) {
 			panel_6 = new JPanel();
 			FlowLayout flowLayout = (FlowLayout) panel_6.getLayout();
 			flowLayout.setAlignment(FlowLayout.RIGHT);
-			panel_6.add(getButton());
+			panel_6.add(getButtonCreate());
 		}
 		return panel_6;
 	}
-	private JButton getButton() {
-		if (button == null) {
-			button = new JButton("Create");
-			button.setMnemonic('c');
-			button.addActionListener(new ActionListener() {
+	private JButton getButtonCreate() {
+		if (buttonCreate == null) {
+			buttonCreate = new JButton("Create");
+			buttonCreate.setMnemonic('c');
+			buttonCreate.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					if(getComboBox().getSelectedItem() == null) {
+					if(getCbType().getSelectedItem() == null) {
 						JOptionPane.showMessageDialog(null, "Select vaccine type");
-					}else if(getTextField().getText().equals("")) {
+					}else if(getTFHealthCard().getText().equals("")) {
 						JOptionPane.showMessageDialog(null, "Type a health card number");
-					}else if(!getTextField().getText().matches("[0-9]+") && getTextField().getText().length() != 10) {
+					}else if(!getTFHealthCard().getText().matches("[0-9]+") && getTFHealthCard().getText().length() != 10) {
 						JOptionPane.showMessageDialog(null, "Type a correct health card number");
-					}else if(getTextArea().getText().equals("")) {
+					}else if(getTADescription().getText().equals("")) {
 						JOptionPane.showMessageDialog(null, "Type a description");
-					}else if(isBefore((Date)getSpinner().getValue(),today())) {
+					}else if(isBefore((Date)getSpinnerDate().getValue(),today())) {
 						JOptionPane.showMessageDialog(null, "Date must not be before today. Today is " + now());
 					}else {
-						String desc = getTextArea().getText();
-						VaccineType vt = (VaccineType) getComboBox().getSelectedItem();
-						LocalDateTime ldt = convertToLocalDateTimeViaInstant((Date)getSpinner().getValue());
-						String hcn = textField.getText();
+						String desc = getTADescription().getText();
+						VaccineType vt = (VaccineType) getCbType().getSelectedItem();
+						LocalDateTime ldt = convertToLocalDateTimeViaInstant((Date)getSpinnerDate().getValue());
+						String hcn = tFHealthCard.getText();
 						List<Patient> patients = ps.findAllPatient();
 						Patient patient = null;
 						for(Patient p: patients) {
@@ -312,9 +312,9 @@ public class VaccineDoctorDialog extends JDialog {
 							Vaccine v = new Vaccine(vt,desc,ldt,false,patient);
 							vs.createVaccine(v);
 							JOptionPane.showMessageDialog(null, "Vaccine added to " + patient.getDni());
-							textArea.setText("");
-							textField.setText("");
-							spinner.setValue(now());
+							tADescription.setText("");
+							tFHealthCard.setText("");
+							spinnerDate.setValue(now());
 						}else {
 							JOptionPane.showMessageDialog(null, "Patient does not exist");
 						}
@@ -323,7 +323,7 @@ public class VaccineDoctorDialog extends JDialog {
 				}
 			});
 		}
-		return button;
+		return buttonCreate;
 	}
 	
 	public LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
@@ -386,13 +386,13 @@ public class VaccineDoctorDialog extends JDialog {
 		return c.getTime();
 	}
 	
-	private JTextArea getTextArea() {
-		if (textArea == null) {
-			textArea = new JTextArea();
-			textArea.setWrapStyleWord(true);
-			textArea.setLineWrap(true);
+	private JTextArea getTADescription() {
+		if (tADescription == null) {
+			tADescription = new JTextArea();
+			tADescription.setWrapStyleWord(true);
+			tADescription.setLineWrap(true);
 		}
-		return textArea;
+		return tADescription;
 	}
 	private JLabel getLblListVaccines() {
 		if (lblListVaccines == null) {
@@ -415,7 +415,7 @@ public class VaccineDoctorDialog extends JDialog {
 		if (panel_8 == null) {
 			panel_8 = new JPanel();
 			panel_8.add(getLabel_5());
-			panel_8.add(getTextField_1());
+			panel_8.add(getTfSearchHealthCard());
 			panel_8.add(getBtnSearch());
 		}
 		return panel_8;
@@ -427,38 +427,38 @@ public class VaccineDoctorDialog extends JDialog {
 		}
 		return label_5;
 	}
-	private JTextField getTextField_1() {
-		if (textField_1 == null) {
-			textField_1 = new JTextField();
-			textField_1.setColumns(10);
+	private JTextField getTfSearchHealthCard() {
+		if (tfSearchHealthCard == null) {
+			tfSearchHealthCard = new JTextField();
+			tfSearchHealthCard.setColumns(10);
 		}
-		return textField_1;
+		return tfSearchHealthCard;
 	}
 	private JScrollPane getScrollPane_1() {
 		if (scrollPane_1 == null) {
 			scrollPane_1 = new JScrollPane();
-			scrollPane_1.setViewportView(getList());
+			scrollPane_1.setViewportView(getListVaccines());
 		}
 		return scrollPane_1;
 	}
-	private JList<Vaccine> getList() {
-		if (list == null) {
-			list = new JList<Vaccine>();
-			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	private JList<Vaccine> getListVaccines() {
+		if (listVaccines == null) {
+			listVaccines = new JList<Vaccine>();
+			listVaccines.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		}
-		return list;
+		return listVaccines;
 	}
 	private JButton getBtnSearch() {
 		if (btnSearch == null) {
 			btnSearch = new JButton("Search");
 			btnSearch.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					if(textField_1.getText().equals("")) {
+					if(tfSearchHealthCard.getText().equals("")) {
 						JOptionPane.showMessageDialog(null, "Fill the field");
 					}
 					Patient patient = null;
 					for(Patient p: ps.findAllPatient()) {
-						if(p.getHealthCardNumber().equals(textField_1.getText())) {
+						if(p.getHealthCardNumber().equals(tfSearchHealthCard.getText())) {
 							patient=p;
 						}
 					}
@@ -472,7 +472,7 @@ public class VaccineDoctorDialog extends JDialog {
 						v[i] = c;
 						i++;
 					}
-					list.setModel(new AbstractListModel<Vaccine>() {
+					listVaccines.setModel(new AbstractListModel<Vaccine>() {
 						/**
 						 * 
 						 */
@@ -505,10 +505,10 @@ public class VaccineDoctorDialog extends JDialog {
 			btnMarkAsApplied = new JButton("Modify Applied");
 			btnMarkAsApplied.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					if(list.getSelectedIndex() == -1) {
+					if(listVaccines.getSelectedIndex() == -1) {
 						JOptionPane.showMessageDialog(null, "Select an element from the list");
 					}else {
-						Vaccine va = list.getSelectedValue();
+						Vaccine va = listVaccines.getSelectedValue();
 						if(va.isApplied()) {
 							va.setApplied(false);
 						}else {
@@ -523,7 +523,7 @@ public class VaccineDoctorDialog extends JDialog {
 							v[i] = c;
 							i++;
 						}
-						list.setModel(new AbstractListModel<Vaccine>() {
+						listVaccines.setModel(new AbstractListModel<Vaccine>() {
 							/**
 							 * 
 							 */
@@ -554,11 +554,11 @@ public class VaccineDoctorDialog extends JDialog {
 			btnEdit = new JButton("Edit");
 			btnEdit.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					if(list.getSelectedIndex()==-1) {
+					if(listVaccines.getSelectedIndex()==-1) {
 						JOptionPane.showMessageDialog(null, "Select an element from the list");
 					}else {
 						evd.setVisible(true);
-						evd.setVaccine(list.getSelectedValue());
+						evd.setVaccine(listVaccines.getSelectedValue());
 					}
 					}
 				});
@@ -577,7 +577,7 @@ public class VaccineDoctorDialog extends JDialog {
 						v[i] = c;
 						i++;
 					}
-					list.setModel(new AbstractListModel<Vaccine>() {
+					listVaccines.setModel(new AbstractListModel<Vaccine>() {
 							/**
 							 * 
 							 */

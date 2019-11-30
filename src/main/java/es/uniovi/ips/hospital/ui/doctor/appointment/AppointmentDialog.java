@@ -226,14 +226,14 @@ public class AppointmentDialog extends JDialog {
     	Set<Appointment> aps = doctor.getAppointments();
     	java.util.List<Appointment> appointments = new ArrayList<>();
     	for(Appointment a:aps) {
-    		if(a.getPatient().equals(patient)) {
+    		if(a.getPatient().getHealthCardNumber().equals(patient.getHealthCardNumber())) {
     			appointments.add(a);
     		}
     	}
     	for(Appointment a:appointments) {
-    		for(Diagnostic d: a.getDiagnostics()) {
-    			model.addElement(d);
-    		}
+    		for (Diagnostic diagnostic : diagnosticService.findAllByAppointment(a)) {
+                model.addElement(diagnostic);
+            }
     	}
         diagnosticList.setModel(model);
         System.out.println("All diagnostics");
