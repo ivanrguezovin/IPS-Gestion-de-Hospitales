@@ -43,13 +43,13 @@ public class EditVaccineDialog extends JDialog {
 	private static final long serialVersionUID = 5459106730873677461L;
 	private JPanel panel;
 	private JLabel label;
-	private JComboBox<VaccineType> comboBox_1;
+	private JComboBox<VaccineType> cbType;
 	private JLabel label_1;
-	private JTextArea textArea_1;
+	private JTextArea tADescription;
 	private JLabel label_2;
-	private JTextField textField_2;
+	private JTextField tFHealthCard;
 	private JLabel label_3;
-	private JSpinner spinner_1;
+	private JSpinner spinnerDate;
 	private JLabel label_7;
 	private JPanel panel_1;
 	private JButton btnEdit;
@@ -80,13 +80,13 @@ public class EditVaccineDialog extends JDialog {
 			panel = new JPanel();
 			panel.setLayout(new GridLayout(0, 2, 0, 0));
 			panel.add(getLabel());
-			panel.add(getComboBox_1());
+			panel.add(getCbType());
 			panel.add(getLabel_1());
-			panel.add(getTextArea_1());
+			panel.add(getTADescription());
 			panel.add(getLabel_2());
-			panel.add(getTextField_2());
+			panel.add(getTFHealthCard());
 			panel.add(getLabel_3());
-			panel.add(getSpinner_1());
+			panel.add(getSpinnerDate());
 			panel.add(getLabel_7());
 			panel.add(getPanel_1());
 		}
@@ -99,15 +99,15 @@ public class EditVaccineDialog extends JDialog {
 		}
 		return label;
 	}
-	private JComboBox<VaccineType> getComboBox_1() {
-		if (comboBox_1 == null) {
-			comboBox_1 = new JComboBox<VaccineType>();
-			comboBox_1.addItem(VaccineType.VIVAS_ATENUADAS);
-			comboBox_1.addItem(VaccineType.INACTIVADAS);
-			comboBox_1.addItem(VaccineType.CON_TOXOIDES);
-			comboBox_1.addItem(VaccineType.SUBUNIDADES_RECOMBINANTES_POLISACÁRIDAS_Y_COMBINADAS);
+	private JComboBox<VaccineType> getCbType() {
+		if (cbType == null) {
+			cbType = new JComboBox<VaccineType>();
+			cbType.addItem(VaccineType.VIVAS_ATENUADAS);
+			cbType.addItem(VaccineType.INACTIVADAS);
+			cbType.addItem(VaccineType.CON_TOXOIDES);
+			cbType.addItem(VaccineType.SUBUNIDADES_RECOMBINANTES_POLISACÁRIDAS_Y_COMBINADAS);
 		}
-		return comboBox_1;
+		return cbType;
 	}
 	private JLabel getLabel_1() {
 		if (label_1 == null) {
@@ -116,13 +116,13 @@ public class EditVaccineDialog extends JDialog {
 		}
 		return label_1;
 	}
-	private JTextArea getTextArea_1() {
-		if (textArea_1 == null) {
-			textArea_1 = new JTextArea();
-			textArea_1.setWrapStyleWord(true);
-			textArea_1.setLineWrap(true);
+	private JTextArea getTADescription() {
+		if (tADescription == null) {
+			tADescription = new JTextArea();
+			tADescription.setWrapStyleWord(true);
+			tADescription.setLineWrap(true);
 		}
-		return textArea_1;
+		return tADescription;
 	}
 	private JLabel getLabel_2() {
 		if (label_2 == null) {
@@ -131,12 +131,12 @@ public class EditVaccineDialog extends JDialog {
 		}
 		return label_2;
 	}
-	private JTextField getTextField_2() {
-		if (textField_2 == null) {
-			textField_2 = new JTextField();
-			textField_2.setColumns(10);
+	private JTextField getTFHealthCard() {
+		if (tFHealthCard == null) {
+			tFHealthCard = new JTextField();
+			tFHealthCard.setColumns(10);
 		}
-		return textField_2;
+		return tFHealthCard;
 	}
 	private JLabel getLabel_3() {
 		if (label_3 == null) {
@@ -145,13 +145,13 @@ public class EditVaccineDialog extends JDialog {
 		}
 		return label_3;
 	}
-	private JSpinner getSpinner_1() {
-		if (spinner_1 == null) {
-			spinner_1 = new JSpinner();
-			spinner_1.setModel(new SpinnerDateModel(new Date(), null, null, Calendar.DAY_OF_YEAR));
-			spinner_1.setEditor(new javax.swing.JSpinner.DateEditor(spinner_1, "dd/MM/yyyy"));
+	private JSpinner getSpinnerDate() {
+		if (spinnerDate == null) {
+			spinnerDate = new JSpinner();
+			spinnerDate.setModel(new SpinnerDateModel(new Date(), null, null, Calendar.DAY_OF_YEAR));
+			spinnerDate.setEditor(new javax.swing.JSpinner.DateEditor(spinnerDate, "dd/MM/yyyy"));
 		}
-		return spinner_1;
+		return spinnerDate;
 	}
 	private JLabel getLabel_7() {
 		if (label_7 == null) {
@@ -173,22 +173,22 @@ public class EditVaccineDialog extends JDialog {
 			btnEdit = new JButton("Edit");
 			btnEdit.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					if(getComboBox_1().getSelectedItem() == null) {
+					if(getCbType().getSelectedItem() == null) {
 						JOptionPane.showMessageDialog(null, "Select vaccine type");
-					}else if(getTextField_2().getText().equals("")) {
+					}else if(getTFHealthCard().getText().equals("")) {
 						JOptionPane.showMessageDialog(null, "Type a health card number");
-					}else if(!getTextField_2().getText().matches("[0-9]+") && getTextField_2().getText().length() != 10) {
+					}else if(!getTFHealthCard().getText().matches("[0-9]+") && getTFHealthCard().getText().length() != 10) {
 						JOptionPane.showMessageDialog(null, "Type a correct health card number");
-					}else if(getTextArea_1().getText().equals("")) {
+					}else if(getTADescription().getText().equals("")) {
 						JOptionPane.showMessageDialog(null, "Type a description");
-					}else if(isBefore((Date)getSpinner_1().getValue(),today())) {
+					}else if(isBefore((Date)getSpinnerDate().getValue(),today())) {
 						JOptionPane.showMessageDialog(null, "Date must not be before today. Today is "+new Date());
 					}else {
 						Vaccine va = vaccine;
 						List<Patient> patients = ps.findAllPatient();
 						Patient patient = null;
 						for(Patient p: patients) {
-							if(p.getHealthCardNumber().equals(textField_2.getText())) {
+							if(p.getHealthCardNumber().equals(tFHealthCard.getText())) {
 								patient = p;
 							}
 						}
@@ -197,27 +197,27 @@ public class EditVaccineDialog extends JDialog {
 						}else {
 							if(va.getPatient().getHealthCardNumber().equals(patient.getHealthCardNumber())) {
 								va.setPatient(patient);
-								LocalDateTime d=convertToLocalDateTimeViaInstant((Date)spinner_1.getValue());
+								LocalDateTime d=convertToLocalDateTimeViaInstant((Date)spinnerDate.getValue());
 								va.setDate(d);
-								va.setDescription(textArea_1.getText());
-								va.setVaccineType((VaccineType)comboBox_1.getSelectedItem());
+								va.setDescription(tADescription.getText());
+								va.setVaccineType((VaccineType)cbType.getSelectedItem());
 								vs.createVaccine(va);
 								Patient pat = va.getPatient();
 								vacunas = vs.findByPatient(pat);
 							}else {
 								ps.findPatientByDni(va.getPatient().getDni()).getVaccines().remove(va);
 								va.setPatient(patient);
-								va.setDate(convertToLocalDateTimeViaInstant((Date)spinner_1.getValue()));
-								va.setDescription(textArea_1.getText());
-								va.setVaccineType((VaccineType)comboBox_1.getSelectedItem());
+								va.setDate(convertToLocalDateTimeViaInstant((Date)spinnerDate.getValue()));
+								va.setDescription(tADescription.getText());
+								va.setVaccineType((VaccineType)cbType.getSelectedItem());
 								vs.createVaccine(va);
 								Patient pat = va.getPatient();
 								vacunas = vs.findByPatient(pat);
 							}
-							textField_2.setText(va.getPatient().getHealthCardNumber());
-							textArea_1.setText("");
-							textField_2.setText("");
-							spinner_1.setValue(new Date());
+							tFHealthCard.setText(va.getPatient().getHealthCardNumber());
+							tADescription.setText("");
+							tFHealthCard.setText("");
+							spinnerDate.setValue(new Date());
 							JOptionPane.showMessageDialog(null, "Vaccine modified");
 						}
 						
