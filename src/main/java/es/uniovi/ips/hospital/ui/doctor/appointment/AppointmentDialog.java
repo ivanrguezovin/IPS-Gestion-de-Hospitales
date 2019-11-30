@@ -140,6 +140,7 @@ public class AppointmentDialog extends JDialog {
             buttonPanel.add(BorderLayout.WEST, editButton);
             buttonPanel.add(BorderLayout.EAST, deleteButton);
             buttonPanel.add(BorderLayout.EAST, refreshButton);
+            buttonPanel.add(BorderLayout.EAST, allButton);
 
             JButton btnShowMedicalRecord = new JButton("Show Medical Record");
             btnShowMedicalRecord.addActionListener(actionEvent -> showMedicalRecord());
