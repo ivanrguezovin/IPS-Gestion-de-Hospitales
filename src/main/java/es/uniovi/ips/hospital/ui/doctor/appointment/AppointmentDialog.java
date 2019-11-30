@@ -5,6 +5,7 @@ import es.uniovi.ips.hospital.domain.Diagnostic;
 import es.uniovi.ips.hospital.domain.Doctor;
 import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.service.DiagnosticService;
+import es.uniovi.ips.hospital.ui.common.MedicalRecordDialog;
 import es.uniovi.ips.hospital.ui.util.render.DiagnosticCellRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,181 +18,222 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Set;
 
 @Component
 public class AppointmentDialog extends JDialog {
 
 	private static final long serialVersionUID = -2608429797740890553L;
-	
 	private Appointment appointment;
-    private Patient patient;
-    private Doctor doctor;
+	private Patient patient;
+	private Doctor doctor;
 
-    private JPanel patientInfoPanel;
-    private JPanel diagnosticPanel;
-    private JPanel medicalHistoryPanel;
+	private JPanel patientInfoPanel;
+	private JPanel diagnosticPanel;
 
-    private JLabel nameField;
-    private JLabel surnameField;
+	private JLabel nameField;
+	private JLabel surnameField;
 
-    private JList<Diagnostic> diagnosticList;
+	private JList<Diagnostic> diagnosticList;
 
-    @Autowired
-    private DiagnosticService diagnosticService;
+	@Autowired
+	private DiagnosticService diagnosticService;
 
-    public AppointmentDialog() {
-        appointment = new Appointment();
-        patient = new Patient();
-        this.setModal(true);
-        this.setSize(1000, 800);
+	@Autowired
+	private MedicalRecordDialog medicalRecordDialog;
 
-        this.getContentPane().add(BorderLayout.NORTH, getPatientInfoPanel());
-        this.getContentPane().add(BorderLayout.CENTER, getDiagnosticPanel());
-        //this.getContentPane().add(BorderLayout.SOUTH, getMedicalHistoryPanel());
-    }
+	@Autowired
+	private CreateDiagnosticDialog createDiagnosticDialog;
 
-    private JPanel getPatientInfoPanel() {
-        if (patientInfoPanel == null) {
-            patientInfoPanel = new JPanel();
-            TitledBorder titledBorder = new TitledBorder("Patient");
-            patientInfoPanel.setBorder(titledBorder);
+	public AppointmentDialog() {
+		appointment = new Appointment();
+		patient = new Patient();
+		doctor = new Doctor();
+		this.setModal(true);
+		this.setSize(1000, 800);
 
+		this.getContentPane().add(BorderLayout.NORTH, getPatientInfoPanel());
+		this.getContentPane().add(BorderLayout.CENTER, getDiagnosticPanel());
+		// this.getContentPane().add(BorderLayout.SOUTH, getMedicalHistoryPanel());
+	}
 
-            ImageIcon image = new ImageIcon();
-            try {
-                File file = ResourceUtils.getFile("classpath:profile.png");
-                BufferedImage img = ImageIO.read(file);
-                Image i = img.getScaledInstance(120, 120, java.awt.Image.SCALE_SMOOTH);
-                image = new ImageIcon(i);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            JLabel iconLabel = new JLabel(image);
+	private JPanel getPatientInfoPanel() {
+		if (patientInfoPanel == null) {
+			patientInfoPanel = new JPanel();
+			TitledBorder titledBorder = new TitledBorder("Patient");
+			patientInfoPanel.setBorder(titledBorder);
 
-            JLabel nameLabel = new JLabel("Name");
-            JLabel surnameLabel = new JLabel("Surname");
+			ImageIcon image = new ImageIcon();
+			try {
+				File file = ResourceUtils.getFile("classpath:profile.png");
+				BufferedImage img = ImageIO.read(file);
+				Image i = img.getScaledInstance(120, 120, java.awt.Image.SCALE_SMOOTH);
+				image = new ImageIcon(i);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			JLabel iconLabel = new JLabel(image);
 
-            nameField = new JLabel();
-            surnameField = new JLabel();
+			JLabel nameLabel = new JLabel("Name");
+			JLabel surnameLabel = new JLabel("Surname");
 
-            JPanel infoPanel = new JPanel();
+			nameField = new JLabel();
+			surnameField = new JLabel();
 
-            infoPanel.setLayout(new GridBagLayout());
+			JPanel infoPanel = new JPanel();
 
-            GridBagConstraints gridBagConstraints = new GridBagConstraints();
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 0;
-            gridBagConstraints.insets = new Insets(8, 8, 8, 8);
-            gridBagConstraints.anchor = GridBagConstraints.EAST;
+			infoPanel.setLayout(new GridBagLayout());
 
-            infoPanel.add(nameLabel, gridBagConstraints);
-            gridBagConstraints.gridy++;
-            infoPanel.add(surnameLabel, gridBagConstraints);
+			GridBagConstraints gridBagConstraints = new GridBagConstraints();
+			gridBagConstraints.gridx = 0;
+			gridBagConstraints.gridy = 0;
+			gridBagConstraints.insets = new Insets(8, 8, 8, 8);
+			gridBagConstraints.anchor = GridBagConstraints.EAST;
 
-            gridBagConstraints.anchor = GridBagConstraints.WEST;
-            gridBagConstraints.gridy = 0;
-            gridBagConstraints.gridx++;
-            gridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
+			infoPanel.add(nameLabel, gridBagConstraints);
+			gridBagConstraints.gridy++;
+			infoPanel.add(surnameLabel, gridBagConstraints);
 
-            infoPanel.add(nameField, gridBagConstraints);
-            gridBagConstraints.gridy++;
+			gridBagConstraints.anchor = GridBagConstraints.WEST;
+			gridBagConstraints.gridy = 0;
+			gridBagConstraints.gridx++;
+			gridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
 
-            infoPanel.add(surnameField, gridBagConstraints);
-            patientInfoPanel.add(BorderLayout.WEST, iconLabel);
-            patientInfoPanel.add(BorderLayout.EAST, infoPanel);
+			infoPanel.add(nameField, gridBagConstraints);
+			gridBagConstraints.gridy++;
 
-        }
-        return patientInfoPanel;
-    }
+			infoPanel.add(surnameField, gridBagConstraints);
+			patientInfoPanel.add(BorderLayout.WEST, iconLabel);
+			patientInfoPanel.add(BorderLayout.EAST, infoPanel);
 
-    private JPanel getDiagnosticPanel() {
-        if (diagnosticPanel == null) {
-            diagnosticPanel = new JPanel();
-            BoxLayout boxLayout = new BoxLayout(diagnosticPanel, BoxLayout.Y_AXIS);
-            diagnosticPanel.setLayout(boxLayout);
-            TitledBorder titledBorder = new TitledBorder("Diagnostic");
-            diagnosticPanel.setBorder(titledBorder);
+		}
+		return patientInfoPanel;
+	}
 
-            JScrollPane jScrollPane = new JScrollPane(getDiagnosticList(),
-                    JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                    JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	private JPanel getDiagnosticPanel() {
+		if (diagnosticPanel == null) {
+			diagnosticPanel = new JPanel();
+			BoxLayout boxLayout = new BoxLayout(diagnosticPanel, BoxLayout.Y_AXIS);
+			diagnosticPanel.setLayout(boxLayout);
+			TitledBorder titledBorder = new TitledBorder("Diagnostic");
+			diagnosticPanel.setBorder(titledBorder);
 
-            JPanel buttonPanel = new JPanel();
-            JButton createButton = new JButton("Create diagnostic");
-            JButton deleteButton = new JButton("Delete diagnostic");
-            JButton refreshButton = new JButton("Refresh");
+			JScrollPane jScrollPane = new JScrollPane(getDiagnosticList(), JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+					JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-            deleteButton.addActionListener(actionEvent -> System.out.println("Delete"));
-            refreshButton.addActionListener(actionEvent -> this.loadDiagnostics());
+			JPanel buttonPanel = new JPanel();
+			JButton createButton = new JButton("Create diagnostic");
+			JButton editButton = new JButton("Edit prescription");
+			JButton deleteButton = new JButton("Delete diagnostic");
+			JButton refreshButton = new JButton("Diagnostics for this appointment");
+			JButton allButton = new JButton("All diagnostics");
 
-            buttonPanel.add(BorderLayout.WEST, createButton);
-            buttonPanel.add(BorderLayout.EAST, deleteButton);
-            buttonPanel.add(BorderLayout.EAST, refreshButton);
+			createButton.addActionListener(actionEvent -> createDiagnosticDialog.run(this.appointment, this.doctor));
+			deleteButton.addActionListener(actionEvent -> this.deleteDiagnostic());
+			refreshButton.addActionListener(actionEvent -> this.loadDiagnostics());
+			allButton.addActionListener(actionEvent -> this.allDiagnostics());
 
-            diagnosticPanel.add(BorderLayout.NORTH, jScrollPane);
-            diagnosticPanel.add(BorderLayout.SOUTH, buttonPanel);
-        }
-        return diagnosticPanel;
-    }
+			buttonPanel.add(BorderLayout.WEST, createButton);
+			buttonPanel.add(BorderLayout.WEST, editButton);
+			buttonPanel.add(BorderLayout.EAST, deleteButton);
+			buttonPanel.add(BorderLayout.EAST, refreshButton);
+			buttonPanel.add(BorderLayout.EAST, allButton);
 
-    private JList<Diagnostic> getDiagnosticList() {
-        if (diagnosticList == null) {
-            diagnosticList = new JList<>();
-            diagnosticList.setCellRenderer(new DiagnosticCellRenderer());
-        }
-        return diagnosticList;
-    }
+			JButton btnShowMedicalRecord = new JButton("Show Medical Record");
+			btnShowMedicalRecord.addActionListener(actionEvent -> showMedicalRecord());
+			buttonPanel.add(btnShowMedicalRecord);
+			buttonPanel.add(BorderLayout.EAST, refreshButton);
 
-    private JPanel getMedicalHistoryPanel() {
-        if (medicalHistoryPanel == null) {
-            medicalHistoryPanel = new JPanel();
-            TitledBorder titledBorder = new TitledBorder("Medical history");
-            medicalHistoryPanel.setBorder(titledBorder);
-        }
-        return medicalHistoryPanel;
-    }
+			diagnosticPanel.add(BorderLayout.NORTH, jScrollPane);
+			diagnosticPanel.add(BorderLayout.SOUTH, buttonPanel);
+		}
+		return diagnosticPanel;
+	}
 
-    void run(Appointment appointment, Doctor doctor) {
-        this.setAppointment(appointment);
-        this.setDoctor(doctor);
-        this.setPatient(appointment.getPatient());
-        this.setTitle("Your appointment with " + patient.getName());
-        this.nameField.setText(patient.getName());
-        this.surnameField.setText(patient.getSurname());
-        this.loadDiagnostics();
-        this.setLocationRelativeTo(null);
-        this.setVisible(true);
-    }
+	private void showMedicalRecord() {
+		System.out.println(patient);
+		medicalRecordDialog.showHistoryOf(patient);
+	}
 
-    public Appointment getAppointment() {
-        return appointment;
-    }
+	private void deleteDiagnostic() {
+		if (diagnosticList.getSelectedIndex() == -1) {
+			JOptionPane.showMessageDialog(null, "Select an item from the list");
+		} else {
+			Diagnostic d = diagnosticList.getSelectedValue();
+			d.setActive(false);
+			diagnosticService.createDiagnostic(d);
+		}
+	}
 
-    public void setAppointment(Appointment appointment) {
-        this.appointment = appointment;
-    }
+	private JList<Diagnostic> getDiagnosticList() {
+		if (diagnosticList == null) {
+			diagnosticList = new JList<Diagnostic>();
+			diagnosticList.setCellRenderer(new DiagnosticCellRenderer());
+		}
+		return diagnosticList;
+	}
 
-    public Patient getPatient() {
-        return patient;
-    }
+	void run(Appointment appointment, Doctor doctor) {
+		this.setAppointment(appointment);
+		this.setDoctor(doctor);
+		this.setPatient(appointment.getPatient());
+		this.setTitle("Your appointment with " + patient.getName());
+		this.nameField.setText(patient.getName());
+		this.surnameField.setText(patient.getSurname());
+		this.loadDiagnostics();
+		this.setLocationRelativeTo(null);
+		this.setVisible(true);
+	}
 
-    public void setPatient(Patient patient) {
-        this.patient = patient;
-    }
+	public Appointment getAppointment() {
+		return appointment;
+	}
 
-    public Doctor getDoctor() {
-        return doctor;
-    }
+	public void setAppointment(Appointment appointment) {
+		this.appointment = appointment;
+	}
 
-    public void setDoctor(Doctor doctor) {
-        this.doctor = doctor;
-    }
+	public Patient getPatient() {
+		return patient;
+	}
 
-    private void loadDiagnostics() {
-        DefaultListModel<Diagnostic> model = new DefaultListModel<>();
-        for (Diagnostic diagnostic : diagnosticService.findAllByAppointment(this.getAppointment())) {
-            model.addElement(diagnostic);
-        }
-        diagnosticList.setModel(model);
-    }
+	public void setPatient(Patient patient) {
+		this.patient = patient;
+	}
+
+	public Doctor getDoctor() {
+		return doctor;
+	}
+
+	public void setDoctor(Doctor doctor) {
+		this.doctor = doctor;
+	}
+
+	private void loadDiagnostics() {
+		DefaultListModel<Diagnostic> model = new DefaultListModel<>();
+		for (Diagnostic diagnostic : diagnosticService.findAllByAppointment(this.getAppointment())) {
+			model.addElement(diagnostic);
+		}
+		diagnosticList.setModel(model);
+		System.out.println("Diagnostics from this appointment");
+	}
+
+	private void allDiagnostics() {
+		DefaultListModel<Diagnostic> model = new DefaultListModel<>();
+		Set<Appointment> aps = doctor.getAppointments();
+		java.util.List<Appointment> appointments = new ArrayList<>();
+		for (Appointment a : aps) {
+			if (a.getPatient().equals(patient)) {
+				appointments.add(a);
+			}
+		}
+		for (Appointment a : appointments) {
+			for (Diagnostic d : a.getDiagnostics()) {
+				model.addElement(d);
+			}
+		}
+		diagnosticList.setModel(model);
+		System.out.println("All diagnostics");
+	}
 }

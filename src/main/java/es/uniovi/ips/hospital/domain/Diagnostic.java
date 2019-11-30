@@ -33,10 +33,12 @@ public class Diagnostic {
     @NotNull
     @Column(name = "when")
     private LocalDateTime created;
+    
+    @NotNull
+    @Column(name = "active")
+    private boolean active = true;
 
-    public Diagnostic() {
-        // Nothing here.
-    }
+    public Diagnostic() {}
 
     public Diagnostic(@NotNull String comment,
                       @NotNull Doctor doctor,
@@ -99,7 +101,15 @@ public class Diagnostic {
         this.created = created;
     }
 
-    @Override
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	@Override
     public String toString() {
         return "Diagnostic{" +
                 "id=" + id +

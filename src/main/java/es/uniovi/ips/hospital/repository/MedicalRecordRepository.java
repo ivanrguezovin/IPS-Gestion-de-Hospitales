@@ -1,6 +1,7 @@
 package es.uniovi.ips.hospital.repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,5 +12,6 @@ public interface MedicalRecordRepository extends JpaRepository<MedicalRecord, Lo
 
 	MedicalRecord findByPatientAndDateAndDescriptionAndPrescription(Patient patient, LocalDateTime date, String description, String prescription);
 	MedicalRecord findByPatient(Patient patient);
+	List<MedicalRecord> findAllByPatient(Patient patient);
 	
 }

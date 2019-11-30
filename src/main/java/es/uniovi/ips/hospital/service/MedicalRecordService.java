@@ -1,5 +1,7 @@
 package es.uniovi.ips.hospital.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,10 @@ public class MedicalRecordService {
     
     public MedicalRecord findByPatient(Patient patient) {
 		return medicalRecordRepository.findByPatient(patient);
+	}
+    
+    public List<MedicalRecord> findAllByPatient(Patient patient) {
+		return medicalRecordRepository.findAllByPatient(patient);
 	}
 
 }

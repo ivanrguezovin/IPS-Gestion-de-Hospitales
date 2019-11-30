@@ -40,7 +40,7 @@ public class MedicalRecord {
         this.id = id;
     }
 
-    public String getDescription() {
+	public String getDescription() {
 		return description;
 	}
 
@@ -76,6 +76,5 @@ public class MedicalRecord {
 	public String toString() {
 		return "MedicalRecord [id=" + id + ", description=" + description + ", date=" + date + "]";
 	}
-    
     
 }

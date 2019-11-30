@@ -82,20 +82,16 @@ public class VaccineDoctorDialog extends JDialog {
 	private JButton btnSearch;
 	private JPanel panel_9;
 	private JButton btnMarkAsApplied;
-	private JLabel label_6;
-	private JComboBox<VaccineType> comboBox_1;
-	private JLabel label_7;
-	private JTextArea textArea_1;
-	private JLabel lblPatientsHealthCard;
-	private JTextField textField_2;
-	private JLabel label_9;
-	private JSpinner spinner_1;
 	private JButton btnEdit;
+	@Autowired private EditVaccineDialog evd;
+	private JButton btnRefresh;
+	
 	
 	/**
 	 * Create the dialog.
 	 */
 	public VaccineDoctorDialog() {
+		
 		setTitle("Vaccines");
 		setBounds(100, 100, 1200, 600);
 		getContentPane().add(getPanel(), BorderLayout.SOUTH);
@@ -103,6 +99,8 @@ public class VaccineDoctorDialog extends JDialog {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
 	}
+	
+	
 	
 	public Doctor getDoctor() {
 		return doctor;
@@ -495,16 +493,9 @@ public class VaccineDoctorDialog extends JDialog {
 	private JPanel getPanel_9() {
 		if (panel_9 == null) {
 			panel_9 = new JPanel();
-			panel_9.setLayout(new GridLayout(0, 10, 0, 0));
-			panel_9.add(getLabel_6());
-			panel_9.add(getComboBox_1());
-			panel_9.add(getLabel_7());
-			panel_9.add(getTextArea_1());
-			panel_9.add(getLblPatientsHealthCard());
-			panel_9.add(getTextField_2());
-			panel_9.add(getLabel_9());
-			panel_9.add(getSpinner_1());
+			panel_9.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 			panel_9.add(getBtnEdit());
+			panel_9.add(getBtnRefresh());
 			panel_9.add(getBtnMarkAsApplied());
 		}
 		return panel_9;
@@ -558,165 +549,51 @@ public class VaccineDoctorDialog extends JDialog {
 		}
 		return btnMarkAsApplied;
 	}
-	private JLabel getLabel_6() {
-		if (label_6 == null) {
-			label_6 = new JLabel("Type");
-			label_6.setHorizontalAlignment(SwingConstants.CENTER);
-		}
-		return label_6;
-	}
-	private JComboBox<VaccineType> getComboBox_1() {
-		if (comboBox_1 == null) {
-			comboBox_1 = new JComboBox<VaccineType>();
-			comboBox_1.addItem(VaccineType.VIVAS_ATENUADAS);
-			comboBox_1.addItem(VaccineType.INACTIVADAS);
-			comboBox_1.addItem(VaccineType.CON_TOXOIDES);
-			comboBox_1.addItem(VaccineType.SUBUNIDADES_RECOMBINANTES_POLISACÁRIDAS_Y_COMBINADAS);
-		}
-		return comboBox_1;
-	}
-	private JLabel getLabel_7() {
-		if (label_7 == null) {
-			label_7 = new JLabel("Description");
-			label_7.setHorizontalAlignment(SwingConstants.CENTER);
-		}
-		return label_7;
-	}
-	private JTextArea getTextArea_1() {
-		if (textArea_1 == null) {
-			textArea_1 = new JTextArea();
-			textArea_1.setWrapStyleWord(true);
-			textArea_1.setLineWrap(true);
-		}
-		return textArea_1;
-	}
-	private JLabel getLblPatientsHealthCard() {
-		if (lblPatientsHealthCard == null) {
-			lblPatientsHealthCard = new JLabel("Patient´s health card");
-			lblPatientsHealthCard.setHorizontalAlignment(SwingConstants.CENTER);
-		}
-		return lblPatientsHealthCard;
-	}
-	private JTextField getTextField_2() {
-		if (textField_2 == null) {
-			textField_2 = new JTextField();
-			textField_2.setColumns(10);
-		}
-		return textField_2;
-	}
-	private JLabel getLabel_9() {
-		if (label_9 == null) {
-			label_9 = new JLabel("Date");
-			label_9.setHorizontalAlignment(SwingConstants.CENTER);
-		}
-		return label_9;
-	}
-	private JSpinner getSpinner_1() {
-		if (spinner_1 == null) {
-			spinner_1 = new JSpinner();
-			spinner_1.setModel(new SpinnerDateModel(now(), null, null, Calendar.DAY_OF_YEAR));
-			spinner_1.setEditor(new javax.swing.JSpinner.DateEditor(spinner_1, "dd/MM/yyyy"));
-		}
-		return spinner_1;
-	}
 	private JButton getBtnEdit() {
 		if (btnEdit == null) {
 			btnEdit = new JButton("Edit");
 			btnEdit.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					if(list.getSelectedIndex() == -1) {
+					if(list.getSelectedIndex()==-1) {
 						JOptionPane.showMessageDialog(null, "Select an element from the list");
-					}else if(getComboBox_1().getSelectedItem() == null) {
-						JOptionPane.showMessageDialog(null, "Select vaccine type");
-					}else if(getTextField_2().getText().equals("")) {
-						JOptionPane.showMessageDialog(null, "Type a health card number");
-					}else if(!getTextField_2().getText().matches("[0-9]+") && getTextField().getText().length() != 10) {
-						JOptionPane.showMessageDialog(null, "Type a correct health card number");
-					}else if(getTextArea_1().getText().equals("")) {
-						JOptionPane.showMessageDialog(null, "Type a description");
-					}else if(isBefore((Date)getSpinner_1().getValue(),today())) {
-						JOptionPane.showMessageDialog(null, "Date must not be before today. Today is "+now());
 					}else {
-						Vaccine va = list.getSelectedValue();
-						List<Patient> patients = ps.findAllPatient();
-						Patient patient = null;
-						for(Patient p: patients) {
-							if(p.getHealthCardNumber().equals(textField_2.getText())) {
-								patient = p;
-							}
-						}
-						if(patient==null) {
-							JOptionPane.showMessageDialog(null, "Patient does not exist");
-						}else {
-							if(va.getPatient().equals(patient.getHealthCardNumber())) {
-								va.setPatient(patient);
-								LocalDateTime d=convertToLocalDateTimeViaInstant((Date)spinner_1.getValue());
-								va.setDate(d);
-								va.setDescription(textArea_1.getText());
-								va.setVaccineType((VaccineType)comboBox_1.getSelectedItem());
-								vs.createVaccine(va);
-								Patient pat = va.getPatient();
-								List<Vaccine> vaccinesPatient = vs.findByPatient(pat);
-								Vaccine[] v = new Vaccine[vaccinesPatient.size()];
-								int i=0;
-								for(Vaccine c:vaccinesPatient) {
-									v[i] = c;
-									i++;
-								}
-								list.setModel(new AbstractListModel<Vaccine>() {
-									/**
-									 * 
-									 */
-									private static final long serialVersionUID = -1222956312762187769L;
-									Vaccine[] values = v;
-									public int getSize() {
-										return values.length;
-									}
-									public Vaccine getElementAt(int index) {
-										return values[index];
-									}
-								});
-							}else {
-								ps.findPatientByDni(va.getPatient().getDni()).getVaccines().remove(va);
-								va.setPatient(patient);
-								va.setDate(convertToLocalDateTimeViaInstant((Date)spinner_1.getValue()));
-								va.setDescription(textArea_1.getText());
-								va.setVaccineType((VaccineType)comboBox_1.getSelectedItem());
-								vs.createVaccine(va);
-								Patient pat = va.getPatient();
-								List<Vaccine> vaccinesPatient = vs.findByPatient(pat);
-								Vaccine[] v = new Vaccine[vaccinesPatient.size()];
-								int i=0;
-								for(Vaccine c:vaccinesPatient) {
-									v[i] = c;
-									i++;
-								}
-								list.setModel(new AbstractListModel<Vaccine>() {
-									/**
-									 * 
-									 */
-									private static final long serialVersionUID = -1222956312762187769L;
-									Vaccine[] values = v;
-									public int getSize() {
-										return values.length;
-									}
-									public Vaccine getElementAt(int index) {
-										return values[index];
-									}
-								});
-							}
-							textField_1.setText(va.getPatient().getHealthCardNumber());
-							textArea_1.setText("");
-							textField_2.setText("");
-							spinner_1.setValue(now());
-							JOptionPane.showMessageDialog(null, "Vaccine modified");
-						}
-						
+						evd.setVisible(true);
+						evd.setVaccine(list.getSelectedValue());
 					}
-					
+					}
+				});
+			}
+			return btnEdit;
+		}
+	
+	private JButton getBtnRefresh() {
+		if (btnRefresh == null) {
+			btnRefresh = new JButton("Refresh");
+			btnRefresh.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Vaccine[] v = new Vaccine[evd.getVacunas().size()];
+					int i=0;
+					for(Vaccine c:evd.getVacunas()) {
+						v[i] = c;
+						i++;
+					}
+					list.setModel(new AbstractListModel<Vaccine>() {
+							/**
+							 * 
+							 */
+						private static final long serialVersionUID = -1222956312762187769L;
+						Vaccine[] values = v;
+						public int getSize() {
+							return values.length;
+						}
+						public Vaccine getElementAt(int index) {
+							return values[index];
+						}
+					});
 				}
 			});
 		}
-		return btnEdit;
+		return btnRefresh;
 	}
+
 }
