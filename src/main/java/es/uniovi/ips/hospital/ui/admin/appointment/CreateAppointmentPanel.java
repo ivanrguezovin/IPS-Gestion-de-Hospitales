@@ -728,8 +728,6 @@ public class CreateAppointmentPanel extends JPanel implements Shiftable {
         }
     }
 
-    // METODOS DE EJECUCION -------------------------------------------------------------------------
-
     // Elimina el doctor de la lista de doctores de la cita y lo añade a la de los posibles doctores
     private void removeDoctor() {
         if (getCbSelectedDoctors().getSelectedItem() != null) {
@@ -796,11 +794,8 @@ public class CreateAppointmentPanel extends JPanel implements Shiftable {
             swapButton();
             // Obtenemos la lista de doctores disponibles para esa cita y activamos su panel
             availableDoctors = doctorService.findAvailableDoctors(appointmentDateTime);
-            List<Doctor> allDoctors = doctorService.findAllDoctors();
             List<Nurse>	availableNurses = nurseService.findAvailableNurses(appointmentDateTime);
-            doctorList.clear();
             nurseList.clear();
-            doctorList.addAll(allDoctors);
             nurseList.addAll(availableNurses);
             cbDoctor.setRenderer(new StaffCellRenderer(availableDoctors));
             cbNurse.setRenderer(new StaffCellRenderer());
@@ -814,8 +809,6 @@ public class CreateAppointmentPanel extends JPanel implements Shiftable {
         appointmentDateTime = null;
         appointmentEndTime = null;
         // Reiniciamos los empleados seleccionados, en otra hora pueden no trabajar
-        selectedDoctors.clear();
-        lblDoctors.setText("");
         selectedNurses.clear();
         lblNurses.setText("");
         // Reactivamos los elementos de selección de cita y cambiamos el botón
