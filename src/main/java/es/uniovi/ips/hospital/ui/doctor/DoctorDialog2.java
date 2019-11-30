@@ -12,6 +12,7 @@ import es.uniovi.ips.hospital.domain.Appointment;
 import es.uniovi.ips.hospital.domain.Doctor;
 import es.uniovi.ips.hospital.ui.doctor.appointment.ApplyForAppointmentPanel;
 import es.uniovi.ips.hospital.ui.doctor.appointment.ShowMyAppointmentsPanel;
+import es.uniovi.ips.hospital.ui.doctor.vaccine.CreateVaccinePanel;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
 import es.uniovi.ips.hospital.ui.util.components.MyBanner;
@@ -35,6 +36,7 @@ public class DoctorDialog2 extends JDialog {
     @Autowired	private DoctorMainPanel mainPanel;
     @Autowired	private ApplyForAppointmentPanel applyForAppointmentPanel;
     @Autowired	private ShowMyAppointmentsPanel showMyAppointmentsPanel;
+    @Autowired 	private CreateVaccinePanel createVaccinePanel;
 
 	private JPanel current;
 	private JPanel previous;
@@ -141,6 +143,10 @@ public class DoctorDialog2 extends JDialog {
 //		launch(processAppointmentPanel);
 //		
 	}
+	
+    void launchCreateVaccine() {
+        launch(createVaccinePanel);
+    }
 //	
 //	public void launchEditAppointment(Appointment appointment) {
 //		editAppointmentPanel.fillComboBoxes();
@@ -149,10 +155,6 @@ public class DoctorDialog2 extends JDialog {
 //	}
 //	
 //
-//    void launchManageWorkSchedule() {
-//        manageWorkSchedulePanel.fillLists();
-//        launch(manageWorkSchedulePanel);
-//    }
 //
 //    void launchManageBreaks() {
 //        manageBreakSchedulePanel.fillLists();

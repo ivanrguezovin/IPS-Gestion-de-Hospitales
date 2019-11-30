@@ -28,17 +28,17 @@ public class DoctorMainPanel extends JPanel implements Shiftable {
 
     private final JPanel contentPanel = new MyBackPanel();
     private JPanel pnAppointments;
-    private JPanel pnSchedules;
+    private JPanel pnVaccines;
     private JPanel pnPatients;
     private JPanel pnCreateUsers;
 	private JLabel lblAppointments;
-	private JLabel lblSchedules;
+	private JLabel lblVaccines;
 	private JLabel lblPatients;
 	private JLabel lblDatabase;
-    private JButton btnCreateAppointment;
-    private JButton btnEditAppointment;
-    private JButton btnManageSchedules;
-    private JButton btnManageBreaks;
+    private JButton btnApplyForAppointment;
+    private JButton btnManageAppointment;
+    private JButton btnCreateVaccines;
+    private JButton btnManageVaccines;
     private JButton btnShowMedicalRecords;
     private JButton btnCreateAdmins;
     private JButton btnCreateDoctors;
@@ -71,12 +71,12 @@ public class DoctorMainPanel extends JPanel implements Shiftable {
 		gbc_pnAppointment.gridx = 1;
 		gbc_pnAppointment.gridy = 1;
 		contentPanel.add(getPnAppointments(), gbc_pnAppointment);
-		GridBagConstraints gbc_pnSchedules = new GridBagConstraints();
-		gbc_pnSchedules.insets = new Insets(5, 5, 5, 5);
-		gbc_pnSchedules.fill = GridBagConstraints.BOTH;
-		gbc_pnSchedules.gridx = 1;
-		gbc_pnSchedules.gridy = 3;
-		contentPanel.add(getPnSchedules(), gbc_pnSchedules);
+		GridBagConstraints gbc_pnVaccines = new GridBagConstraints();
+		gbc_pnVaccines.insets = new Insets(5, 5, 5, 5);
+		gbc_pnVaccines.fill = GridBagConstraints.BOTH;
+		gbc_pnVaccines.gridx = 1;
+		gbc_pnVaccines.gridy = 3;
+		contentPanel.add(getPnVaccines(), gbc_pnVaccines);
 		GridBagConstraints gbc_pnPatients = new GridBagConstraints();
 		gbc_pnPatients.insets = new Insets(5, 5, 5, 5);
 		gbc_pnPatients.fill = GridBagConstraints.BOTH;
@@ -104,25 +104,25 @@ public class DoctorMainPanel extends JPanel implements Shiftable {
             pnAppointments.setLayout(new GridLayout(9, 1, 10, 0));
             pnAppointments.add(getLblAppointments());
             pnAppointments.add(Box.createRigidArea(new Dimension(0,0)));
-            pnAppointments.add(getBtnCreateAppointment());
+            pnAppointments.add(getBtnManageAppointment());
             pnAppointments.add(Box.createRigidArea(new Dimension(0,0)));
-            pnAppointments.add(getBtnEditAppointment());
+            pnAppointments.add(getBtnApplyForAppointment());
         }
         return pnAppointments;
     }
 
-    private JPanel getPnSchedules() {
-        if (pnSchedules == null) {
-            pnSchedules = new MyFrontPanel();
-            pnSchedules.setBorder(new CompoundBorder(Designer.getBorder(), new EmptyBorder(5, 5, 5, 5)));
-            pnSchedules.setLayout(new GridLayout(9, 1, 10, 0));
-            pnSchedules.add(getLblSchedules());
-            pnSchedules.add(Box.createRigidArea(new Dimension(0,0)));
-            pnSchedules.add(getBtnManageSchedules());
-            pnSchedules.add(Box.createRigidArea(new Dimension(0,0)));
-            pnSchedules.add(getBtnManageBreaks());
+    private JPanel getPnVaccines() {
+        if (pnVaccines == null) {
+            pnVaccines = new MyFrontPanel();
+            pnVaccines.setBorder(new CompoundBorder(Designer.getBorder(), new EmptyBorder(5, 5, 5, 5)));
+            pnVaccines.setLayout(new GridLayout(9, 1, 10, 0));
+            pnVaccines.add(getLblVaccines());
+            pnVaccines.add(Box.createRigidArea(new Dimension(0,0)));
+            pnVaccines.add(getBtnCreateVaccines());
+            pnVaccines.add(Box.createRigidArea(new Dimension(0,0)));
+            pnVaccines.add(getBtnManageVaccines());
         }
-        return pnSchedules;
+        return pnVaccines;
     }
 
     private JPanel getPnPatients() {
@@ -163,12 +163,12 @@ public class DoctorMainPanel extends JPanel implements Shiftable {
     	return lblAppointments;
     }
     
-    private JLabel getLblSchedules() {
-    	if (lblSchedules == null) {
-    		lblSchedules = new JLabel("Schedules");
-    		lblSchedules.setHorizontalAlignment(SwingConstants.CENTER);
+    private JLabel getLblVaccines() {
+    	if (lblVaccines == null) {
+    		lblVaccines = new JLabel("Vaccines");
+    		lblVaccines.setHorizontalAlignment(SwingConstants.CENTER);
     	}
-    	return lblSchedules;
+    	return lblVaccines;
     }
     
     private JLabel getLblPatients() {
@@ -187,36 +187,36 @@ public class DoctorMainPanel extends JPanel implements Shiftable {
     	return lblDatabase;
     }
 
-    private JButton getBtnCreateAppointment() {
-        if (btnCreateAppointment == null) {
-            btnCreateAppointment = new JButton("Create appointment");
-            btnCreateAppointment.addActionListener(e -> doctorDialog.launchApplyForAppointment());
+    private JButton getBtnApplyForAppointment() {
+        if (btnApplyForAppointment == null) {
+            btnApplyForAppointment = new JButton("Create appointment");
+            btnApplyForAppointment.addActionListener(e -> doctorDialog.launchApplyForAppointment());
         }
-        return btnCreateAppointment;
+        return btnApplyForAppointment;
     }
 
-    private JButton getBtnEditAppointment() {
-        if (btnEditAppointment == null) {
-            btnEditAppointment = new JButton("Manage appointments");
-            btnEditAppointment.addActionListener(e -> doctorDialog.launchShowMyAppointments());
+    private JButton getBtnManageAppointment() {
+        if (btnManageAppointment == null) {
+            btnManageAppointment = new JButton("Manage appointments");
+            btnManageAppointment.addActionListener(e -> doctorDialog.launchShowMyAppointments());
         }
-        return btnEditAppointment;
+        return btnManageAppointment;
     }
 
-    private JButton getBtnManageSchedules() {
-        if (btnManageSchedules == null) {
-            btnManageSchedules = new JButton("Manage schedules");
-//            btnManageSchedules.addActionListener(e -> doctorDialog.launchManageWorkSchedule());
+    private JButton getBtnCreateVaccines() {
+        if (btnCreateVaccines == null) {
+            btnCreateVaccines = new JButton("Create vaccines");
+            btnCreateVaccines.addActionListener(e -> doctorDialog.launchCreateVaccine());
         }
-        return btnManageSchedules;
+        return btnCreateVaccines;
     }
 
-    private JButton getBtnManageBreaks() {
-        if (btnManageBreaks == null) {
-            btnManageBreaks = new JButton("Manage breaks");
+    private JButton getBtnManageVaccines() {
+        if (btnManageVaccines == null) {
+            btnManageVaccines = new JButton("Manage vaccines");
 //            btnManageBreaks.addActionListener(e -> doctorDialog.launchManageBreaks());
         }
-        return btnManageBreaks;
+        return btnManageVaccines;
     }
 
     private JButton getBtnShowMedicalRecords() {
@@ -263,7 +263,7 @@ public class DoctorMainPanel extends JPanel implements Shiftable {
 
 	@Override
 	public void setFocus() {
-		btnCreateAppointment.requestFocus();
+		btnApplyForAppointment.requestFocus();
 	}
 
 }
