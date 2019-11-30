@@ -18,6 +18,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Set;
 
 @Component
 public class AppointmentDialog extends JDialog {
@@ -126,11 +128,13 @@ public class AppointmentDialog extends JDialog {
             JButton createButton = new JButton("Create diagnostic");
             JButton editButton = new JButton("Edit prescription");
             JButton deleteButton = new JButton("Delete diagnostic");
-            JButton refreshButton = new JButton("Refresh");
+            JButton refreshButton = new JButton("Diagnostics for this appointment");
+            JButton allButton = new JButton("All diagnostics");
 
-            createButton.addActionListener(actionEvent -> {setVisible(false);createDiagnosticDialog.run(this.appointment, this.doctor);});
+            createButton.addActionListener(actionEvent -> createDiagnosticDialog.run(this.appointment, this.doctor));
             deleteButton.addActionListener(actionEvent -> this.deleteDiagnostic());
             refreshButton.addActionListener(actionEvent -> this.loadDiagnostics());
+            allButton.addActionListener(actionEvent -> this.allDiagnostics());
 
             buttonPanel.add(BorderLayout.WEST, createButton);
             buttonPanel.add(BorderLayout.WEST, editButton);
@@ -213,5 +217,24 @@ public class AppointmentDialog extends JDialog {
             model.addElement(diagnostic);
         }
         diagnosticList.setModel(model);
+        System.out.println("Diagnostics from this appointment");
+    }
+    
+    private void allDiagnostics() {
+    	DefaultListModel<Diagnostic> model = new DefaultListModel<>();
+    	Set<Appointment> aps = doctor.getAppointments();
+    	java.util.List<Appointment> appointments = new ArrayList<>();
+    	for(Appointment a:aps) {
+    		if(a.getPatient().equals(patient)) {
+    			appointments.add(a);
+    		}
+    	}
+    	for(Appointment a:appointments) {
+    		for(Diagnostic d: a.getDiagnostics()) {
+    			model.addElement(d);
+    		}
+    	}
+        diagnosticList.setModel(model);
+        System.out.println("All diagnostics");
     }
 }
