@@ -797,7 +797,7 @@ public class ProcessAppointmentPanel extends JPanel implements Shiftable {
 			appointment.setConfirmed(true);
 			appointmentService.updateAppointment(appointment);
 			// Envío del email si es urgente y se ha seleccionado algún doctor
-			if (chckbxUrgent.isSelected() && !selectedDoctors.isEmpty())
+			if (!selectedDoctors.isEmpty())
 				appointment.sendEmail();
 			// Notificación de creación satisfactoria y restauración de la ventana
 			modifyDate();
