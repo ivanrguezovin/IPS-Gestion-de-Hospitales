@@ -210,30 +210,30 @@ public class AppointmentDialog extends JDialog {
 		this.doctor = doctor;
 	}
 
-	private void loadDiagnostics() {
-		DefaultListModel<Diagnostic> model = new DefaultListModel<>();
-		for (Diagnostic diagnostic : diagnosticService.findAllByAppointment(this.getAppointment())) {
-			model.addElement(diagnostic);
-		}
-		diagnosticList.setModel(model);
-		System.out.println("Diagnostics from this appointment");
-	}
-
-	private void allDiagnostics() {
-		DefaultListModel<Diagnostic> model = new DefaultListModel<>();
-		Set<Appointment> aps = doctor.getAppointments();
-		java.util.List<Appointment> appointments = new ArrayList<>();
-		for (Appointment a : aps) {
-			if (a.getPatient().equals(patient)) {
-				appointments.add(a);
-			}
-		}
-		for (Appointment a : appointments) {
-			for (Diagnostic d : a.getDiagnostics()) {
-				model.addElement(d);
-			}
-		}
-		diagnosticList.setModel(model);
-		System.out.println("All diagnostics");
-	}
+    private void loadDiagnostics() {
+        DefaultListModel<Diagnostic> model = new DefaultListModel<>();
+        for (Diagnostic diagnostic : diagnosticService.findAllByAppointment(this.getAppointment())) {
+            model.addElement(diagnostic);
+        }
+        diagnosticList.setModel(model);
+        System.out.println("Diagnostics from this appointment");
+    }
+    
+    private void allDiagnostics() {
+    	DefaultListModel<Diagnostic> model = new DefaultListModel<>();
+    	Set<Appointment> aps = doctor.getAppointments();
+    	java.util.List<Appointment> appointments = new ArrayList<>();
+    	for(Appointment a:aps) {
+    		if(a.getPatient().getHealthCardNumber().equals(patient.getHealthCardNumber())) {
+    			appointments.add(a);
+    		}
+    	}
+    	for(Appointment a:appointments) {
+    		for (Diagnostic diagnostic : diagnosticService.findAllByAppointment(a)) {
+                model.addElement(diagnostic);
+            }
+    	}
+        diagnosticList.setModel(model);
+        System.out.println("All diagnostics");
+    }
 }
