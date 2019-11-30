@@ -19,6 +19,8 @@ import javax.swing.border.EmptyBorder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.toedter.calendar.JDateChooser;
+
 import javax.swing.JComboBox;
 
 import es.uniovi.ips.hospital.domain.Patient;
@@ -31,17 +33,15 @@ import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
 import es.uniovi.ips.hospital.ui.util.components.MyBackPanel;
 import es.uniovi.ips.hospital.ui.util.components.MyButton;
+import es.uniovi.ips.hospital.ui.util.components.MyComboBox;
+import es.uniovi.ips.hospital.ui.util.components.MyDateChooser;
 import es.uniovi.ips.hospital.ui.util.components.MyFrontPanel;
 
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SpinnerDateModel;
-import javax.swing.JSpinner;
 import javax.swing.JButton;
-import java.awt.event.ActionListener;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.awt.event.ActionEvent;
 import javax.swing.BoxLayout;
 
 @Component
@@ -67,7 +67,7 @@ public class EditVaccinePanel extends JPanel implements Shiftable {
 	private JTextField tFHealthCard;
 	private JPanel pnDate;
 	private JLabel lblDate;
-	private JSpinner spinnerDate;
+	private JDateChooser dateChooser;
 	private JButton btnEdit;
 
 	private Vaccine vaccine;
@@ -93,7 +93,7 @@ public class EditVaccinePanel extends JPanel implements Shiftable {
 		if (panel == null) {
 			panel = new MyBackPanel();
 			GridBagLayout gbl_pn = new GridBagLayout();
-			gbl_pn.columnWeights = new double[] { };
+			gbl_pn.columnWeights = new double[] {};
 			gbl_pn.columnWidths = new int[] { 100, 450, 100 };
 			gbl_pn.rowHeights = new int[] { 75, 50, 50, 50, 50, 50, 50, 200, 75 };
 			panel.setLayout(gbl_pn);
@@ -124,7 +124,7 @@ public class EditVaccinePanel extends JPanel implements Shiftable {
 		}
 		return panel;
 	}
-	
+
 	private JPanel getPnType() {
 		if (pnType == null) {
 			pnType = new MyFrontPanel();
@@ -145,7 +145,7 @@ public class EditVaccinePanel extends JPanel implements Shiftable {
 
 	private JComboBox<VaccineType> getCbType() {
 		if (cbType == null) {
-			cbType = new JComboBox<VaccineType>();
+			cbType = new MyComboBox<VaccineType>();
 			cbType.addItem(VaccineType.VIVAS_ATENUADAS);
 			cbType.addItem(VaccineType.INACTIVADAS);
 			cbType.addItem(VaccineType.CON_TOXOIDES);
@@ -153,7 +153,7 @@ public class EditVaccinePanel extends JPanel implements Shiftable {
 		}
 		return cbType;
 	}
-	
+
 	private JPanel getPnHealthcard() {
 		if (pnHealthcard == null) {
 			pnHealthcard = new MyFrontPanel();
@@ -179,13 +179,13 @@ public class EditVaccinePanel extends JPanel implements Shiftable {
 		}
 		return tFHealthCard;
 	}
-	
+
 	private JPanel getPnDate() {
 		if (pnDate == null) {
 			pnDate = new MyFrontPanel();
 			pnDate.setBorder(Designer.getBorder());
 			pnDate.add(getLblDate());
-			pnDate.add(getSpinnerDate());
+			pnDate.add(getDateChooser());
 		}
 		return pnDate;
 	}
@@ -198,15 +198,13 @@ public class EditVaccinePanel extends JPanel implements Shiftable {
 		return lblDate;
 	}
 
-	private JSpinner getSpinnerDate() {
-		if (spinnerDate == null) {
-			spinnerDate = new JSpinner();
-			spinnerDate.setModel(new SpinnerDateModel(new Date(), null, null, Calendar.DAY_OF_YEAR));
-			spinnerDate.setEditor(new javax.swing.JSpinner.DateEditor(spinnerDate, "dd/MM/yyyy"));
+	private JDateChooser getDateChooser() {
+		if (dateChooser == null) {
+			dateChooser = new MyDateChooser();
 		}
-		return spinnerDate;
+		return dateChooser;
 	}
-	
+
 	private JPanel getPnDescription() {
 		if (pnDescription == null) {
 			pnDescription = new MyFrontPanel();
@@ -239,61 +237,7 @@ public class EditVaccinePanel extends JPanel implements Shiftable {
 	private JButton getBtnEdit() {
 		if (btnEdit == null) {
 			btnEdit = new MyButton("Edit");
-			btnEdit.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					if (getCbType().getSelectedItem() == null) {
-						JOptionPane.showMessageDialog(null, "Select vaccine type");
-					} else if (getTFHealthCard().getText().equals("")) {
-						JOptionPane.showMessageDialog(null, "Type a health card number");
-					} else if (!getTFHealthCard().getText().matches("[0-9]+")
-							&& getTFHealthCard().getText().length() != 10) {
-						JOptionPane.showMessageDialog(null, "Type a correct health card number");
-					} else if (getTADescription().getText().equals("")) {
-						JOptionPane.showMessageDialog(null, "Type a description");
-					} else if (isBefore((Date) getSpinnerDate().getValue(), today())) {
-						JOptionPane.showMessageDialog(null, "Date must not be before today. Today is " + new Date());
-					} else {
-						Vaccine va = vaccine;
-						List<Patient> patients = ps.findAllPatient();
-						Patient patient = null;
-						for (Patient p : patients) {
-							if (p.getHealthCardNumber().equals(tFHealthCard.getText())) {
-								patient = p;
-							}
-						}
-						if (patient == null) {
-							JOptionPane.showMessageDialog(null, "Patient does not exist");
-						} else {
-							if (va.getPatient().getHealthCardNumber().equals(patient.getHealthCardNumber())) {
-								va.setPatient(patient);
-								LocalDateTime d = convertToLocalDateTimeViaInstant((Date) spinnerDate.getValue());
-								va.setDate(d);
-								va.setDescription(tADescription.getText());
-								va.setVaccineType((VaccineType) cbType.getSelectedItem());
-								vs.createVaccine(va);
-								Patient pat = va.getPatient();
-								vacunas = vs.findByPatient(pat);
-							} else {
-								ps.findPatientByDni(va.getPatient().getDni()).getVaccines().remove(va);
-								va.setPatient(patient);
-								va.setDate(convertToLocalDateTimeViaInstant((Date) spinnerDate.getValue()));
-								va.setDescription(tADescription.getText());
-								va.setVaccineType((VaccineType) cbType.getSelectedItem());
-								vs.createVaccine(va);
-								Patient pat = va.getPatient();
-								vacunas = vs.findByPatient(pat);
-							}
-							tFHealthCard.setText(va.getPatient().getHealthCardNumber());
-							tADescription.setText("");
-							tFHealthCard.setText("");
-							spinnerDate.setValue(new Date());
-							JOptionPane.showMessageDialog(null, "Vaccine modified");
-						}
-
-					}
-
-				}
-			});
+			btnEdit.addActionListener(e -> editVaccine());
 		}
 		return btnEdit;
 	}
@@ -344,5 +288,57 @@ public class EditVaccinePanel extends JPanel implements Shiftable {
 	@Override
 	public void setFocus() {
 		cbType.requestFocus();
+	}
+
+	private void editVaccine() {
+		if (getCbType().getSelectedItem() == null) {
+			JOptionPane.showMessageDialog(null, "Select vaccine type");
+		} else if (getTFHealthCard().getText().equals("")) {
+			JOptionPane.showMessageDialog(null, "Type a health card number");
+		} else if (!getTFHealthCard().getText().matches("[0-9]+") && getTFHealthCard().getText().length() != 10) {
+			JOptionPane.showMessageDialog(null, "Type a correct health card number");
+		} else if (getTADescription().getText().equals("")) {
+			JOptionPane.showMessageDialog(null, "Type a description");
+		} else if (isBefore(dateChooser.getDate(), today())) {
+			JOptionPane.showMessageDialog(null, "Date must not be before today. Today is " + new Date());
+		} else {
+			Vaccine va = vaccine;
+			List<Patient> patients = ps.findAllPatient();
+			Patient patient = null;
+			for (Patient p : patients) {
+				if (p.getHealthCardNumber().equals(tFHealthCard.getText())) {
+					patient = p;
+				}
+			}
+			if (patient == null) {
+				JOptionPane.showMessageDialog(null, "Patient does not exist");
+			} else {
+				if (va.getPatient().getHealthCardNumber().equals(patient.getHealthCardNumber())) {
+					va.setPatient(patient);
+					LocalDateTime d = convertToLocalDateTimeViaInstant(dateChooser.getDate());
+					va.setDate(d);
+					va.setDescription(tADescription.getText());
+					va.setVaccineType((VaccineType) cbType.getSelectedItem());
+					vs.createVaccine(va);
+					Patient pat = va.getPatient();
+					vacunas = vs.findByPatient(pat);
+				} else {
+					ps.findPatientByDni(va.getPatient().getDni()).getVaccines().remove(va);
+					va.setPatient(patient);
+					va.setDate(convertToLocalDateTimeViaInstant(dateChooser.getDate()));
+					va.setDescription(tADescription.getText());
+					va.setVaccineType((VaccineType) cbType.getSelectedItem());
+					vs.createVaccine(va);
+					Patient pat = va.getPatient();
+					vacunas = vs.findByPatient(pat);
+				}
+				tFHealthCard.setText(va.getPatient().getHealthCardNumber());
+				tADescription.setText("");
+				tFHealthCard.setText("");
+				dateChooser.setDate(new Date());
+				JOptionPane.showMessageDialog(null, "Vaccine modified");
+			}
+
+		}
 	}
 }

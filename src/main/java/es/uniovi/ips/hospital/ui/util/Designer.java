@@ -42,7 +42,7 @@ public class Designer {
         UIManager.put("List.background", PaletteFactory.getBaseDark());
         UIManager.put("List.foreground", PaletteFactory.getLighter());
         UIManager.put("List.selectionBackground", PaletteFactory.getHighlighter());
-        UIManager.put("List.selectionForeground", PaletteFactory.getAltHighlighter());
+        UIManager.put("List.selectionForeground", PaletteFactory.getLighter());
 
         // OptionPanes
         UIManager.put("OptionPane.background", PaletteFactory.getMainDark());

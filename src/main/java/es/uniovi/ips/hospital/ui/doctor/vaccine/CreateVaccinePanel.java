@@ -33,6 +33,7 @@ import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
 import es.uniovi.ips.hospital.ui.util.components.MyBackPanel;
 import es.uniovi.ips.hospital.ui.util.components.MyButton;
+import es.uniovi.ips.hospital.ui.util.components.MyComboBox;
 import es.uniovi.ips.hospital.ui.util.components.MyDateChooser;
 import es.uniovi.ips.hospital.ui.util.components.MyFrontPanel;
 
@@ -143,7 +144,7 @@ public class CreateVaccinePanel extends JPanel implements Shiftable {
 
 	private JComboBox<VaccineType> getCbType() {
 		if (cbType == null) {
-			cbType = new JComboBox<VaccineType>();
+			cbType = new MyComboBox<VaccineType>();
 			cbType.addItem(VaccineType.VIVAS_ATENUADAS);
 			cbType.addItem(VaccineType.INACTIVADAS);
 			cbType.addItem(VaccineType.CON_TOXOIDES);

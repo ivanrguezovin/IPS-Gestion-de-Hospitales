@@ -189,7 +189,7 @@ public class DoctorMainPanel extends JPanel implements Shiftable {
 
     private JButton getBtnApplyForAppointment() {
         if (btnApplyForAppointment == null) {
-            btnApplyForAppointment = new JButton("Create appointment");
+            btnApplyForAppointment = new JButton("Apply for appointment");
             btnApplyForAppointment.addActionListener(e -> doctorDialog.launchApplyForAppointment());
         }
         return btnApplyForAppointment;
@@ -214,7 +214,7 @@ public class DoctorMainPanel extends JPanel implements Shiftable {
     private JButton getBtnManageVaccines() {
         if (btnManageVaccines == null) {
             btnManageVaccines = new JButton("Manage vaccines");
-//            btnManageBreaks.addActionListener(e -> doctorDialog.launchManageBreaks());
+            btnManageVaccines.addActionListener(e -> doctorDialog.launchShowVaccines());
         }
         return btnManageVaccines;
     }
