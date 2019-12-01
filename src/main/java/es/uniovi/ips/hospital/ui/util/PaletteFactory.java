@@ -27,5 +27,9 @@ public class PaletteFactory {
 	public static Color getAltHighlighter() {
 		return new Color(20, 79, 105);
 	}
+	
+	public static Color getWrong() {
+		return new Color(153, 0, 51);
+	}
 
 }

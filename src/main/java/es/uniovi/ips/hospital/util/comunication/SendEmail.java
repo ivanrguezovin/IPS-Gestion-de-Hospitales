@@ -54,9 +54,15 @@ public class SendEmail {
                 Message.RecipientType.TO,
                 InternetAddress.parse(addresses)
         );
-        message.setSubject("Aviso de cita URGENTE");
-        message.setText("Le informamos que la siguiente cita:\n"
-                + appointment.guiToString() + "\n Ha sido marcada como urgente. \n\t Saludos, la administraci�n del hospital");
+        if (appointment.isUrgent()) {
+	        message.setSubject("Aviso de cita URGENTE");
+	        message.setText("Le informamos que la siguiente cita:\n"
+	                + appointment.guiToString() + "\n Ha sido marcada como urgente. \n\t Saludos, la administraci�n del hospital");
+        } else {
+	        message.setSubject("Aviso de cita aceptada");
+	        message.setText("Le informamos que una cita que ha solicitado ha sido confirmada con los siguientes datos:\n"
+	                + appointment.guiToString() + "\n\t Saludos, la administraci�n del hospital");
+        }
 
         Transport.send(message);
     }

@@ -75,7 +75,7 @@ import java.awt.Label;
 import javax.swing.JComboBox;
 
 @Component
-public class EditAppointmentPanel extends JPanel implements Shiftable {
+public class ProcessAppointmentPanel extends JPanel implements Shiftable {
 
 	private static final long serialVersionUID = 3489197994027411322L;
 	private final JPanel contentPanel = new JPanel();
@@ -163,13 +163,15 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 	private EventList<Nurse> selectedNursesList;
 	private JButton btnRemoveNurse;
 	private JButton btnAddNurse;
+	private JPanel pnSouth;
+	private JButton btnReject;
 	private JLabel lblDoctors_1;
 	private JLabel lblNurses_1;
 
 	/**
 	 * Create the dpanel.
 	 */
-	public EditAppointmentPanel() {
+	public ProcessAppointmentPanel() {
 		setBounds(100, 100, 650, 700);
 		setPreferredSize(new Dimension(700, 500));
 		setMinimumSize(new Dimension(700, 500));
@@ -179,7 +181,7 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 		contentPanel.setLayout(new BorderLayout(0, 0));
 		contentPanel.setBackground(PaletteFactory.getBaseDark());
 		contentPanel.add(getPnAppointment(), BorderLayout.CENTER);
-		contentPanel.add(getBtnUpdate(), BorderLayout.SOUTH);
+		contentPanel.add(getPnSouth(), BorderLayout.SOUTH);
 		selectedDoctors = new ArrayList<Doctor>();
 		selectedNurses = new ArrayList<Nurse>();
 	}
@@ -220,6 +222,33 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 		return pnAppointment;
 	}
 
+	private JPanel getPnSouth() {
+		if (pnSouth == null) {
+			pnSouth = new JPanel();
+			pnSouth.setLayout(new GridLayout(0, 2, 0, 0));
+			pnSouth.add(getBtnReject());
+			pnSouth.add(getBtnUpdate());
+		}
+		return pnSouth;
+	}
+
+	private JButton getBtnReject() {
+		if (btnReject == null) {
+			btnReject = new MyButton("Reject");
+			btnReject.setBackground(PaletteFactory.getWrong());
+			btnReject.addActionListener(action -> rejectAppointment());
+		}
+		return btnReject;
+	}
+
+	private JButton getBtnUpdate() {
+		if (btnUpdate == null) {
+			btnUpdate = new MyButton("Confirm");
+			btnUpdate.addActionListener(action -> confirmAppointment());
+		}
+		return btnUpdate;
+	}
+
 	private JPanel getPnPatient() {
 		if (pnPatient == null) {
 			pnPatient = new MyFrontPanel();
@@ -257,7 +286,7 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 
 	private JPanel getPnInfo() {
 		if (pnInfo == null) {
-			pnInfo = new MyBackPanel();
+			pnInfo = new JPanel();
 			pnInfo.setLayout(new GridLayout(0, 2, 0, 0));
 			GridBagLayout gbl_pnInfo = new GridBagLayout();
 			gbl_pnInfo.columnWidths = new int[] { 400, 300 };
@@ -533,14 +562,6 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 		return btnRemoveNurse;
 	}
 
-	private JButton getBtnUpdate() {
-		if (btnUpdate == null) {
-			btnUpdate = new MyButton("Confirm");
-			btnUpdate.addActionListener(action -> modifyAppointment());
-		}
-		return btnUpdate;
-	}
-
 	private JPanel getPnDateTime() {
 		if (pnDateTime == null) {
 			pnDateTime = new JPanel();
@@ -746,7 +767,7 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 	// -------------------------------------------------------------------------
 
 	// Carga todos los datos introducidos y crea la cita
-	private void modifyAppointment() {
+	private void confirmAppointment() {
 		try {
 			// Comprobación de que tenemos todos los campos necesarios
 			checkPatient();
@@ -773,16 +794,36 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 			appointment.setRoom((Room) cbRoom.getSelectedItem());
 			appointment.setDoctors(doctorsSet);
 			appointment.setNurses(nursesSet);
+			appointment.setConfirmed(true);
 			appointmentService.updateAppointment(appointment);
 			// Envío del email si es urgente y se ha seleccionado algún doctor
-			if (chckbxUrgent.isSelected() && !selectedDoctors.isEmpty())
+			if (!selectedDoctors.isEmpty())
 				appointment.sendEmail();
 			// Notificación de creación satisfactoria y restauración de la ventana
 			modifyDate();
+			btnReject.setEnabled(false);
 			JOptionPane.showMessageDialog(this, "The appointment was edited succesfully");
 		} catch (Exception ie) {
 			JOptionPane.showMessageDialog(this, ie.getMessage());
 		}
+	}
+
+	private void rejectAppointment() {
+		JOptionPane.showMessageDialog(this, "The appointment was rejected succesfully");
+		disableEverything();
+		appointmentService.removeAppointment(appointment);
+	}
+
+	private void disableEverything() {
+		boolean b = false;
+		cbPatient.setEnabled(b);
+		txtContactInfo.setEnabled(b);
+		cbDoctor.setEnabled(b);
+		cbNurse.setEnabled(b);
+		cbSelectedDoctors.setEnabled(b);
+		cbSelectedNurses.setEnabled(b);
+		btnUpdate.setEnabled(b);
+		btnReject.setEnabled(b);
 	}
 
 	// Añade el doctor a la lista de doctores de la cita y lo sustrae de los
@@ -884,8 +925,11 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 			swapButton();
 			// Obtenemos la lista de doctores disponibles para esa cita y activamos su panel
 			availableDoctors = doctorService.findAvailableDoctors(appointmentDateTime);
+			List<Doctor> allDoctors = doctorService.findAllDoctors();
 			List<Nurse> availableNurses = nurseService.findAvailableNurses(appointmentDateTime);
+			doctorList.clear();
 			nurseList.clear();
+			doctorList.addAll(allDoctors);
 			nurseList.addAll(availableNurses);
 			cbDoctor.setRenderer(new StaffCellRenderer(availableDoctors));
 			cbNurse.setRenderer(new StaffCellRenderer());
@@ -899,6 +943,8 @@ public class EditAppointmentPanel extends JPanel implements Shiftable {
 		appointmentDateTime = null;
 		appointmentEndTime = null;
 		// Reiniciamos los doctores seleccionados, en otra hora pueden no trabajar
+		selectedDoctors.clear();
+		lblDoctors.setText("");
 		selectedNurses.clear();
 		lblNurses.setText("");
 		// Reactivamos los elementos de selección de cita y cambiamos el botón

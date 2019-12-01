@@ -148,8 +148,6 @@ public class Staff implements PrintableOnGui {
             return true;
         if (obj == null)
             return false;
-//		if (getClass() != obj.getClass())
-//			return false;
         Staff other = (Staff) obj;
         if (id == null) {
             if (other.id != null)

@@ -1,6 +1,7 @@
 package es.uniovi.ips.hospital.ui.util.render;
 
 import es.uniovi.ips.hospital.domain.Diagnostic;
+import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,12 +25,14 @@ public class DiagnosticCellRenderer extends JLabel implements ListCellRenderer<D
                                                   boolean cellHasFocus) {
         this.setOpaque(true);
 
-        this.setBackground(isSelected ? Color.blue : Color.white);
-        this.setForeground(isSelected ? Color.white : Color.black);
+        this.setBackground(isSelected ? PaletteFactory.getHighlighter() : PaletteFactory.getBaseDark());
+        this.setForeground(PaletteFactory.getLighter());
 
         if(!diagnostic.isActive()) {
         	this.setBackground(!isSelected ? Color.black : Color.black);
             this.setForeground(!isSelected ? Color.white : Color.red);
+        	this.setBackground(PaletteFactory.getMainDark());
+            this.setForeground(!isSelected ? PaletteFactory.getBaseDark() : PaletteFactory.getHighlighter());
             this.setText("--ELIMINATED on " + new Date() + " by Dr." + doctor + "-- || Created by Dr." + diagnostic.getDoctor().getSurname() + " at " + diagnostic.getCreated().toString()
             		+ ". - " + diagnostic.getComment());
         }else {

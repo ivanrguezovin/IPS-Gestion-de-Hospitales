@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.time.LocalDateTime;
@@ -37,6 +38,7 @@ public class HospitalApplication implements CommandLineRunner {
     private ICD10Service icd10Service;
 
     private Faker faker;
+    private BCryptPasswordEncoder passwordEncoder;
 
     public static void main(String[] args) {
         new SpringApplicationBuilder(HospitalApplication.class).headless(false).run(args);
@@ -45,6 +47,7 @@ public class HospitalApplication implements CommandLineRunner {
     @Override
     public void run(String... args) {
         faker = new Faker();
+        passwordEncoder = new BCryptPasswordEncoder();
         generateFakeAdminAssistants(10);
         generateTestAssistant();
         generateFakeNurses(10);
@@ -63,7 +66,7 @@ public class HospitalApplication implements CommandLineRunner {
                     faker.name().firstName(),
                     faker.name().lastName(),
                     faker.internet().safeEmailAddress(),
-                    faker.internet().password(5, 10),
+                    passwordEncoder.encode(faker.internet().password(5, 10)),
                     faker.address().streetAddress(),
                     faker.address().city(),
                     faker.address().zipCode());
@@ -77,7 +80,7 @@ public class HospitalApplication implements CommandLineRunner {
                 faker.name().firstName(),
                 faker.name().lastName(),
                 "admin@ips.test",
-                "password",
+                passwordEncoder.encode("password"),
                 faker.address().streetAddress(),
                 faker.address().city(),
                 faker.address().zipCode());
@@ -92,7 +95,7 @@ public class HospitalApplication implements CommandLineRunner {
                     faker.name().firstName(),
                     faker.name().lastName(),
                     faker.internet().safeEmailAddress(),
-                    faker.internet().password(5, 10),
+                    passwordEncoder.encode(faker.internet().password(5, 10)),
                     faker.address().streetAddress(),
                     faker.address().city(),
                     faker.address().zipCode(), "Especialidad de prueba", l);
@@ -108,7 +111,7 @@ public class HospitalApplication implements CommandLineRunner {
                 faker.name().firstName(),
                 faker.name().lastName(),
                 "doctor@ips.test",
-                "password",
+                passwordEncoder.encode("password"),
                 faker.address().streetAddress(),
                 faker.address().city(),
                 faker.address().zipCode(), "Especialidad de prueba", 11L);
@@ -125,7 +128,7 @@ public class HospitalApplication implements CommandLineRunner {
                     faker.name().firstName(),
                     faker.name().lastName(),
                     faker.internet().safeEmailAddress(),
-                    faker.internet().password(5, 10),
+                    passwordEncoder.encode(faker.internet().password(5, 10)),
                     faker.address().streetAddress(),
                     faker.address().city(),
                     faker.address().zipCode(), "Especialidad de prueba", l);
@@ -133,20 +136,20 @@ public class HospitalApplication implements CommandLineRunner {
             nurseService.createNurse(nurse);
         }
     }
-    
+
     private void generateTestNurse() {
         Nurse nurse = new Nurse(
                 faker.bothify("########?").toUpperCase(),
                 faker.name().firstName(),
                 faker.name().lastName(),
                 "nurse@ips.test",
-                "password",
+                passwordEncoder.encode("password"),
                 faker.address().streetAddress(),
                 faker.address().city(),
                 faker.address().zipCode(), "Especialidad de prueba", 11L);
-        nurse =nurseService.createNurse(nurse);
+        nurse = nurseService.createNurse(nurse);
         generateSchedule(nurse);
-        generateAppointmentsNurse(nurse, 10);
+        generateAppointmentsNurse(nurse);
     }
 
     private void generateFakePatients(int n) {
@@ -171,8 +174,12 @@ public class HospitalApplication implements CommandLineRunner {
         for (int i = 0; i < n; i++) {
             Room room = new Room();
             room.setLocation(faker.numerify("###"));
-            roomService.createRoom(room);
-            roomService.createRoom(room);
+            try {
+                roomService.createRoom(room);
+            } catch (Exception e) {
+                System.out.println("Duplicated room");
+            }
+            ;
         }
     }
 
@@ -202,44 +209,40 @@ public class HospitalApplication implements CommandLineRunner {
     private void generateAppointments(Doctor doctor) {
         List<Patient> patients = patientService.findAllPatient();
         List<Room> rooms = roomService.findAllRooms();
-        for (int i = 0; i < 31; i++) {
+        for (int i = 10; i < 31; i++) {
             Appointment appointment = new Appointment();
             LocalDateTime start = LocalDateTime.of(2019, 12, i + 1, faker.number().numberBetween(0, 11), 0);
             appointment.setStartTime(start);
             appointment.setEndTime(start.plusMinutes(45));
-            appointment.setPatient(patients.get(i%patients.size()));
+            appointment.setPatient(patients.get(i % patients.size()));
             appointment.addDoctor(doctor);
-            appointment.setRoom(rooms.get(i%rooms.size()));
+            appointment.setRoom(rooms.get(i % rooms.size()));
             appointment.setContactInfo(appointment.getPatient().getEmail());
             try {
                 appointmentService.createAppointment(appointment);
-            } catch (BusinessException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            doctor.addAppointment(appointment);
-            doctorService.updateDoctor(doctor);
         }
     }
-    
-    private void generateAppointmentsNurse(Nurse nurse, int n) {
+
+    private void generateAppointmentsNurse(Nurse nurse) {
         List<Patient> patients = patientService.findAllPatient();
         List<Room> rooms = roomService.findAllRooms();
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < 10; i++) {
             Appointment appointment = new Appointment();
             LocalDateTime start = LocalDateTime.of(2019, 12, i + 1, faker.number().numberBetween(0, 11), 0);
             appointment.setStartTime(start);
             appointment.setEndTime(start.plusMinutes(45));
-            appointment.setPatient(patients.get(i%patients.size()));
+            appointment.setPatient(patients.get(i % patients.size()));
             appointment.addNurse(nurse);
-            appointment.setRoom(rooms.get(i%rooms.size()));
+            appointment.setRoom(rooms.get(i % rooms.size()));
             appointment.setContactInfo(appointment.getPatient().getEmail());
             try {
                 appointmentService.createAppointment(appointment);
             } catch (BusinessException e) {
-                e.printStackTrace();
+                System.out.println("Duplicated appointment");
             }
-            nurse.addAppointment(appointment);
-            nurseService.updateNurse(nurse);
         }
     }
 }

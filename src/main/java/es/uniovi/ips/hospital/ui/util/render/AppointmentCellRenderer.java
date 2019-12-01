@@ -6,7 +6,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class AppointmentCellRenderer extends JLabel implements ListCellRenderer<Appointment> {
-    @Override
+
+	private static final long serialVersionUID = 647004768154891428L;
+
+	@Override
     public Component getListCellRendererComponent(JList<? extends Appointment> jList,
                                                   Appointment appointment,
                                                   int index,

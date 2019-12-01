@@ -197,7 +197,7 @@ public class AdminMainPanel extends JPanel implements Shiftable {
 
     private JButton getBtnEditAppointment() {
         if (btnEditAppointment == null) {
-            btnEditAppointment = new JButton("Edit appointment");
+            btnEditAppointment = new JButton("Manage appointments");
             btnEditAppointment.addActionListener(e -> adminDialog.launchShowAppointments());
         }
         return btnEditAppointment;
@@ -230,6 +230,7 @@ public class AdminMainPanel extends JPanel implements Shiftable {
     private JButton getBtnCreateAdmins() {
         if (btnCreateAdmins == null) {
         	btnCreateAdmins = new JButton("Add administrator");
+        	btnCreateAdmins.addActionListener(e -> adminDialog.launchCreateAdmins());
         }
         return btnCreateAdmins;
     }
@@ -237,6 +238,7 @@ public class AdminMainPanel extends JPanel implements Shiftable {
     private JButton getBtnCreateDoctors() {
         if (btnCreateDoctors == null) {
         	btnCreateDoctors = new JButton("Add doctor");
+        	btnCreateDoctors.addActionListener(e -> adminDialog.launchCreateDoctors());
         }
         return btnCreateDoctors;
     }
@@ -244,6 +246,7 @@ public class AdminMainPanel extends JPanel implements Shiftable {
     private JButton getBtnCreateNurses() {
         if (btnCreateNurses == null) {
         	btnCreateNurses = new JButton("Add nurse");
+        	btnCreateNurses.addActionListener(e -> adminDialog.launchCreateNurses());
         }
         return btnCreateNurses;
     }
@@ -251,6 +254,7 @@ public class AdminMainPanel extends JPanel implements Shiftable {
     private JButton getBtnCreatePatientss() {
         if (btnCreatePatients == null) {
         	btnCreatePatients = new JButton("Add patient");
+        	btnCreatePatients.addActionListener(e -> adminDialog.launchCreatePatients());
         }
         return btnCreatePatients;
     }
