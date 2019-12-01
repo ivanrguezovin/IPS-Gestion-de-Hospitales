@@ -18,8 +18,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Set;
+//import java.util.ArrayList;
+//import java.util.Set;
 
 @Component
 public class AppointmentDialog extends JDialog {
@@ -131,20 +131,20 @@ public class AppointmentDialog extends JDialog {
             JButton createButton = new JButton("Create diagnostic");
             JButton editButton = new JButton("Show prescriptions");
             JButton deleteButton = new JButton("Delete diagnostic");
-            JButton refreshButton = new JButton("Diagnostics for this appointment");
-            JButton allButton = new JButton("All diagnostics");
+            JButton refreshButton = new JButton("Refresh");
+//            JButton allButton = new JButton("All diagnostics");
 
             createButton.addActionListener(actionEvent -> createDiagnosticDialog.run(this.appointment, this.doctor));
             deleteButton.addActionListener(actionEvent -> this.deleteDiagnostic());
             refreshButton.addActionListener(actionEvent -> this.loadDiagnostics());
-            allButton.addActionListener(actionEvent -> this.allDiagnostics());
+//            allButton.addActionListener(actionEvent -> this.allDiagnostics());
             editButton.addActionListener(actionEvent -> prescriptionDialog.run(this.appointment.getPatient()));
 
             buttonPanel.add(BorderLayout.WEST, createButton);
             buttonPanel.add(BorderLayout.WEST, deleteButton);
-            buttonPanel.add(BorderLayout.WEST, editButton);
+            buttonPanel.add(BorderLayout.EAST, editButton);
             buttonPanel.add(BorderLayout.EAST, refreshButton);
-            buttonPanel.add(BorderLayout.EAST, allButton);
+//            buttonPanel.add(BorderLayout.EAST, allButton);
 
             JButton btnShowMedicalRecord = new JButton("Show Medical Record");
             btnShowMedicalRecord.addActionListener(actionEvent -> showMedicalRecord());
@@ -169,13 +169,17 @@ public class AppointmentDialog extends JDialog {
 			Diagnostic d = diagnosticList.getSelectedValue();
 			d.setActive(false);
 			diagnosticService.createDiagnostic(d);
+			JOptionPane.showMessageDialog(null, "Diagnostic deleted");
+			loadDiagnostics();
 		}
 	}
 
 	private JList<Diagnostic> getDiagnosticList() {
         if (diagnosticList == null) {
             diagnosticList = new JList<Diagnostic>();
-            diagnosticList.setCellRenderer(new DiagnosticCellRenderer());
+            DiagnosticCellRenderer dcr = new DiagnosticCellRenderer();
+            dcr.setDoctor(doctor.getSurname());
+            diagnosticList.setCellRenderer(dcr);
         }
         return diagnosticList;
     }
@@ -222,24 +226,27 @@ public class AppointmentDialog extends JDialog {
             model.addElement(diagnostic);
         }
         diagnosticList.setModel(model);
+        DiagnosticCellRenderer dcr = new DiagnosticCellRenderer();
+        dcr.setDoctor(doctor.getSurname());
+        diagnosticList.setCellRenderer(dcr);
         System.out.println("Diagnostics from this appointment");
     }
     
-    private void allDiagnostics() {
-    	DefaultListModel<Diagnostic> model = new DefaultListModel<>();
-    	Set<Appointment> aps = doctor.getAppointments();
-    	java.util.List<Appointment> appointments = new ArrayList<>();
-    	for(Appointment a:aps) {
-    		if(a.getPatient().getHealthCardNumber().equals(patient.getHealthCardNumber())) {
-    			appointments.add(a);
-    		}
-    	}
-    	for(Appointment a:appointments) {
-    		for (Diagnostic diagnostic : diagnosticService.findAllByAppointment(a)) {
-                model.addElement(diagnostic);
-            }
-    	}
-        diagnosticList.setModel(model);
-        System.out.println("All diagnostics");
-    }
+//    private void allDiagnostics() {
+//    	DefaultListModel<Diagnostic> model = new DefaultListModel<>();
+//    	Set<Appointment> aps = doctor.getAppointments();
+//    	java.util.List<Appointment> appointments = new ArrayList<>();
+//    	for(Appointment a:aps) {
+//    		if(a.getPatient().getHealthCardNumber().equals(patient.getHealthCardNumber())) {
+//    			appointments.add(a);
+//    		}
+//    	}
+//    	for(Appointment a:appointments) {
+//    		for (Diagnostic diagnostic : diagnosticService.findAllByAppointment(a)) {
+//                model.addElement(diagnostic);
+//            }
+//    	}
+//        diagnosticList.setModel(model);
+//        System.out.println("All diagnostics");
+//    }
 }

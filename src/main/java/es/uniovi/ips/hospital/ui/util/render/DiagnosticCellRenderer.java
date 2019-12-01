@@ -4,8 +4,18 @@ import es.uniovi.ips.hospital.domain.Diagnostic;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Date;
 
 public class DiagnosticCellRenderer extends JLabel implements ListCellRenderer<Diagnostic> {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -785229885701080336L;
+	private String doctor = "";
+	public void setDoctor(String d) {
+		this.doctor=d;
+	}
+	
     @Override
     public Component getListCellRendererComponent(JList<? extends Diagnostic> jList,
                                                   Diagnostic diagnostic,
@@ -20,7 +30,7 @@ public class DiagnosticCellRenderer extends JLabel implements ListCellRenderer<D
         if(!diagnostic.isActive()) {
         	this.setBackground(!isSelected ? Color.black : Color.black);
             this.setForeground(!isSelected ? Color.white : Color.red);
-            this.setText("--ELIMINATED-- || Created by Dr." + diagnostic.getDoctor().getSurname() + " at " + diagnostic.getCreated().toString()
+            this.setText("--ELIMINATED on " + new Date() + " by Dr." + doctor + "-- || Created by Dr." + diagnostic.getDoctor().getSurname() + " at " + diagnostic.getCreated().toString()
             		+ ". - " + diagnostic.getComment());
         }else {
         	this.setText("Created by Dr." + diagnostic.getDoctor().getSurname() + " at " + diagnostic.getCreated().toString()
