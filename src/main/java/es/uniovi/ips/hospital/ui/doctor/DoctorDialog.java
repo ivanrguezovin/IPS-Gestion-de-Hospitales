@@ -1,151 +1,198 @@
 package es.uniovi.ips.hospital.ui.doctor;
 
-import es.uniovi.ips.hospital.domain.Doctor;
-import es.uniovi.ips.hospital.ui.doctor.appointment.ApplyForAppointmentDialog;
-import es.uniovi.ips.hospital.ui.doctor.appointment.MyAppointmentsDialog;
-import es.uniovi.ips.hospital.ui.doctor.vaccine.VaccineDoctorDialog;
+import java.awt.BorderLayout;
+
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import es.uniovi.ips.hospital.domain.Appointment;
+import es.uniovi.ips.hospital.domain.Doctor;
+import es.uniovi.ips.hospital.domain.Patient;
+import es.uniovi.ips.hospital.domain.Vaccine;
+import es.uniovi.ips.hospital.ui.common.MedicalRecordPanel;
+import es.uniovi.ips.hospital.ui.doctor.appointment.ApplyForAppointmentPanel;
+import es.uniovi.ips.hospital.ui.doctor.appointment.CreateDiagnosticPanel;
+import es.uniovi.ips.hospital.ui.doctor.appointment.FillAppointmentPanel;
+import es.uniovi.ips.hospital.ui.doctor.appointment.ShowMyAppointmentsPanel;
+import es.uniovi.ips.hospital.ui.doctor.vaccine.CreateVaccinePanel;
+import es.uniovi.ips.hospital.ui.doctor.vaccine.EditVaccinePanel;
+import es.uniovi.ips.hospital.ui.doctor.vaccine.ShowVaccinesPanel;
+import es.uniovi.ips.hospital.ui.util.PaletteFactory;
+import es.uniovi.ips.hospital.ui.util.Shiftable;
+import es.uniovi.ips.hospital.ui.util.components.MyBanner;
+import es.uniovi.ips.hospital.ui.util.components.MySouthPanel;
+
+import javax.swing.JLabel;
+import java.awt.Dimension;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 @Component
 public class DoctorDialog extends JDialog {
 
-    /**
-	 * 
+	private static final long serialVersionUID = 4742925315288866290L;
+
+	private Doctor user;
+
+	@Autowired
+	private DoctorMainPanel mainPanel;
+	@Autowired
+	private FillAppointmentPanel fillAppointmentPanel;
+	@Autowired
+	private ApplyForAppointmentPanel applyForAppointmentPanel;
+	@Autowired
+	private ShowMyAppointmentsPanel showMyAppointmentsPanel;
+	@Autowired
+	private CreateDiagnosticPanel createDiagnosticPanel;
+	@Autowired
+	private CreateVaccinePanel createVaccinePanel;
+	@Autowired
+	private ShowVaccinesPanel showVaccinesPanel;
+	@Autowired
+	private EditVaccinePanel editVaccinePanel;
+	@Autowired
+	private MedicalRecordPanel medicalRecordPanel;
+
+	private JPanel current;
+	private JPanel previous;
+	private JLabel banner;
+	private JLabel side;
+	private JPanel pnSouth;
+	private JButton btnBack;
+
+	/**
+	 * Create the dialog.
 	 */
-	private static final long serialVersionUID = 5096718821173184889L;
+	public DoctorDialog() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				previous = mainPanel;
+				back();
+			}
+		});
+		setBounds(100, 100, 800, 800);
+		setModal(true);
+		setResizable(false);
+		getContentPane().setLayout(new BorderLayout());
+		getContentPane().setBackground(PaletteFactory.getBaseDark());
+		getContentPane().add(getBanner(), BorderLayout.NORTH);
+		getContentPane().add(getSide(), BorderLayout.WEST);
+		getContentPane().add(getPnSouth(), BorderLayout.SOUTH);
+	}
 
-	private final JPanel contentPanel = new JPanel();
+	private JLabel getBanner() {
+		if (banner == null) {
+			banner = new MyBanner();
+		}
+		return banner;
+	}
 
-    private Doctor doctor;
+	private JLabel getSide() {
+		if (side == null) {
+			side = new JLabel();
+			side.setPreferredSize(new Dimension(100, 10));
+			side.setMinimumSize(new Dimension(100, 10));
+			side.setIcon(new ImageIcon(getClass().getResource("/DoctorSide.png")));
+		}
+		return side;
+	}
 
-    @Autowired
-    private VaccineDoctorDialog vdd;
+	private JPanel getPnSouth() {
+		if (pnSouth == null) {
+			pnSouth = new MySouthPanel();
+			pnSouth.setPreferredSize(new Dimension(10, 50));
+			pnSouth.setMinimumSize(new Dimension(10, 50));
+			pnSouth.add(getBtnBack());
+		}
+		return pnSouth;
+	}
 
-    @Autowired
-    private MyAppointmentsDialog myAppointmentsDialog;
+	private JButton getBtnBack() {
+		if (btnBack == null) {
+			btnBack = new JButton("Back");
+			btnBack.addActionListener(e -> back());
+		}
+		return btnBack;
+	}
 
-    @Autowired
-    private ApplyForAppointmentDialog applyForAppointmentDialog;
+	// CAMBIO DE VENTANAS
+	// -------------------------------------------------------------------------
 
+	public void run(Doctor user) {
+		this.user = user;
+		setTitle(user.guiToString());
+		getContentPane().add(mainPanel, BorderLayout.CENTER);
+		current = mainPanel;
+		getContentPane().revalidate();
+		setVisible(true);
+	}
 
-    public DoctorDialog() {
-        setResizable(false);
-        setTitle("Doctor Menu");
-        setBounds(100, 100, 660, 246);
-        setLocationRelativeTo(null);
-        getContentPane().setLayout(new BorderLayout());
-        contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-        getContentPane().add(contentPanel, BorderLayout.CENTER);
-        contentPanel.setLayout(new GridLayout(1, 0, 0, 0));
-        {
-            JPanel panel = new JPanel();
-            contentPanel.add(panel);
-            panel.setLayout(new GridLayout(2, 3, 0, 0));
-            {
-                java.awt.Component horizontalStrut = Box.createHorizontalStrut(20);
-                panel.add(horizontalStrut);
-            }
-            {
-                JLabel lblAppointments = new JLabel("Appointments");
-                lblAppointments.setHorizontalAlignment(SwingConstants.CENTER);
-                panel.add(lblAppointments);
-            }
-            {
-                JButton btnSeeAppointments = new JButton("Appointments");
-                btnSeeAppointments.addActionListener(actionEvent -> myAppointmentsDialog.run(doctor));
-                btnSeeAppointments.setMnemonic('a');
-                panel.add(btnSeeAppointments);
-            }
-            {
-                java.awt.Component horizontalStrut = Box.createHorizontalStrut(20);
-                panel.add(horizontalStrut);
-            }
-            {
-                java.awt.Component horizontalStrut = Box.createHorizontalStrut(20);
-                panel.add(horizontalStrut);
-            }
-            {
-                JLabel lblNewLabel = new JLabel("Vaccines");
-                lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-                panel.add(lblNewLabel);
-            }
-            {
-                JButton btnSeeVaccines = new JButton("Vaccines");
-                btnSeeVaccines.addActionListener(e -> {
-                    setVisible(false);
-                    vdd.setVisible(true);
-                    vdd.setDoctor(doctor);
-                });
-                btnSeeVaccines.setMnemonic('v');
-                panel.add(btnSeeVaccines);
-            }
-            {
-                java.awt.Component horizontalStrut = Box.createHorizontalStrut(20);
-                panel.add(horizontalStrut);
-            }
-            {
-                java.awt.Component horizontalStrut = Box.createHorizontalStrut(20);
-                panel.add(horizontalStrut);
-            }
-            {
-                JLabel lblAskAppointment = new JLabel("Apply for appointment");
-                lblAskAppointment.setHorizontalAlignment(SwingConstants.CENTER);
-                panel.add(lblAskAppointment);
-            }
-            {
-                JButton btnAskAppointment = new JButton("Apply");
-                btnAskAppointment.addActionListener(e -> {
-                	applyForAppointmentDialog.fillComboBoxes();
-                	applyForAppointmentDialog.setDoctor(doctor);
-                	applyForAppointmentDialog.setVisible(true);
-                });
-                btnAskAppointment.setMnemonic('v');
-                panel.add(btnAskAppointment);
-            }
-            {
-                java.awt.Component horizontalStrut = Box.createHorizontalStrut(20);
-                panel.add(horizontalStrut);
-            }
-        }
-        {
-            JPanel buttonPane = new JPanel();
-            buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-            getContentPane().add(buttonPane, BorderLayout.SOUTH);
-            {
-                JButton okButton = new JButton("Back");
-                okButton.addActionListener(e -> dispose());
-                okButton.setMnemonic('b');
-                okButton.setActionCommand("OK");
-                buttonPane.add(okButton);
-                getRootPane().setDefaultButton(okButton);
-            }
-            {
-                JButton cancelButton = new JButton("Exit");
-                cancelButton.setMnemonic('s');
-                cancelButton.addActionListener(e -> System.exit(-1));
-                cancelButton.setActionCommand("Cancel");
-                buttonPane.add(cancelButton);
-            }
-        }
-        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    }
+	private void launch(JPanel panel) {
+		getContentPane().remove(current);
+		getContentPane().add(panel, BorderLayout.CENTER);
+		previous = current;
+		current = panel;
+		getContentPane().revalidate();
+		getContentPane().repaint();
+		((Shiftable) panel).setFocus();
+		btnBack.setEnabled(true);
+	}
 
-    public Doctor getDoctor() {
-        return doctor;
-    }
+	private void back() {
+		boolean isMainPanel = previous == mainPanel;
+		launch(previous);
+		if (isMainPanel)
+			btnBack.setEnabled(false);
+		else
+			previous = mainPanel;
+	}
 
-    public void setDoctor(Doctor doctor) {
-        this.doctor = doctor;
-    }
+	void launchApplyForAppointment() {
+		applyForAppointmentPanel.fillComboBoxes();
+		applyForAppointmentPanel.setDoctor(user);
+		launch(applyForAppointmentPanel);
+	}
 
-    public void run(Doctor doctor) {
-        this.setDoctor(doctor);
-        this.setVisible(true);
-    }
+	void launchShowMyAppointments() {
+		showMyAppointmentsPanel.showAppointments(user);
+		showMyAppointmentsPanel.fillComboBoxes();
+		launch(showMyAppointmentsPanel);
+	}
+
+	public void launchFillAppointment(Appointment appointment) {
+		fillAppointmentPanel.run(appointment, user);
+		launch(fillAppointmentPanel);
+	}
+
+	public void launchCreateDiagnostic(Appointment appointment) {
+		createDiagnosticPanel.run(appointment, user);
+		launch(createDiagnosticPanel);
+	}
+
+	void launchCreateVaccine() {
+		launch(createVaccinePanel);
+	}
+
+	void launchShowVaccines() {
+		showVaccinesPanel.setDoctor(user);
+		launch(showVaccinesPanel);
+	}
+
+	public void launchEditVaccine(Vaccine vaccine) {
+		editVaccinePanel.setVaccine(vaccine);
+		launch(editVaccinePanel);
+	}
+
+	public void launchMedicalRecord(Patient patient) {
+		medicalRecordPanel.showHistoryOf(patient);
+		launch(medicalRecordPanel);
+	}
 
 }

@@ -7,8 +7,6 @@ import es.uniovi.ips.hospital.domain.Staff;
 import es.uniovi.ips.hospital.service.LoginService;
 import es.uniovi.ips.hospital.ui.admin.AdminDialog;
 import es.uniovi.ips.hospital.ui.doctor.DoctorDialog;
-import es.uniovi.ips.hospital.ui.doctor.DoctorDialog2;
-import es.uniovi.ips.hospital.ui.nurse.NurseDialog;
 import es.uniovi.ips.hospital.ui.nurse.NurseDialog;
 import es.uniovi.ips.hospital.ui.util.Designer;
 import es.uniovi.ips.hospital.ui.util.components.MyBackPanel;
@@ -33,7 +31,7 @@ public class MainWindow {
     private AdminDialog adminDialog;
 
     @Autowired
-    private DoctorDialog2 doctorDialog;
+    private DoctorDialog doctorDialog;
     
     @Autowired
     private NurseDialog nurseDialog;

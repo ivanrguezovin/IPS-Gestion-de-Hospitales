@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -35,7 +34,7 @@ import es.uniovi.ips.hospital.domain.Doctor;
 import es.uniovi.ips.hospital.domain.Room;
 import es.uniovi.ips.hospital.service.AppointmentService;
 import es.uniovi.ips.hospital.service.RoomService;
-import es.uniovi.ips.hospital.ui.doctor.DoctorDialog2;
+import es.uniovi.ips.hospital.ui.doctor.DoctorDialog;
 import es.uniovi.ips.hospital.ui.util.Designer;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
@@ -71,9 +70,9 @@ public class ShowMyAppointmentsPanel extends JPanel implements Shiftable {
 
 	private static final long serialVersionUID = 5888443942953898676L;
 	private final JPanel contentPanel = new JPanel();
-	
+
 	@Autowired
-	private DoctorDialog2 doctorDialog;
+	private DoctorDialog doctorDialog;
 	@Autowired
 	private AppointmentService appointmentService;
 	@Autowired
@@ -109,7 +108,6 @@ public class ShowMyAppointmentsPanel extends JPanel implements Shiftable {
 	private EventList<Room> roomList;
 	private JPanel pnBottom;
 	private JButton btnProcess;
-
 
 	/**
 	 * Create the dialog.
@@ -295,7 +293,7 @@ public class ShowMyAppointmentsPanel extends JPanel implements Shiftable {
 			pnTable.setLayout(new BorderLayout(0, 0));
 			pnTable.setBorder(Designer.getBorder());
 			pnTable.add(getTxtSearch(), BorderLayout.NORTH);
-			pnTable.add(getSpTable(),  BorderLayout.CENTER);
+			pnTable.add(getSpTable(), BorderLayout.CENTER);
 			pnTable.add(getPnBottom(), BorderLayout.SOUTH);
 		}
 		return pnTable;
@@ -323,6 +321,7 @@ public class ShowMyAppointmentsPanel extends JPanel implements Shiftable {
 	private JTable getTblAppointments() {
 		if (tblAppointments == null) {
 			tblAppointments = new JTable();
+			tblAppointments.getSelectionModel().addListSelectionListener(e -> enableButtons());
 		}
 		return tblAppointments;
 	}
@@ -344,16 +343,24 @@ public class ShowMyAppointmentsPanel extends JPanel implements Shiftable {
 		}
 		return btnProcess;
 	}
-	
-	// LANZAMIENTO DE LA EDICION DE LA CITA
-		// ----------------------------------------------------------------------------
 
-		@SuppressWarnings("unchecked")
-		public void launchProcessAppointment() {
-			if (tblAppointments.getSelectedRow() != -1)
-				doctorDialog.launchProcessAppointment(((AdvancedTableModel<Appointment>) tblAppointments.getModel())
-						.getElementAt(tblAppointments.getSelectedRow()));
+	// LANZAMIENTO DE LA EDICION DE LA CITA
+	// ----------------------------------------------------------------------------
+
+	@SuppressWarnings("unchecked")
+	public void launchProcessAppointment() {
+		if (tblAppointments.getSelectedRow() != -1)
+			doctorDialog.launchFillAppointment(((AdvancedTableModel<Appointment>) tblAppointments.getModel())
+					.getElementAt(tblAppointments.getSelectedRow()));
+	}
+	
+	private void enableButtons() {
+		btnProcess.setEnabled(false);
+		if (tblAppointments.getSelectedRow() != -1) {
+			btnProcess.setEnabled(true);
 		}
+
+	}
 
 	// FORMAT Y DATOS DE LA TABLA
 	// ---------------------------------------------------------------------------------
@@ -384,32 +391,32 @@ public class ShowMyAppointmentsPanel extends JPanel implements Shiftable {
 
 		public String getColumnName(int column) {
 			switch (column) {
-            case 0:
-                return "Date";
-            case 1:
-                return "Patient";
-            case 2:
-                return "Room";
-            case 3:
-                return "Urgent";
-            default:
-                throw new IllegalStateException();
-        }
+			case 0:
+				return "Date";
+			case 1:
+				return "Patient";
+			case 2:
+				return "Room";
+			case 3:
+				return "Urgent";
+			default:
+				throw new IllegalStateException();
+			}
 		}
 
 		public Object getColumnValue(Appointment appointment, int column) {
 			switch (column) {
-            case 0:
-                return appointment.getStartTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-            case 1:
-                return appointment.getPatient().guiToString();
-            case 2:
-                return appointment.getRoom().guiToString();
-            case 3:
-                return (appointment.isUrgent()) ? "YES" : "";
-            default:
-                throw new IllegalStateException();
-        }
+			case 0:
+				return appointment.getStartTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+			case 1:
+				return appointment.getPatient().guiToString();
+			case 2:
+				return appointment.getRoom().guiToString();
+			case 3:
+				return (appointment.isUrgent()) ? "YES" : "";
+			default:
+				throw new IllegalStateException();
+			}
 		}
 	}
 

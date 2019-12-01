@@ -19,7 +19,7 @@ import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.domain.Vaccine;
 import es.uniovi.ips.hospital.service.PatientService;
 import es.uniovi.ips.hospital.service.VaccineService;
-import es.uniovi.ips.hospital.ui.doctor.DoctorDialog2;
+import es.uniovi.ips.hospital.ui.doctor.DoctorDialog;
 import es.uniovi.ips.hospital.ui.util.Designer;
 import es.uniovi.ips.hospital.ui.util.PaletteFactory;
 import es.uniovi.ips.hospital.ui.util.Shiftable;
@@ -51,9 +51,9 @@ public class ShowVaccinesPanel extends JPanel implements Shiftable {
 	@Autowired
 	private PatientService ps;
 	@Autowired
-	private DoctorDialog2 doctorDialog;
+	private DoctorDialog doctorDialog;
 	@Autowired
-	private EditVaccineDialog evd;
+	private EditVaccinePanel editVaccinePanel;
 
 	private JPanel pnList;
 	private JPanel pnData;
@@ -167,7 +167,7 @@ public class ShowVaccinesPanel extends JPanel implements Shiftable {
 
 	private JLabel getLblHealthcard() {
 		if (lblHealthcard == null) {
-			lblHealthcard = new JLabel("Patient´s health card number");
+			lblHealthcard = new JLabel("Patient's health card number");
 			lblHealthcard.setHorizontalAlignment(SwingConstants.CENTER);
 		}
 		return lblHealthcard;
@@ -327,9 +327,9 @@ public class ShowVaccinesPanel extends JPanel implements Shiftable {
 			btnRefresh = new MyButton("Refresh");
 			btnRefresh.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					Vaccine[] v = new Vaccine[evd.getVacunas().size()];
+					Vaccine[] v = new Vaccine[editVaccinePanel.getVacunas().size()];
 					int i = 0;
-					for (Vaccine c : evd.getVacunas()) {
+					for (Vaccine c : editVaccinePanel.getVacunas()) {
 						v[i] = c;
 						i++;
 					}

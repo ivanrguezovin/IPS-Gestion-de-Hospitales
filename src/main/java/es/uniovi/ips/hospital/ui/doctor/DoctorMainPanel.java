@@ -24,26 +24,17 @@ public class DoctorMainPanel extends JPanel implements Shiftable {
 
     private static final long serialVersionUID = -1238718624919092329L;
     
-    @Autowired	private DoctorDialog2 doctorDialog;
+    @Autowired	private DoctorDialog doctorDialog;
 
     private final JPanel contentPanel = new MyBackPanel();
     private JPanel pnAppointments;
     private JPanel pnVaccines;
-    private JPanel pnPatients;
-    private JPanel pnCreateUsers;
 	private JLabel lblAppointments;
 	private JLabel lblVaccines;
-	private JLabel lblPatients;
-	private JLabel lblDatabase;
     private JButton btnApplyForAppointment;
     private JButton btnManageAppointment;
     private JButton btnCreateVaccines;
     private JButton btnManageVaccines;
-    private JButton btnShowMedicalRecords;
-    private JButton btnCreateAdmins;
-    private JButton btnCreateDoctors;
-    private JButton btnCreateNurses;
-    private JButton btnCreatePatients;
 
 
     /**
@@ -54,7 +45,7 @@ public class DoctorMainPanel extends JPanel implements Shiftable {
         this.setLayout(new BorderLayout());
         this.add(contentPanel, BorderLayout.CENTER);
         GridBagLayout gbl_pnMain = new GridBagLayout();
-        gbl_pnMain.columnWidths = new int[]{55, 290, 10, 290, 55};
+        gbl_pnMain.columnWidths = new int[]{205, 290, 205};
         gbl_pnMain.rowHeights = new int[]{30, 290, 10, 290, 30};
         gbl_pnMain.columnWeights = new double[]{0.0,0.0,0.0,0.0,0.0};
         gbl_pnMain.rowWeights = new double[]{0.0,0.0,0.0,0.0,0.0};
@@ -77,18 +68,6 @@ public class DoctorMainPanel extends JPanel implements Shiftable {
 		gbc_pnVaccines.gridx = 1;
 		gbc_pnVaccines.gridy = 3;
 		contentPanel.add(getPnVaccines(), gbc_pnVaccines);
-		GridBagConstraints gbc_pnPatients = new GridBagConstraints();
-		gbc_pnPatients.insets = new Insets(5, 5, 5, 5);
-		gbc_pnPatients.fill = GridBagConstraints.BOTH;
-		gbc_pnPatients.gridx = 3;
-		gbc_pnPatients.gridy = 1;
-		contentPanel.add(getPnPatients(), gbc_pnPatients);
-		GridBagConstraints gbc_pnDatabase = new GridBagConstraints();
-		gbc_pnDatabase.insets = new Insets(5, 5, 5, 5);
-		gbc_pnDatabase.fill = GridBagConstraints.BOTH;
-		gbc_pnDatabase.gridx = 3;
-		gbc_pnDatabase.gridy = 3;
-		contentPanel.add(getPnCreateUsers(), gbc_pnDatabase);
 		GridBagConstraints gbc_pnBlank2 = new GridBagConstraints();
         gbc_pnBlank2.insets = new Insets(5, 5, 5, 5);
 		gbc_pnBlank2.fill = GridBagConstraints.BOTH;
@@ -124,36 +103,6 @@ public class DoctorMainPanel extends JPanel implements Shiftable {
         }
         return pnVaccines;
     }
-
-    private JPanel getPnPatients() {
-        if (pnPatients == null) {
-            pnPatients = new MyFrontPanel();
-            pnPatients.setBorder(new CompoundBorder(Designer.getBorder(), new EmptyBorder(5, 5, 5, 5)));
-            pnPatients.setLayout(new GridLayout(9, 1, 10, 0));
-            pnPatients.add(getLblPatients());
-            pnPatients.add(Box.createRigidArea(new Dimension(0,0)));
-            pnPatients.add(getBtnShowMedicalRecords());
-        }
-        return pnPatients;
-    }
-
-    private JPanel getPnCreateUsers() {
-        if (pnCreateUsers == null) {
-            pnCreateUsers = new MyFrontPanel();
-            pnCreateUsers.setBorder(new CompoundBorder(Designer.getBorder(), new EmptyBorder(5, 5, 5, 5)));
-            pnCreateUsers.setLayout(new GridLayout(9, 1, 10, 0));
-            pnCreateUsers.add(getLblDatabase());
-            pnCreateUsers.add(Box.createRigidArea(new Dimension(0,0)));
-            pnCreateUsers.add(getBtnCreateAdmins());
-            pnCreateUsers.add(Box.createRigidArea(new Dimension(0,0)));
-            pnCreateUsers.add(getBtnCreateDoctors());
-            pnCreateUsers.add(Box.createRigidArea(new Dimension(0,0)));
-            pnCreateUsers.add(getBtnCreateNurses());
-            pnCreateUsers.add(Box.createRigidArea(new Dimension(0,0)));
-            pnCreateUsers.add(getBtnCreatePatientss());
-        }
-        return pnCreateUsers;
-    }
     
     private JLabel getLblAppointments() {
     	if (lblAppointments == null) {
@@ -169,22 +118,6 @@ public class DoctorMainPanel extends JPanel implements Shiftable {
     		lblVaccines.setHorizontalAlignment(SwingConstants.CENTER);
     	}
     	return lblVaccines;
-    }
-    
-    private JLabel getLblPatients() {
-    	if (lblPatients == null) {
-    		lblPatients = new JLabel("Patients");
-    		lblPatients.setHorizontalAlignment(SwingConstants.CENTER);
-    	}
-    	return lblPatients;
-    }
-    
-    private JLabel getLblDatabase() {
-    	if (lblDatabase == null) {
-    		lblDatabase = new JLabel("Database");
-    		lblDatabase.setHorizontalAlignment(SwingConstants.CENTER);
-    	}
-    	return lblDatabase;
     }
 
     private JButton getBtnApplyForAppointment() {
@@ -217,46 +150,6 @@ public class DoctorMainPanel extends JPanel implements Shiftable {
             btnManageVaccines.addActionListener(e -> doctorDialog.launchShowVaccines());
         }
         return btnManageVaccines;
-    }
-
-    private JButton getBtnShowMedicalRecords() {
-        if (btnShowMedicalRecords == null) {
-            btnShowMedicalRecords = new JButton("Show patient info");
-//            btnShowMedicalRecords.addActionListener(e -> doctorDialog.launchPatientInfo());
-        }
-        return btnShowMedicalRecords;
-    }
-
-    private JButton getBtnCreateAdmins() {
-        if (btnCreateAdmins == null) {
-        	btnCreateAdmins = new JButton("Add administrator");
-//        	btnCreateAdmins.addActionListener(e -> doctorDialog.launchCreateAdmins());
-        }
-        return btnCreateAdmins;
-    }
-
-    private JButton getBtnCreateDoctors() {
-        if (btnCreateDoctors == null) {
-        	btnCreateDoctors = new JButton("Add doctor");
-//        	btnCreateDoctors.addActionListener(e -> doctorDialog.launchCreateDoctors());
-        }
-        return btnCreateDoctors;
-    }
-
-    private JButton getBtnCreateNurses() {
-        if (btnCreateNurses == null) {
-        	btnCreateNurses = new JButton("Add nurse");
-//        	btnCreateNurses.addActionListener(e -> doctorDialog.launchCreateNurses());
-        }
-        return btnCreateNurses;
-    }
-
-    private JButton getBtnCreatePatientss() {
-        if (btnCreatePatients == null) {
-        	btnCreatePatients = new JButton("Add patient");
-//        	btnCreatePatients.addActionListener(e -> doctorDialog.launchCreatePatients());
-        }
-        return btnCreatePatients;
     }
     
     ////////////////////////////////////////////////////////////////////////////////

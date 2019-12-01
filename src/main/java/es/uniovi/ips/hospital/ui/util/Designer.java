@@ -81,6 +81,12 @@ public class Designer {
         UIManager.put("TextField.foreground", PaletteFactory.getLighter());
         UIManager.put("TextField.caretForeground", PaletteFactory.getLighter());
         
+        // TextAreas
+        UIManager.put("TextArea.border", new EmptyBorder(5, 5, 5, 5));
+        UIManager.put("TextArea.background", PaletteFactory.getAltDark());
+        UIManager.put("TextArea.foreground", PaletteFactory.getLighter());
+        UIManager.put("TextArea.caretForeground", PaletteFactory.getLighter());
+        
         // Spinners
         UIManager.put("Spinner.background", PaletteFactory.getBaseDark());
         UIManager.put("Spinner.foreground", PaletteFactory.getLighter());
