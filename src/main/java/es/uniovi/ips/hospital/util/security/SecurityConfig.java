@@ -20,7 +20,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/", "/login", "/db").permitAll()
+                .antMatchers("/", "/login", "/db", "/actuator").permitAll()
                 .and().logout().logoutSuccessUrl("/login").permitAll()
                 .and().exceptionHandling().accessDeniedHandler(accessDeniedHandler);
         http.headers().defaultsDisabled().contentTypeOptions();

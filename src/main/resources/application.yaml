@@ -25,3 +25,13 @@ spring:
 logging:
   level:
     org: info
+  file:
+    path: '${java.io.tmpdir}/hospital'
+
+# Endpoints
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: "*"
