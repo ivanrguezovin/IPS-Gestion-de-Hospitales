@@ -137,7 +137,9 @@ public class FillAppointmentPanel extends JPanel implements Shiftable {
 	private JList<Diagnostic> getDiagnosticList() {
 		if (diagnosticList == null) {
 			diagnosticList = new JList<Diagnostic>();
-			diagnosticList.setCellRenderer(new DiagnosticCellRenderer());
+            DiagnosticCellRenderer dcr = new DiagnosticCellRenderer();
+            dcr.setDoctor(doctor.getSurname());
+            diagnosticList.setCellRenderer(dcr);
 		}
 		return diagnosticList;
 	}
@@ -264,6 +266,8 @@ public class FillAppointmentPanel extends JPanel implements Shiftable {
 			Diagnostic d = diagnosticList.getSelectedValue();
 			d.setActive(false);
 			diagnosticService.createDiagnostic(d);
+			JOptionPane.showMessageDialog(null, "Diagnostic deleted");
+			loadDiagnostics();
 		}
 	}
 
@@ -273,6 +277,9 @@ public class FillAppointmentPanel extends JPanel implements Shiftable {
 			model.addElement(diagnostic);
 		}
 		diagnosticList.setModel(model);
+        DiagnosticCellRenderer dcr = new DiagnosticCellRenderer();
+        dcr.setDoctor(doctor.getSurname());
+        diagnosticList.setCellRenderer(dcr);
 		System.out.println("Diagnostics from this appointment");
 	}
 
