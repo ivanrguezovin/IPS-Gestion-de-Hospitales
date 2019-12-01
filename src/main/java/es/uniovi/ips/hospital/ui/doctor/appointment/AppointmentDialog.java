@@ -45,6 +45,9 @@ public class AppointmentDialog extends JDialog {
     
     @Autowired
     private CreateDiagnosticDialog createDiagnosticDialog;
+    
+    @Autowired
+    private PrescriptionDialog prescriptionDialog;
 
     public AppointmentDialog() {
         appointment = new Appointment();
@@ -126,7 +129,7 @@ public class AppointmentDialog extends JDialog {
 
             JPanel buttonPanel = new JPanel();
             JButton createButton = new JButton("Create diagnostic");
-            JButton editButton = new JButton("Edit prescription");
+            JButton editButton = new JButton("Show prescriptions");
             JButton deleteButton = new JButton("Delete diagnostic");
             JButton refreshButton = new JButton("Diagnostics for this appointment");
             JButton allButton = new JButton("All diagnostics");
@@ -135,10 +138,11 @@ public class AppointmentDialog extends JDialog {
             deleteButton.addActionListener(actionEvent -> this.deleteDiagnostic());
             refreshButton.addActionListener(actionEvent -> this.loadDiagnostics());
             allButton.addActionListener(actionEvent -> this.allDiagnostics());
+            editButton.addActionListener(actionEvent -> prescriptionDialog.run(this.appointment.getPatient()));
 
             buttonPanel.add(BorderLayout.WEST, createButton);
+            buttonPanel.add(BorderLayout.WEST, deleteButton);
             buttonPanel.add(BorderLayout.WEST, editButton);
-            buttonPanel.add(BorderLayout.EAST, deleteButton);
             buttonPanel.add(BorderLayout.EAST, refreshButton);
             buttonPanel.add(BorderLayout.EAST, allButton);
 
