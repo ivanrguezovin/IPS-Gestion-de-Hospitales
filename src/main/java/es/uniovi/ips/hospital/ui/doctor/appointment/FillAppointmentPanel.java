@@ -21,6 +21,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -156,6 +157,7 @@ public class FillAppointmentPanel extends JPanel implements Shiftable {
 			JButton allButton = new MyButton("All diagnostics");
 
 			btnShowMedicalRecord.addActionListener(actionEvent -> showMedicalRecord());
+			editButton.addActionListener(actionEvent -> launchEditPrescription());
 			createButton.addActionListener(actionEvent -> launchCreateDiagnostic());
 			deleteButton.addActionListener(actionEvent -> this.deleteDiagnostic());
 			refreshButton.addActionListener(actionEvent -> this.loadDiagnostics());
@@ -253,6 +255,10 @@ public class FillAppointmentPanel extends JPanel implements Shiftable {
 	private void showMedicalRecord() {
 		System.out.println(patient);
 		doctorDialog.launchMedicalRecord(patient);
+	}
+	
+	private void launchEditPrescription() {
+		doctorDialog.launchEditPrescription(patient);
 	}
 	
 	private void launchCreateDiagnostic() {

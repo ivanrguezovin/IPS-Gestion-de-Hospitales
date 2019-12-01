@@ -1,15 +1,15 @@
 package es.uniovi.ips.hospital.ui.doctor.appointment;
 
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.Dimension;
 import javax.swing.JButton;
 import java.awt.GridLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,6 +17,11 @@ import org.springframework.stereotype.Component;
 import es.uniovi.ips.hospital.domain.MedicalRecord;
 import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.service.MedicalRecordService;
+import es.uniovi.ips.hospital.ui.util.Designer;
+import es.uniovi.ips.hospital.ui.util.PaletteFactory;
+import es.uniovi.ips.hospital.ui.util.Shiftable;
+import es.uniovi.ips.hospital.ui.util.components.MyBackPanel;
+import es.uniovi.ips.hospital.ui.util.components.MyButton;
 
 import java.awt.Font;
 import javax.swing.JTextArea;
@@ -27,13 +32,13 @@ import java.util.Date;
 import java.awt.event.ActionEvent;
 
 @Component
-public class CreatePrescriptionDialog extends JDialog {
+public class CreatePrescriptionPanel extends JPanel implements Shiftable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 9156510247619276196L;
-	private JPanel panelOk;
+	private JPanel contentPanel = new JPanel();
+	
+	@Autowired private MedicalRecordService medicalRecordService;
+	
 	private JButton btnCreate;
 	private JPanel panelEdition;
 	private JScrollPane scrollPanePrescription;
@@ -42,40 +47,27 @@ public class CreatePrescriptionDialog extends JDialog {
 	private JLabel lblDescription;
 	private JTextArea textAreaPrescription;
 	private JTextArea textAreaDescription;
-	@Autowired private MedicalRecordService medicalRecordService;
+	
 	private Patient patient;
 
 	/**
 	 * Create the dialog.
 	 */
-	public CreatePrescriptionDialog() {
-		setBounds(100, 100, 450, 300);
-		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		getContentPane().add(getPanelOk(), BorderLayout.SOUTH);
-		getContentPane().add(getPanelEdition(), BorderLayout.CENTER);
-	}
-	
-	public void run(Patient patient) {
-		this.setVisible(true);
-		this.setPatient(patient);
-	}
-	
-	public void setPatient(Patient patient) {
-		this.patient=patient;
-	}
-	
-	private JPanel getPanelOk() {
-		if (panelOk == null) {
-			panelOk = new JPanel();
-			FlowLayout flowLayout = (FlowLayout) panelOk.getLayout();
-			flowLayout.setAlignment(FlowLayout.RIGHT);
-			panelOk.add(getBtnCreate());
-		}
-		return panelOk;
+	public CreatePrescriptionPanel() {
+		setBounds(100, 100, 650, 700);
+		setPreferredSize(new Dimension(650, 700));
+		setMinimumSize(new Dimension(650, 700));
+		setLayout(new BorderLayout());
+		contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		add(contentPanel, BorderLayout.CENTER);
+		contentPanel.setBackground(PaletteFactory.getBaseDark());
+		contentPanel.setLayout(new BorderLayout(10, 10));
+		contentPanel.add(getPanelEdition(), BorderLayout.CENTER);
+		contentPanel.add(getBtnCreate(), BorderLayout.SOUTH);
 	}
 	private JButton getBtnCreate() {
 		if (btnCreate == null) {
-			btnCreate = new JButton("Create");
+			btnCreate = new MyButton("Create");
 			btnCreate.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String prescription = textAreaPrescription.getText();
@@ -94,16 +86,10 @@ public class CreatePrescriptionDialog extends JDialog {
 		return btnCreate;
 	}
 	
-	public LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
-	    return dateToConvert.toInstant()
-	      .atZone(ZoneId.systemDefault())
-	      .toLocalDateTime();
-	}
-	
 	private JPanel getPanelEdition() {
 		if (panelEdition == null) {
-			panelEdition = new JPanel();
-			panelEdition.setLayout(new GridLayout(0, 2, 0, 0));
+			panelEdition = new MyBackPanel();
+			panelEdition.setLayout(new GridLayout(2, 1, 0, 10));
 			panelEdition.add(getScrollPanePrescription());
 			panelEdition.add(getScrollPaneDescription());
 		}
@@ -114,6 +100,10 @@ public class CreatePrescriptionDialog extends JDialog {
 			scrollPanePrescription = new JScrollPane();
 			scrollPanePrescription.setColumnHeaderView(getLblPrescription());
 			scrollPanePrescription.setViewportView(getTextAreaPrescription());
+			scrollPanePrescription.setBorder(Designer.getBorder());
+			scrollPanePrescription.getColumnHeader().setBackground(PaletteFactory.getMainDark());
+			scrollPanePrescription.getColumnHeader().setForeground(PaletteFactory.getLighter());
+			scrollPanePrescription.getViewport().setBackground(PaletteFactory.getBaseDark());
 		}
 		return scrollPanePrescription;
 	}
@@ -122,6 +112,10 @@ public class CreatePrescriptionDialog extends JDialog {
 			scrollPaneDescription = new JScrollPane();
 			scrollPaneDescription.setColumnHeaderView(getLblDescription());
 			scrollPaneDescription.setViewportView(getTextAreaDescription());
+			scrollPaneDescription.setBorder(Designer.getBorder());
+			scrollPaneDescription.getColumnHeader().setBackground(PaletteFactory.getMainDark());
+			scrollPaneDescription.getColumnHeader().setForeground(PaletteFactory.getLighter());
+			scrollPaneDescription.getViewport().setBackground(PaletteFactory.getBaseDark());
 		}
 		return scrollPaneDescription;
 	}
@@ -156,5 +150,25 @@ public class CreatePrescriptionDialog extends JDialog {
 			textAreaDescription.setLineWrap(true);
 		}
 		return textAreaDescription;
+	}
+	
+	//-------------------------------------------------------------------------------------------------------
+	
+	public void run(Patient patient) {
+		this.setPatient(patient);
+	}
+	
+	public LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
+	    return dateToConvert.toInstant()
+	      .atZone(ZoneId.systemDefault())
+	      .toLocalDateTime();
+	}
+	
+	public void setPatient(Patient patient) {
+		this.patient=patient;
+	}
+	@Override
+	public void setFocus() {
+		textAreaDescription.requestFocus();
 	}
 }

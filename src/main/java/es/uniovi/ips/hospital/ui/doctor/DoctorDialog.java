@@ -15,6 +15,8 @@ import es.uniovi.ips.hospital.domain.Vaccine;
 import es.uniovi.ips.hospital.ui.common.MedicalRecordPanel;
 import es.uniovi.ips.hospital.ui.doctor.appointment.ApplyForAppointmentPanel;
 import es.uniovi.ips.hospital.ui.doctor.appointment.CreateDiagnosticPanel;
+import es.uniovi.ips.hospital.ui.doctor.appointment.CreatePrescriptionPanel;
+import es.uniovi.ips.hospital.ui.doctor.appointment.EditPrescriptionPanel;
 import es.uniovi.ips.hospital.ui.doctor.appointment.FillAppointmentPanel;
 import es.uniovi.ips.hospital.ui.doctor.appointment.ShowMyAppointmentsPanel;
 import es.uniovi.ips.hospital.ui.doctor.vaccine.CreateVaccinePanel;
@@ -45,6 +47,12 @@ public class DoctorDialog extends JDialog {
 	@Autowired
 	private FillAppointmentPanel fillAppointmentPanel;
 	@Autowired
+	private MedicalRecordPanel medicalRecordPanel;
+	@Autowired
+	private EditPrescriptionPanel editPrescriptionPanel;
+	@Autowired
+	private CreatePrescriptionPanel createPrescriptionPanel;
+	@Autowired
 	private ApplyForAppointmentPanel applyForAppointmentPanel;
 	@Autowired
 	private ShowMyAppointmentsPanel showMyAppointmentsPanel;
@@ -56,8 +64,6 @@ public class DoctorDialog extends JDialog {
 	private ShowVaccinesPanel showVaccinesPanel;
 	@Autowired
 	private EditVaccinePanel editVaccinePanel;
-	@Autowired
-	private MedicalRecordPanel medicalRecordPanel;
 
 	private JPanel current;
 	private JPanel previous;
@@ -171,6 +177,21 @@ public class DoctorDialog extends JDialog {
 		launch(fillAppointmentPanel);
 	}
 
+	public void launchMedicalRecord(Patient patient) {
+		medicalRecordPanel.showHistoryOf(patient);
+		launch(medicalRecordPanel);
+	}
+
+	public void launchEditPrescription(Patient patient) {
+		editPrescriptionPanel.run(patient);
+		launch(editPrescriptionPanel);
+	}
+
+	public void launchCreatePrescription(Patient patient) {
+		createPrescriptionPanel.run(patient);
+		launch(createPrescriptionPanel);
+	}
+
 	public void launchCreateDiagnostic(Appointment appointment) {
 		createDiagnosticPanel.run(appointment, user);
 		launch(createDiagnosticPanel);
@@ -188,11 +209,6 @@ public class DoctorDialog extends JDialog {
 	public void launchEditVaccine(Vaccine vaccine) {
 		editVaccinePanel.setVaccine(vaccine);
 		launch(editVaccinePanel);
-	}
-
-	public void launchMedicalRecord(Patient patient) {
-		medicalRecordPanel.showHistoryOf(patient);
-		launch(medicalRecordPanel);
 	}
 
 }

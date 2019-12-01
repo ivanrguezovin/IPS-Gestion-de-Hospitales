@@ -1,6 +1,5 @@
 package es.uniovi.ips.hospital.ui.doctor.appointment;
 
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 
@@ -18,7 +17,6 @@ import javax.swing.JTextArea;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.border.TitledBorder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,21 +24,31 @@ import org.springframework.stereotype.Component;
 import es.uniovi.ips.hospital.domain.MedicalRecord;
 import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.service.MedicalRecordService;
+import es.uniovi.ips.hospital.ui.doctor.DoctorDialog;
+import es.uniovi.ips.hospital.ui.util.Designer;
+import es.uniovi.ips.hospital.ui.util.PaletteFactory;
+import es.uniovi.ips.hospital.ui.util.Shiftable;
+import es.uniovi.ips.hospital.ui.util.components.MyBackPanel;
+import es.uniovi.ips.hospital.ui.util.components.MyButton;
 import es.uniovi.ips.hospital.ui.util.render.MedicalRecordCellRender;
 
-import javax.swing.border.EtchedBorder;
-import java.awt.Color;
+import javax.swing.border.EmptyBorder;
+import java.awt.Dimension;
+
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 @Component
-public class PrescriptionDialog extends JDialog {
-	/**
-	 * 
-	 */
+public class EditPrescriptionPanel extends JPanel implements Shiftable {
+
 	private static final long serialVersionUID = -4416001749661039073L;
+	private JPanel contentPanel = new JPanel();
+
+	@Autowired private MedicalRecordService medicalRecordService;
+	@Autowired private DoctorDialog doctorDialog;
+	
 	private JButton btnEdit;
 	private JPanel panelScrollPanels;
 	private JScrollPane scrollPaneList;
@@ -50,31 +58,28 @@ public class PrescriptionDialog extends JDialog {
 	private JTextArea textAreaPrescription;
 	private JList<MedicalRecord> listPrescriptions;
 	private JPanel panelBotones;
-	private JPanel panelEdit;
-	private JPanel panelCreateNew;
 	private JButton buttonCreateNew;
-	@Autowired private MedicalRecordService medicalRecordService;
+	
 	private Patient patient;
-	@Autowired private CreatePrescriptionDialog createPrescriptionDialog;
 
 	/**
 	 * Create the dialog.
 	 */
-	public PrescriptionDialog() {
-		setBounds(100, 100, 450, 300);
-		getContentPane().add(getPanelScrollPanels(), BorderLayout.CENTER);
-		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-	}
-	
-	public void run(Patient patient) {
-		this.setVisible(true);
-		this.setPatient(patient);
-		loadPrescriptions();
+	public EditPrescriptionPanel() {
+		setBounds(100, 100, 650, 700);
+		setPreferredSize(new Dimension(650, 700));
+		setMinimumSize(new Dimension(650, 700));
+		setLayout(new BorderLayout());
+		contentPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+		add(contentPanel, BorderLayout.CENTER);
+		contentPanel.setBackground(PaletteFactory.getBaseDark());
+		contentPanel.setLayout(new BorderLayout(10, 10));
+		contentPanel.add(getPanelScrollPanels(), BorderLayout.CENTER);
 	}
 	
 	private JButton getBtnEdit() {
 		if (btnEdit == null) {
-			btnEdit = new JButton("Edit");
+			btnEdit = new MyButton("Edit");
 			btnEdit.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					MedicalRecord m = listPrescriptions.getSelectedValue();
@@ -88,10 +93,6 @@ public class PrescriptionDialog extends JDialog {
 		return btnEdit;
 	}
 	
-	public void setPatient(Patient patient) {
-		this.patient=patient;
-	}
-	
 	public LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
 	    return dateToConvert.toInstant()
 	      .atZone(ZoneId.systemDefault())
@@ -100,8 +101,8 @@ public class PrescriptionDialog extends JDialog {
 	
 	private JPanel getPanelScrollPanels() {
 		if (panelScrollPanels == null) {
-			panelScrollPanels = new JPanel();
-			panelScrollPanels.setLayout(new GridLayout(0, 2, 0, 0));
+			panelScrollPanels = new MyBackPanel();
+			panelScrollPanels.setLayout(new GridLayout(0, 2, 10, 0));
 			panelScrollPanels.add(getScrollPaneList());
 			panelScrollPanels.add(getPanelText());
 		}
@@ -110,16 +111,18 @@ public class PrescriptionDialog extends JDialog {
 	private JScrollPane getScrollPaneList() {
 		if (scrollPaneList == null) {
 			scrollPaneList = new JScrollPane();
+			scrollPaneList.getViewport().setBackground(PaletteFactory.getBaseDark());
+			scrollPaneList.setBorder(Designer.getBorder());
 			scrollPaneList.setViewportView(getListPrescriptions());
 		}
 		return scrollPaneList;
 	}
 	private JPanel getPanelText() {
 		if (panelText == null) {
-			panelText = new JPanel();
-			panelText.setLayout(new GridLayout(2, 0, 0, 0));
-			panelText.add(getScrollPaneText());
-			panelText.add(getPanelBotones());
+			panelText = new MyBackPanel();
+			panelText.setLayout(new BorderLayout(0, 10));
+			panelText.add(getScrollPaneText(), BorderLayout.CENTER);
+			panelText.add(getPanelBotones(), BorderLayout.SOUTH);
 		}
 		return panelText;
 	}
@@ -127,6 +130,10 @@ public class PrescriptionDialog extends JDialog {
 		if (scrollPaneText == null) {
 			scrollPaneText = new JScrollPane();
 			scrollPaneText.setColumnHeaderView(getLblPrescription());
+			scrollPaneText.setBorder(Designer.getBorder());;
+			scrollPaneText.getViewport().setBackground(PaletteFactory.getMainDark());
+			scrollPaneText.getColumnHeader().setBackground(PaletteFactory.getMainDark());
+			scrollPaneText.getColumnHeader().setForeground(PaletteFactory.getLighter());
 			scrollPaneText.setViewportView(getTextAreaPrescription());
 		}
 		return scrollPaneText;
@@ -134,6 +141,7 @@ public class PrescriptionDialog extends JDialog {
 	private JLabel getLblPrescription() {
 		if (lblPrescription == null) {
 			lblPrescription = new JLabel("Prescription");
+			lblPrescription.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
 		}
 		return lblPrescription;
 	}
@@ -171,38 +179,34 @@ public class PrescriptionDialog extends JDialog {
 	
 	private JPanel getPanelBotones() {
 		if (panelBotones == null) {
-			panelBotones = new JPanel();
-			panelBotones.setLayout(new GridLayout(2, 1, 0, 0));
-			panelBotones.add(getPanelEdit());
-			panelBotones.add(getPanelCreateNew());
+			panelBotones = new MyBackPanel();
+			panelBotones.setLayout(new GridLayout(2, 1, 0, 5));
+			panelBotones.add(getBtnEdit());
+			panelBotones.add(getButtonCreateNew());
 		}
 		return panelBotones;
 	}
-	private JPanel getPanelEdit() {
-		if (panelEdit == null) {
-			panelEdit = new JPanel();
-			panelEdit.setBorder(new TitledBorder(null, "Edit prescription selected", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			panelEdit.add(getBtnEdit());
-		}
-		return panelEdit;
-	}
-	private JPanel getPanelCreateNew() {
-		if (panelCreateNew == null) {
-			panelCreateNew = new JPanel();
-			panelCreateNew.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Create new prescription", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-			panelCreateNew.add(getButtonCreateNew());
-		}
-		return panelCreateNew;
-	}
 	private JButton getButtonCreateNew() {
 		if (buttonCreateNew == null) {
-			buttonCreateNew = new JButton("Create new");
-			buttonCreateNew.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					createPrescriptionDialog.run(patient);
-				}
-			});
+			buttonCreateNew = new MyButton("Create new");
+			buttonCreateNew.addActionListener(e -> doctorDialog.launchCreatePrescription(patient));
 		}
 		return buttonCreateNew;
+	}
+	
+	// -----------------------------------------------------------------------------------------
+	
+	public void run(Patient patient) {
+		this.setPatient(patient);
+		loadPrescriptions();
+	}
+	
+	public void setPatient(Patient patient) {
+		this.patient=patient;
+	}
+
+	@Override
+	public void setFocus() {
+		textAreaPrescription.requestFocus();
 	}
 }
