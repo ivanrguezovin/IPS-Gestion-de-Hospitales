@@ -25,3 +25,11 @@ spring:
 logging:
   level:
     org: info
+
+# Endpoints
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: "*"
