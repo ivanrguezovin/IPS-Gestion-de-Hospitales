@@ -25,6 +25,8 @@ spring:
 logging:
   level:
     org: info
+  file:
+    path: '${java.io.tmpdir}/hospital'
 
 # Endpoints
 management:
