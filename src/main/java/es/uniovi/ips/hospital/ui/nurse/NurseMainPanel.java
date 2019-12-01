@@ -267,7 +267,7 @@ public class NurseMainPanel extends JPanel implements Shiftable {
 
 	private JCheckBox getChckbxJustUrgents() {
 		if (chckbxJustUrgents == null) {
-			chckbxJustUrgents = new JCheckBox("Just urgents");
+			chckbxJustUrgents = new JCheckBox("Only urgents");
 			chckbxJustUrgents.addItemListener(e -> filter());
 		}
 		return chckbxJustUrgents;

@@ -42,7 +42,7 @@ public class Designer {
         UIManager.put("List.background", PaletteFactory.getBaseDark());
         UIManager.put("List.foreground", PaletteFactory.getLighter());
         UIManager.put("List.selectionBackground", PaletteFactory.getHighlighter());
-        UIManager.put("List.selectionForeground", PaletteFactory.getAltHighlighter());
+        UIManager.put("List.selectionForeground", PaletteFactory.getLighter());
 
         // OptionPanes
         UIManager.put("OptionPane.background", PaletteFactory.getMainDark());
@@ -80,6 +80,12 @@ public class Designer {
         UIManager.put("TextField.background", PaletteFactory.getBaseDark());
         UIManager.put("TextField.foreground", PaletteFactory.getLighter());
         UIManager.put("TextField.caretForeground", PaletteFactory.getLighter());
+        
+        // TextAreas
+        UIManager.put("TextArea.border", new EmptyBorder(5, 5, 5, 5));
+        UIManager.put("TextArea.background", PaletteFactory.getAltDark());
+        UIManager.put("TextArea.foreground", PaletteFactory.getLighter());
+        UIManager.put("TextArea.caretForeground", PaletteFactory.getLighter());
         
         // Spinners
         UIManager.put("Spinner.background", PaletteFactory.getBaseDark());
