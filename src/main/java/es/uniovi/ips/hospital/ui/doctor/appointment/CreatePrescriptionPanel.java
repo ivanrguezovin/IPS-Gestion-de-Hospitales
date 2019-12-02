@@ -79,7 +79,7 @@ public class CreatePrescriptionPanel extends JPanel implements Shiftable {
 					mR.setPrescription(prescription);
 					mR.setPatient(patient);
 					medicalRecordService.createMedicalRecord(mR);
-					JOptionPane.showMessageDialog(null, "Prescription added");
+					JOptionPane.showMessageDialog(contentPanel, "Prescription added");
 				}
 			});
 		}

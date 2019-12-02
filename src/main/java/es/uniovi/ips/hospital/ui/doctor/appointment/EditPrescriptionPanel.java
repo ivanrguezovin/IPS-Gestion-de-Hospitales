@@ -87,7 +87,7 @@ public class EditPrescriptionPanel extends JPanel implements Shiftable {
 					m.setPrescription(textAreaPrescription.getText());
 					m.setDate(convertToLocalDateTimeViaInstant(new Date()));
 					medicalRecordService.createMedicalRecord(m);
-					JOptionPane.showMessageDialog(null, "Prescription edited");
+					JOptionPane.showMessageDialog(contentPanel, "Prescription edited");
 				}
 			});
 		}

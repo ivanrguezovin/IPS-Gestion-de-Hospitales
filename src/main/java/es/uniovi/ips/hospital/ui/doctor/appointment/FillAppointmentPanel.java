@@ -267,12 +267,12 @@ public class FillAppointmentPanel extends JPanel implements Shiftable {
 
 	private void deleteDiagnostic() {
 		if (diagnosticList.getSelectedIndex() == -1) {
-			JOptionPane.showMessageDialog(null, "Select an item from the list");
+			JOptionPane.showMessageDialog(this, "Select an item from the list");
 		} else {
 			Diagnostic d = diagnosticList.getSelectedValue();
 			d.setActive(false);
 			diagnosticService.createDiagnostic(d);
-			JOptionPane.showMessageDialog(null, "Diagnostic deleted");
+			JOptionPane.showMessageDialog(this, "Diagnostic deleted");
 			loadDiagnostics();
 		}
 	}
