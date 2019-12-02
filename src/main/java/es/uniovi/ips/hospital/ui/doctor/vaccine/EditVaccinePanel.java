@@ -279,6 +279,7 @@ public class EditVaccinePanel extends JPanel implements Shiftable {
 
 	public void setVaccine(Vaccine vaccine) {
 		this.vaccine = vaccine;
+		tFHealthCard.setText(vaccine.getPatient().getHealthCardNumber());
 	}
 
 	public List<Vaccine> getVacunas() {

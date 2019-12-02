@@ -26,6 +26,7 @@ import es.uniovi.ips.hospital.ui.util.Shiftable;
 import es.uniovi.ips.hospital.ui.util.components.MyBackPanel;
 import es.uniovi.ips.hospital.ui.util.components.MyButton;
 import es.uniovi.ips.hospital.ui.util.components.MyFrontPanel;
+import es.uniovi.ips.hospital.ui.util.render.VaccineCellRenderer;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -191,6 +192,7 @@ public class ShowVaccinesPanel extends JPanel implements Shiftable {
 		if (listVaccines == null) {
 			listVaccines = new JList<Vaccine>();
 			listVaccines.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			listVaccines.setCellRenderer(new VaccineCellRenderer());
 		}
 		return listVaccines;
 	}
@@ -198,44 +200,7 @@ public class ShowVaccinesPanel extends JPanel implements Shiftable {
 	private JButton getBtnSearch() {
 		if (btnSearch == null) {
 			btnSearch = new JButton("Search");
-			btnSearch.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					if (tfSearchHealthCard.getText().equals("")) {
-						JOptionPane.showMessageDialog(null, "Fill the field");
-					}
-					Patient patient = null;
-					for (Patient p : ps.findAllPatient()) {
-						if (p.getHealthCardNumber().equals(tfSearchHealthCard.getText())) {
-							patient = p;
-						}
-					}
-					if (patient == null) {
-						JOptionPane.showMessageDialog(null, "Patient does not exist");
-					}
-					List<Vaccine> vaccinesPatient = vs.findByPatient(patient);
-					Vaccine[] v = new Vaccine[vaccinesPatient.size()];
-					int i = 0;
-					for (Vaccine c : vaccinesPatient) {
-						v[i] = c;
-						i++;
-					}
-					listVaccines.setModel(new AbstractListModel<Vaccine>() {
-						/**
-						 * 
-						 */
-						private static final long serialVersionUID = -1222956312762187769L;
-						Vaccine[] values = v;
-
-						public int getSize() {
-							return values.length;
-						}
-
-						public Vaccine getElementAt(int index) {
-							return values[index];
-						}
-					});
-				}
-			});
+			btnSearch.addActionListener(e -> search());
 		}
 		return btnSearch;
 	}
@@ -331,6 +296,56 @@ public class ShowVaccinesPanel extends JPanel implements Shiftable {
 	@Override
 	public void setFocus() {
 		tfSearchHealthCard.requestFocus();
+		load();
+	}
+
+	private void load() {
+		if (tfSearchHealthCard.getText().isEmpty())
+			return;
+		Patient patient = null;
+		for (Patient p : ps.findAllPatient()) {
+			if (p.getHealthCardNumber().equals(tfSearchHealthCard.getText())) {
+				patient = p;
+			}
+		}
+		List<Vaccine> vaccinesPatient = vs.findByPatient(patient);
+		Vaccine[] v = new Vaccine[vaccinesPatient.size()];
+		int i = 0;
+		for (Vaccine c : vaccinesPatient) {
+			v[i] = c;
+			i++;
+		}
+		listVaccines.setModel(new AbstractListModel<Vaccine>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = -1222956312762187769L;
+			Vaccine[] values = v;
+
+			public int getSize() {
+				return values.length;
+			}
+
+			public Vaccine getElementAt(int index) {
+				return values[index];
+			}
+		});
+	}
+	
+	private void search() {
+		if (tfSearchHealthCard.getText().equals("")) {
+			JOptionPane.showMessageDialog(null, "Fill the field");
+		}
+		Patient patient = null;
+		for (Patient p : ps.findAllPatient()) {
+			if (p.getHealthCardNumber().equals(tfSearchHealthCard.getText())) {
+				patient = p;
+			}
+		}
+		if (patient == null) {
+			JOptionPane.showMessageDialog(null, "Patient does not exist");
+		}
+		load();
 	}
 
 }
