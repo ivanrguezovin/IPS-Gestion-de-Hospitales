@@ -52,8 +52,6 @@ public class ShowVaccinesPanel extends JPanel implements Shiftable {
 	private PatientService ps;
 	@Autowired
 	private DoctorDialog doctorDialog;
-	@Autowired
-	private EditVaccinePanel editVaccinePanel;
 
 	private JPanel pnList;
 	private JPanel pnData;
@@ -65,7 +63,6 @@ public class ShowVaccinesPanel extends JPanel implements Shiftable {
 	private JPanel pnButtons;
 	private JButton btnMarkAsApplied;
 	private JButton btnEdit;
-	private JButton btnRefresh;
 
 	private Doctor doctor;
 
@@ -246,9 +243,8 @@ public class ShowVaccinesPanel extends JPanel implements Shiftable {
 	private JPanel getPnButtons() {
 		if (pnButtons == null) {
 			pnButtons = new JPanel();
-			pnButtons.setLayout(new GridLayout(0, 3, 0, 0));
+			pnButtons.setLayout(new GridLayout(0, 2, 0, 0));
 			pnButtons.add(getBtnEdit());
-			pnButtons.add(getBtnRefresh());
 			pnButtons.add(getBtnMarkAsApplied());
 		}
 		return pnButtons;
@@ -320,38 +316,6 @@ public class ShowVaccinesPanel extends JPanel implements Shiftable {
 			});
 		}
 		return btnEdit;
-	}
-
-	private JButton getBtnRefresh() {
-		if (btnRefresh == null) {
-			btnRefresh = new MyButton("Refresh");
-			btnRefresh.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					Vaccine[] v = new Vaccine[editVaccinePanel.getVacunas().size()];
-					int i = 0;
-					for (Vaccine c : editVaccinePanel.getVacunas()) {
-						v[i] = c;
-						i++;
-					}
-					listVaccines.setModel(new AbstractListModel<Vaccine>() {
-						/**
-						 * 
-						 */
-						private static final long serialVersionUID = -1222956312762187769L;
-						Vaccine[] values = v;
-
-						public int getSize() {
-							return values.length;
-						}
-
-						public Vaccine getElementAt(int index) {
-							return values[index];
-						}
-					});
-				}
-			});
-		}
-		return btnRefresh;
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////

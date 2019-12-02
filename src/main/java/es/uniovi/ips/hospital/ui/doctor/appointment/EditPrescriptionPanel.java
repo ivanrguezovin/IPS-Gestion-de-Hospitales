@@ -80,6 +80,7 @@ public class EditPrescriptionPanel extends JPanel implements Shiftable {
 	private JButton getBtnEdit() {
 		if (btnEdit == null) {
 			btnEdit = new MyButton("Edit");
+			btnEdit.setEnabled(false);
 			btnEdit.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					MedicalRecord m = listPrescriptions.getSelectedValue();
@@ -159,7 +160,10 @@ public class EditPrescriptionPanel extends JPanel implements Shiftable {
 			listPrescriptions.addListSelectionListener(new ListSelectionListener() {
 				public void valueChanged(ListSelectionEvent e) {
 					MedicalRecord m = listPrescriptions.getSelectedValue();
-					textAreaPrescription.setText(m.getPrescription());
+					if (m != null) {
+						textAreaPrescription.setText(m.getPrescription());
+						btnEdit.setEnabled(true);
+					}
 				}
 			});
 			listPrescriptions.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -207,6 +211,8 @@ public class EditPrescriptionPanel extends JPanel implements Shiftable {
 
 	@Override
 	public void setFocus() {
+		listPrescriptions.clearSelection();
+		btnEdit.setEnabled(false);
 		textAreaPrescription.requestFocus();
 	}
 }
