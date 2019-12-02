@@ -34,6 +34,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Stack;
 
 @Component
 public class DoctorDialog extends JDialog {
@@ -65,8 +66,7 @@ public class DoctorDialog extends JDialog {
 	@Autowired
 	private EditVaccinePanel editVaccinePanel;
 
-	private JPanel current;
-	private JPanel previous;
+	private Stack<JPanel> stack;
 	private JLabel banner;
 	private JLabel side;
 	private JPanel pnSouth;
@@ -79,8 +79,8 @@ public class DoctorDialog extends JDialog {
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				previous = mainPanel;
-				back();
+				while (stack.size() > 1)
+					back();
 			}
 		});
 		setBounds(100, 100, 800, 800);
@@ -91,6 +91,7 @@ public class DoctorDialog extends JDialog {
 		getContentPane().add(getBanner(), BorderLayout.NORTH);
 		getContentPane().add(getSide(), BorderLayout.WEST);
 		getContentPane().add(getPnSouth(), BorderLayout.SOUTH);
+		stack = new Stack<JPanel>();
 	}
 
 	private JLabel getBanner() {
@@ -135,16 +136,16 @@ public class DoctorDialog extends JDialog {
 		this.user = user;
 		setTitle(user.guiToString());
 		getContentPane().add(mainPanel, BorderLayout.CENTER);
-		current = mainPanel;
+		stack.clear();
+		stack.push(mainPanel);
 		getContentPane().revalidate();
 		setVisible(true);
 	}
 
 	private void launch(JPanel panel) {
-		getContentPane().remove(current);
+		getContentPane().remove(stack.peek());
 		getContentPane().add(panel, BorderLayout.CENTER);
-		previous = current;
-		current = panel;
+		stack.push(panel);
 		getContentPane().revalidate();
 		getContentPane().repaint();
 		((Shiftable) panel).setFocus();
@@ -152,12 +153,14 @@ public class DoctorDialog extends JDialog {
 	}
 
 	private void back() {
-		boolean isMainPanel = previous == mainPanel;
-		launch(previous);
+		getContentPane().remove(stack.pop());
+		boolean isMainPanel = stack.peek() == mainPanel;
+		getContentPane().add(stack.peek(), BorderLayout.CENTER);
+		getContentPane().revalidate();
+		getContentPane().repaint();
+		((Shiftable) stack.peek()).setFocus();
 		if (isMainPanel)
 			btnBack.setEnabled(false);
-		else
-			previous = mainPanel;
 	}
 
 	void launchApplyForAppointment() {

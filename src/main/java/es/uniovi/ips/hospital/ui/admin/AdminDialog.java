@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import es.uniovi.ips.hospital.domain.Appointment;
+import es.uniovi.ips.hospital.domain.Doctor;
 import es.uniovi.ips.hospital.domain.Patient;
 import es.uniovi.ips.hospital.ui.admin.appointment.CreateAppointmentPanel;
 import es.uniovi.ips.hospital.ui.admin.appointment.EditAppointmentPanel;
@@ -34,6 +35,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Stack;
 
 @Component
 public class AdminDialog extends JDialog {
@@ -54,8 +56,7 @@ public class AdminDialog extends JDialog {
     @Autowired	private CreateNursesPanel createNursesPanel;
     @Autowired	private CreatePatientsPanel createPatientsPanel;
 
-	private JPanel current;
-	private JPanel previous;
+	private Stack<JPanel> stack;
 	private JLabel banner;
 	private JLabel side;
 	private JPanel pnSouth;
@@ -67,7 +68,10 @@ public class AdminDialog extends JDialog {
 	public AdminDialog() {
 		addWindowListener(new WindowAdapter() {
 			@Override
-			public void windowClosing(WindowEvent e) { previous = mainPanel; back();}
+			public void windowClosing(WindowEvent e) {
+				while (stack.size() > 1)
+					back();
+			}
 		});
 		setBounds(100, 100, 800, 800);
 		setModal(true);
@@ -78,6 +82,7 @@ public class AdminDialog extends JDialog {
 		getContentPane().add(getBanner(), BorderLayout.NORTH);
 		getContentPane().add(getSide(), BorderLayout.WEST);
 		getContentPane().add(getPnSouth(), BorderLayout.SOUTH);
+		stack = new Stack<JPanel>();
 	}
 	private JLabel getBanner() {
 		if (banner == null) {
@@ -115,29 +120,31 @@ public class AdminDialog extends JDialog {
 	
 	public void run() {
 		getContentPane().add(mainPanel, BorderLayout.CENTER);
-		current = mainPanel;
+		stack.clear();
+		stack.push(mainPanel);
 		getContentPane().revalidate();
 		setVisible(true);
 	}
-	
+
 	private void launch(JPanel panel) {
-		getContentPane().remove(current);
+		getContentPane().remove(stack.peek());
 		getContentPane().add(panel, BorderLayout.CENTER);
-		previous = current;
-		current = panel;
+		stack.push(panel);
 		getContentPane().revalidate();
 		getContentPane().repaint();
 		((Shiftable) panel).setFocus();
 		btnBack.setEnabled(true);
 	}
-	
+
 	private void back() {
-		boolean isMainPanel = previous == mainPanel;
-		launch(previous);
+		getContentPane().remove(stack.pop());
+		boolean isMainPanel = stack.peek() == mainPanel;
+		getContentPane().add(stack.peek(), BorderLayout.CENTER);
+		getContentPane().revalidate();
+		getContentPane().repaint();
+		((Shiftable) stack.peek()).setFocus();
 		if (isMainPanel)
 			btnBack.setEnabled(false);
-		else
-			previous = mainPanel;
 	}
 	
 	void launchCreateAppointment() {
